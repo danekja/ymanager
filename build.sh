@@ -1,0 +1,1 @@
+mvn package && docker restart yamanager_app
