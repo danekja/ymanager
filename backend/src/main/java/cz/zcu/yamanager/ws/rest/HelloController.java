@@ -3,6 +3,7 @@ package cz.zcu.yamanager.ws.rest;
 import cz.zcu.yamanager.domain.Test;
 import cz.zcu.yamanager.repository.HelloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import static cz.zcu.yamanager.util.localization.Language.get;
 import static cz.zcu.yamanager.util.localization.Message.getString;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class HelloController {
 
