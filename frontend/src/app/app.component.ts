@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
     this.httpClient.get(environment.apiUrl + 'test', { responseType: 'text' })
       .subscribe(data => this.getTestResponse = data);
 
-    this.httpClient.get(environment.apiUrl + 'test', { responseType: 'text' })
+    this.httpClient.post(environment.apiUrl + 'test', {}, { responseType: 'text' })
       .subscribe(data => this.postTestResponse = data);
 
     this.httpClient.get(environment.apiUrl + 'hello', { responseType: 'text' })
