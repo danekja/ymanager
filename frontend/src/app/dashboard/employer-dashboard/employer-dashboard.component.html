@@ -1,0 +1,43 @@
+<div class="container-fluid h-100">
+  <div class="row">
+    <div class="col-lg-8 mid-panel">
+
+      <div *ngIf="usersToApprove.length > 0" class="employer-dashboard-user-approval">
+        <app-user-approval
+          [usersToApprove]="usersToApprove"
+          (userApprovedAction)="userApproved($event.user, $event.approved)"
+        ></app-user-approval>
+      </div>
+
+      <div *ngIf="daysOffToApprove.length > 0" class="employer-dashboard-days-off-approval">
+        <app-days-off-approval
+          [daysOffToApprove]="daysOffToApprove"
+          (daysOffApprovalAction)="daysOffApproved($event.daysOff, $event.approved)"
+        ></app-days-off-approval>
+      </div>
+
+      <div *ngIf="oncomingDaysOff.length > 0" class="employer-dashboard-coming-days-off">
+        <app-coming-days-off
+          [oncomingDaysOff]="oncomingDaysOff"
+          (daysOffRemovedAction)="daysOffRemoved($event.daysOff)"
+        ></app-coming-days-off>
+      </div>
+
+      <div class="employer-dashboard-day-picker">
+        <app-day-picker
+          (selectedDate)="onDateSelect($event)"
+        ></app-day-picker>
+      </div>
+
+    </div>
+
+    <div class="col-lg-4 right-panel">
+
+      <app-days-off-info
+        [sickDaysRemaining]="5"
+        [extraVacationRemaining]="10"
+      ></app-days-off-info>
+
+    </div>
+  </div>
+</div>

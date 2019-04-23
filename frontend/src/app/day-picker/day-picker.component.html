@@ -1,0 +1,35 @@
+<div class="day-picker-container">
+  <div class="row text-center day-picker-month-selection">
+    <div class="col-4"></div>
+    <div class="col-1">
+      <div class="btn btn-primary"
+           mwlCalendarPreviousView
+           [view]="view"
+           [(viewDate)]="viewDate"
+      >
+        <
+      </div>
+    </div>
+    <div class="col-2">
+      <span id="day-picker-date">{{ viewDate | calendarDate:(view + 'ViewTitle'):locale }}</span>
+    </div>
+    <div class="col-1">
+      <div class="btn btn-primary"
+           mwlCalendarNextView
+           [view]="view"
+           [(viewDate)]="viewDate"
+      >
+        >
+      </div>
+      <div class="col-4"></div>
+    </div>
+  </div>
+
+  <mwl-calendar-month-view
+    [viewDate]="viewDate"
+    (dayClicked)="dayClicked($event.day)"
+    weekStartsOn="1"
+    [locale]="locale"
+  >
+  </mwl-calendar-month-view>
+</div>
