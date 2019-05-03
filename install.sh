@@ -1,1 +1,1 @@
-docker-compose up
+mvn -f ./server/pom.xml clean package; docker-compose up

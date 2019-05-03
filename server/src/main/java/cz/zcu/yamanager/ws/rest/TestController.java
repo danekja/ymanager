@@ -1,7 +1,7 @@
 package cz.zcu.yamanager.ws.rest;
 
 import cz.zcu.yamanager.domain.Test;
-import cz.zcu.yamanager.repository.HelloRepository;
+import cz.zcu.yamanager.repository.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,12 +14,12 @@ import static cz.zcu.yamanager.util.localization.Message.getString;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
-public class HelloController {
+public class TestController {
 
-    private final HelloRepository repository;
+    private final TestRepository repository;
 
     @Autowired
-    public HelloController(HelloRepository repository) {
+    public TestController(TestRepository repository) {
         this.repository = repository;
     }
 

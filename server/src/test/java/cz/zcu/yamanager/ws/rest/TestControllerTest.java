@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class HelloControllerTest {
+class TestControllerTest {
 
-    private HelloController helloController;
+    private TestController testController;
 
     @BeforeEach
     void setUp() {
@@ -17,16 +17,16 @@ class HelloControllerTest {
                 .addLanguage(Language.EN)
                 .addLanguage(Language.CZ);
 
-        helloController = new HelloController(null);
+        testController = new TestController(null);
     }
 
     @Test
     void hello_inCzech_true() {
-        assertEquals("český jazyk", helloController.hello("cz"));
+        assertEquals("český jazyk", testController.hello("cz"));
     }
 
     @Test
     void hello_inEnglish_true() {
-        assertEquals("english language", helloController.hello("en"));
+        assertEquals("english language", testController.hello("en"));
     }
 }

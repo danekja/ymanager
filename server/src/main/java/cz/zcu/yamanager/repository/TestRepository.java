@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class HelloRepository {
+public class TestRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(HelloRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(TestRepository.class);
 
     private final JdbcTemplate jdbc;
 
     @Autowired
-    public HelloRepository(JdbcTemplate jdbc) {
+    public TestRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
 
