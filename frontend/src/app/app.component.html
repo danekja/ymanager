@@ -1,6 +1,17 @@
-<b>Post test: </b> {{ postTestResponse }} <br>
-<b>Get test: </b> {{ getTestResponse }} <br>
-<b>EN Hello world test: </b> {{ enHelloWorldResponse }} <br>
-<b>CZ Hello world test: </b> {{ czHelloWorldResponse }} <br>
-<b>Database test: </b> {{ databaseResponse }} <br>
-<router-outlet></router-outlet>
+<div class="container-fluid h-100">
+  <div class="row header">
+    <img class="logo" src="../assets/images/logo.png" />
+    <div class="user-info">
+      <img class="user-icon" src="../assets/images/default-user.png"/>
+      <span class="user-name">Václav Jirák</span>
+    </div>
+  </div>
+  <div class="row navigation-and-content">
+    <div class="col-lg-2 navigation">
+      <app-menu></app-menu>
+    </div>
+    <div class="col-lg-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

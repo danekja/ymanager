@@ -1,0 +1,12 @@
+<div class="navigation">
+  <nav class="navbar">
+    <ul class="navbar-nav">
+      <li *ngFor="let item of menuItems"
+          [class.selected]="item === selectedMenuItem"
+          (click)="onSelect(item)"
+          class="nav-item">
+        <a routerLink="{{item.routePath}}"><div>{{item.name}}</div></a>
+      </li>
+    </ul>
+  </nav>
+</div>
