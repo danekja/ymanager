@@ -1,0 +1,43 @@
+<h1 mat-dialog-title>Výběr volna</h1>
+
+<div mat-dialog-content>
+  <div>
+    <label id="days-off-type-radio-group-label" class="dialog-label">Typ volna</label>
+    <mat-radio-group aria-labelledby="days-off-type-radio-group-label" class="days-off-type-radio-group" [(ngModel)]="selectedDaysOffType">
+      <mat-radio-button class="days-off-type-radio-button" *ngFor="let type of daysOffTypes" [value]="type" >
+        {{type}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <div class="datetime-interval">
+    <div class="from-datetime">
+      <label for="from-datetime-input" class="dialog-label">Od:</label>
+      <div class="datetime-picker">
+        <mat-form-field>
+          <input id="from-datetime-input" matInput [matDatepicker]="startDatePicker" [(ngModel)]="data.fromDate">
+          <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #startDatePicker></mat-datepicker>
+        </mat-form-field>
+        <ngb-timepicker [(ngModel)]="data.fromTime" [minuteStep]="MINUTE_STEP"></ngb-timepicker>
+      </div>
+    </div>
+
+    <div class="to-datetime">
+      <label for="to-datetime-input" class="dialog-label">Do:</label>
+      <div class="datetime-picker">
+        <mat-form-field>
+          <input id="to-datetime-input" matInput [matDatepicker]="endDatePicker" [(ngModel)]="data.toDate">
+          <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #endDatePicker></mat-datepicker>
+        </mat-form-field>
+        <ngb-timepicker [(ngModel)]="data.toTime" [minuteStep]="MINUTE_STEP"></ngb-timepicker>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="primary" (click)="onConfirmClick()">Potvrdit</button>
+  <button mat-raised-button color="basic" (click)="onCloseClick()">Zavřít</button>
+</div>

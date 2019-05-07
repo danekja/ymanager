@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {UserToApprove} from '../../user-approval/user-to-approve.model';
-import {DaysOff} from '../../shared/days-off.model';
-import {OffDayType } from '../../shared/off-day-type';
+import { UserToApprove } from '../../user-approval/user-to-approve.model';
+import { DaysOff } from '../../shared/days-off.model';
+import { OffDayType } from '../../shared/off-day-type';
+import { MatDialog } from '@angular/material';
+import { AddDaysOffDialogComponent } from '../../add-days-off-dialog/add-days-off-dialog.component';
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -43,14 +45,18 @@ export class EmployerDashboardComponent implements OnInit {
 
   oncomingDaysOff: DaysOff[] = [];
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
     this.oncomingDaysOff = this.calculateComingDaysOff();
   }
 
   onDateSelect( date: Date ) {
-    console.log('Date selected: ' + date.toDateString());
+    this.dialog.open(AddDaysOffDialogComponent, {
+      data: {
+        fromDate: date
+      }
+    });
   }
 
   userApproved( user: UserToApprove, approved: boolean ) {
@@ -60,7 +66,7 @@ export class EmployerDashboardComponent implements OnInit {
     );
   }
 
-  daysOffApproved(daysOff: DaysOff, approved: boolean ) {
+  daysOffApproved(daysOff: DaysOff, approved: boolean) {
     console.log(daysOff.username + ', ' + approved);
     this.daysOffToApprove.splice(
       this.daysOffToApprove.indexOf(daysOff), 1

@@ -6,6 +6,9 @@ import { DaysOffInfoModule } from '../../days-off-info/days-off-info.module';
 import { UserApprovalModule } from '../../user-approval/user-approval.module';
 import { DaysOffApprovalModule } from '../../days-off-approval/days-off-approval.module';
 import { OncomingDaysOffModule } from '../../oncoming-days-off/oncoming-days-off.module';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AddDaysOffDialogModule} from '../../add-days-off-dialog/add-days-off-dialog.module';
+import {MatDialogModule} from '@angular/material';
 
 @NgModule({
   declarations: [ EmployerDashboardComponent ],
@@ -17,7 +20,10 @@ import { OncomingDaysOffModule } from '../../oncoming-days-off/oncoming-days-off
     UserApprovalModule,
     DaysOffApprovalModule,
     DayPickerModule,
-    OncomingDaysOffModule
+    OncomingDaysOffModule,
+    BrowserAnimationsModule,
+    AddDaysOffDialogModule,
+    MatDialogModule
   ]
 })
 export class EmployerDashboardModule { }
