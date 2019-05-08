@@ -9,6 +9,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { HeaderComponent } from './header/header.component';
 import { MatDialogModule } from '@angular/material';
 import {ProfileSettingsModule} from './profile-settings/profile-settings.module';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import {ProfileSettingsModule} from './profile-settings/profile-settings.module'
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     DashboardModule,
     MatDialogModule,

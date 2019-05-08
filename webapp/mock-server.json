@@ -1,0 +1,23 @@
+{
+  "user":
+    [
+      {
+        "id": 1,
+        "name": {
+          "first": "Tomas",
+          "last": "Novak"
+        },
+        "photo": "https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg",
+        "calendar": [
+          {
+            "date": "2019-05-08",
+            "from": "18:58:28.322548",
+            "to": "18:58:28.322561",
+            "type": "SICKDAY"
+          }
+        ]
+      }
+  ]
+}
+
+
