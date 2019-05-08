@@ -1,4 +1,4 @@
-import { MenuItem } from './menu/menuItem';
+import { MenuItem } from './menu/menu-item';
 
 export const MENU_ITEMS: MenuItem[] = [
   {name: 'Dashboard', routePath: 'dashboard'},
