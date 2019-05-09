@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {DaysOff} from '../shared/days-off.model';
-import {OffDayType} from '../shared/off-day-type';
+import {Component, OnInit} from '@angular/core';
+import {UserService} from '../services/user.service';
+import {VacationType} from '../enums/common.enum';
 
 @Component({
   selector: 'app-coming-days-off',
@@ -9,25 +9,39 @@ import {OffDayType} from '../shared/off-day-type';
 })
 export class OncomingDaysOffComponent implements OnInit {
 
-  @Input()  oncomingDaysOff: DaysOff[];
-  @Output() daysOffRemovedAction = new EventEmitter<{daysOff: DaysOff}>();
-
-  constructor() { }
+  constructor(
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
+    // TODO api call na získání nadcházejících voln
   }
 
-  private daysOffRemoved( removedDaysOff: DaysOff ) {
-    this.daysOffRemovedAction.emit( {daysOff: removedDaysOff } );
+  private daysOffRemoved( daysOffId: number ) {
+    // TODO api call na odstranění nadcházejícího volna
   }
+
+  // TODO možná zbytečný - bude api call na získání nadcházejících voln
+  // private calculateComingDaysOff(): DaysOff[] {
+  //   let oncomingDaysOff: DaysOff[] = [];
+  //
+  //   const today = new Date();
+  //   this.daysOff.forEach((dayOff) => {
+  //     if (dayOff.dateTo >= today) {
+  //       oncomingDaysOff.push(dayOff);
+  //     }
+  //   });
+  //
+  //   return oncomingDaysOff;
+  // }
 
   // TODO
   //  days-off-approval duplicate
-  private offDayTypeToString(taskType: OffDayType): string {
-    switch (taskType) {
-      case OffDayType.ExtraVacation:
+  private daysOffTypeToString(vacationType: VacationType): string {
+    switch (vacationType) {
+      case VacationType.VACATION:
         return 'Extra dovolená';
-      case OffDayType.Sickday:
+      case VacationType.SICKDAY:
         return 'Sickdays';
     }
   }

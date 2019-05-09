@@ -1,31 +1,28 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { DaysOff } from '../shared/days-off.model';
-import { OffDayType } from '../shared/off-day-type';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
+import {Requests} from '../models/requests.model';
+import {VacationType} from '../enums/common.enum';
 
 @Component({
   selector: 'app-days-off-approval',
   templateUrl: './days-off-approval.component.html',
   styleUrls: ['./days-off-approval.component.sass']
 })
-export class DaysOffApprovalComponent implements OnInit {
+export class DaysOffApprovalComponent {
 
-  @Input()  daysOffToApprove: DaysOff[];
-  @Output() daysOffApprovalAction = new EventEmitter<{daysOff: DaysOff, approved: boolean}>();
+  @Input() daysOffRequests: Requests;
+  @Output() daysOffApprovalEvent = new EventEmitter<{requestId: number, approved: boolean}>();
 
   constructor() { }
 
-  ngOnInit() {
+  daysOffApprovalCompleted(reqId: number, isApproved: boolean ) {
+    this.daysOffApprovalEvent.emit({requestId: reqId, approved: isApproved});
   }
 
-  daysOffApprovalCompleted(daysOffApproved: DaysOff, isApproved: boolean ) {
-    this.daysOffApprovalAction.emit({daysOff: daysOffApproved, approved: isApproved});
-  }
-
-  private daysOffTypeToString(taskType: OffDayType): string {
-    switch (taskType) {
-      case OffDayType.ExtraVacation:
+  private daysOffTypeToString(vacationType: VacationType): string {
+    switch (vacationType) {
+      case VacationType.VACATION:
         return 'Extra dovolená';
-      case OffDayType.Sickday:
+      case VacationType.SICKDAY:
         return 'Sickdays';
     }
   }

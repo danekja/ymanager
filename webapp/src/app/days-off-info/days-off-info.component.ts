@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import {TimeUnit} from "../enums/common.enum";
 
 @Component({
   selector: 'app-days-off-info',
@@ -7,9 +8,15 @@ import { Component, Input } from '@angular/core';
 })
 export class DaysOffInfoComponent {
 
-  @Input() sickDaysRemaining: number;
+  @Input() sickDaysRemaining: {
+    value: number;
+    unit: TimeUnit;
+  };
 
-  @Input() extraVacationRemaining: number;
+  @Input() extraVacationRemaining: {
+    value: number;
+    unit: TimeUnit;
+  };
 
   constructor() { }
 }

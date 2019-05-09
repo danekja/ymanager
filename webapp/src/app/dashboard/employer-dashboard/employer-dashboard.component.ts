@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { UserToApprove } from '../../user-approval/user-to-approve.model';
-import { DaysOff } from '../../shared/days-off.model';
-import { OffDayType } from '../../shared/off-day-type';
+import {Component, Input, OnInit} from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { AddDaysOffDialogComponent } from '../../add-days-off-dialog/add-days-off-dialog.component';
+import {UsersService} from '../../services/users.service';
+import {Requests} from '../../models/requests.model';
+import {UserProfile} from '../../models/user-profile.model';
+import {UserService} from '../../services/user.service';
+import {ProfileService} from "../../services/profile.service";
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -12,43 +14,37 @@ import { AddDaysOffDialogComponent } from '../../add-days-off-dialog/add-days-of
 })
 export class EmployerDashboardComponent implements OnInit {
 
-  usersToApprove: UserToApprove[] = [
-    { date: new Date(), email: 'kek@kek.cz', name: 'Václav Jirák' },
-    { date: new Date(), email: 'kuadas@kek.cz', name: 'Věnceslav Kárij' }
-  ];
+  @Input() profile: UserProfile;
+  private authorizationRequests: Requests;
+  private daysOffRequests: Requests;
 
-  daysOffToApprove: DaysOff[] = [
-    { username: 'Václav Jirák', dateFrom: new Date(2019, 10, 13), dateTo: new Date(), type: OffDayType.Sickday },
-    { username: 'Václav Jirák', dateFrom: new Date(2019, 10, 1), dateTo: new Date(), type: OffDayType.ExtraVacation },
-  ];
-
-  daysOff: DaysOff[] = [
-    {
-      username: '',
-      dateFrom: new Date(2019, 5, 5),
-      dateTo: new Date(2019, 5, 6),
-      type: OffDayType.ExtraVacation
-    },
-    {
-      username: '',
-      dateFrom: new Date(2019, 5, 8),
-      dateTo: new Date(2019, 5, 8),
-      type: OffDayType.Sickday
-    },
-    {
-      username: '',
-      dateFrom: new Date(2019, 3, 8),
-      dateTo: new Date(2019, 3, 9),
-      type: OffDayType.Sickday
-    },
-  ];
-
-  oncomingDaysOff: DaysOff[] = [];
-
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    private profileService: ProfileService,
+    // API
+    private userService: UserService,
+    private usersService: UsersService
+  ) { }
 
   ngOnInit() {
-    this.oncomingDaysOff = this.calculateComingDaysOff();
+    this.profileService.getProfile()
+      .subscribe((data: UserProfile) => this.profile = data);
+
+    this.usersService.getAuthorizationRequests()
+      .subscribe((data: Requests) => this.authorizationRequests = data);
+
+    this.usersService.getVacationRequests()
+      .subscribe((data: Requests) => this.daysOffRequests = data);
+  }
+
+  private userApproved(requestId: number, approved: boolean) {
+    // TODO api post call
+    this.authorizationRequests.authorization.splice(0, 1);
+  }
+
+  private daysOffApproved(requestId: number, approved: boolean) {
+    // TODO api post call
+    this.daysOffRequests.vacation.splice(0, 1);
   }
 
   onDateSelect( date: Date ) {
@@ -57,41 +53,5 @@ export class EmployerDashboardComponent implements OnInit {
         fromDate: date
       }
     });
-  }
-
-  userApproved( user: UserToApprove, approved: boolean ) {
-    console.log(user.name + ' - approved: ' + approved);
-    this.usersToApprove.splice(
-      this.usersToApprove.indexOf(user), 1
-    );
-  }
-
-  daysOffApproved(daysOff: DaysOff, approved: boolean) {
-    console.log(daysOff.username + ', ' + approved);
-    this.daysOffToApprove.splice(
-      this.daysOffToApprove.indexOf(daysOff), 1
-    );
-  }
-
-  daysOffRemoved(daysOff: DaysOff) {
-    this.daysOff.splice(
-      this.daysOff.indexOf(daysOff), 1
-    );
-    this.oncomingDaysOff.splice(
-      this.oncomingDaysOff.indexOf(daysOff), 1
-    );
-  }
-
-  private calculateComingDaysOff(): DaysOff[] {
-    let oncomingDaysOff: DaysOff[] = [];
-
-    const today = new Date();
-    this.daysOff.forEach((dayOff) => {
-      if (dayOff.dateTo >= today) {
-        oncomingDaysOff.push(dayOff);
-      }
-    });
-
-    return oncomingDaysOff;
   }
 }
