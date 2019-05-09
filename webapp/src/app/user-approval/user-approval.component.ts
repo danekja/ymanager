@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { UserToApprove } from './user-to-approve.model';
-
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Requests} from '../models/requests.model';
 
 @Component({
   selector: 'app-user-approval',
@@ -9,13 +8,12 @@ import { UserToApprove } from './user-to-approve.model';
 })
 export class UserApprovalComponent {
 
-  @Input()  usersToApprove: UserToApprove[];
-  @Output() userApprovedAction = new EventEmitter<{user: UserToApprove, approved: boolean}>();
+  @Input() authorizationRequests: Requests;
+  @Output() userApprovalEvent = new EventEmitter<{requestId: number, approved: boolean}>();
 
   constructor() { }
 
-  userApproved(approvedUser: UserToApprove, isApproved: boolean) {
-    this.userApprovedAction.emit({user: approvedUser, approved: isApproved});
+  private userApproved(reqId: number, isApproved: boolean) {
+    this.userApprovalEvent.emit({requestId: reqId, approved: isApproved});
   }
-
 }

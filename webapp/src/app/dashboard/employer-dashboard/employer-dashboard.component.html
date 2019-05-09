@@ -2,26 +2,24 @@
   <div class="row">
     <div class="col-lg-8 mid-panel">
 
-      <div *ngIf="usersToApprove.length > 0" class="employer-dashboard-user-approval">
+      <div class="employer-dashboard-user-approval" *ngIf="authorizationRequests && authorizationRequests.authorization.length > 0">
         <app-user-approval
-          [usersToApprove]="usersToApprove"
-          (userApprovedAction)="userApproved($event.user, $event.approved)"
+          [authorizationRequests]="authorizationRequests"
+          (userApprovalEvent)="userApproved($event.requestId, $event.approved)"
         ></app-user-approval>
       </div>
 
-      <div *ngIf="daysOffToApprove.length > 0" class="employer-dashboard-days-off-approval">
+      <div class="employer-dashboard-days-off-approval" *ngIf="daysOffRequests && daysOffRequests.vacation.length > 0">
         <app-days-off-approval
-          [daysOffToApprove]="daysOffToApprove"
-          (daysOffApprovalAction)="daysOffApproved($event.daysOff, $event.approved)"
+          [daysOffRequests]="daysOffRequests"
+          (daysOffApprovalEvent)="daysOffApproved($event.requestId, $event.approved)"
         ></app-days-off-approval>
       </div>
 
-      <div *ngIf="oncomingDaysOff.length > 0" class="employer-dashboard-coming-days-off">
-        <app-coming-days-off
-          [oncomingDaysOff]="oncomingDaysOff"
-          (daysOffRemovedAction)="daysOffRemoved($event.daysOff)"
-        ></app-coming-days-off>
-      </div>
+<!--      TODO odkomentovat, až bude komponenta hotova -->
+<!--      <div class="employer-dashboard-coming-days-off">-->
+<!--        <app-coming-days-off></app-coming-days-off>-->
+<!--      </div>-->
 
       <div class="employer-dashboard-day-picker">
         <app-day-picker
@@ -33,10 +31,12 @@
 
     <div class="col-lg-4 right-panel">
 
-      <app-days-off-info
-        [sickDaysRemaining]="5"
-        [extraVacationRemaining]="10"
-      ></app-days-off-info>
+      <div class="days-off-info" *ngIf="profile">
+        <app-days-off-info
+          [sickDaysRemaining]="profile.sickDay"
+          [extraVacationRemaining]="profile.vacation"
+        ></app-days-off-info>
+      </div>
 
     </div>
   </div>

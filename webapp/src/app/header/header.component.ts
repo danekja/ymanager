@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
+import { ProfileService } from '../services/profile.service';
+import { UserProfile } from '../models/user-profile.model';
 
 @Component({
   selector: 'app-header',
@@ -10,11 +12,25 @@ import { ProfileSettingsComponent } from '../profile-settings/profile-settings.c
 export class HeaderComponent {
   @Input() name = 'John Doe';
 
-  constructor(private dialog: MatDialog) { }
+  private notificationSettings: Date;
+
+  constructor(
+    private dialog: MatDialog,
+    private profileService: ProfileService
+    ) {
+    profileService.getProfile()
+      .subscribe((data: UserProfile) => this.notificationSettings = new Date(data.settings.notification));
+  }
 
   onProfileClick(): void {
     this.dialog.open(ProfileSettingsComponent, {
       data: {
+        shouldNotify: this.notificationSettings, // TODO potřeba?
+        notifyDate: this.notificationSettings,
+        notifyTime: {
+          hour: this.notificationSettings.getHours(),
+          minute: this.notificationSettings.getMinutes()
+        }
       }
     });
   }
