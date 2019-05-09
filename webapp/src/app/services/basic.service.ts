@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {throwError} from 'rxjs';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BasicService {
-  protected baseUrl = 'http://localhost:9080';
+  protected baseUrl = environment.apiUrl;
   protected withResponse = {
     headers: new HttpHeaders({
       observe: 'response',

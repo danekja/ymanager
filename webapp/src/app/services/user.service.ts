@@ -17,7 +17,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   private userUrl = this.baseUrl + '/user/';
 
   getEmployeeProfile(id: number) { // najit jinej zpusob formatovani stringu, prasarna
-    return this.http.get<UserProfile>('http://localhost:9080/user/' + id + '/profile');
+    return this.http.get<UserProfile>(this.userUrl + id + '/profile');
   }
 
   getMonthlyCalendar(value: number) {
