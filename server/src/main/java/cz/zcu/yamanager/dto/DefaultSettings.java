@@ -3,6 +3,7 @@ package cz.zcu.yamanager.dto;
 import java.time.LocalDateTime;
 
 public class DefaultSettings {
+
     private VacationInfo sickDay;
     private LocalDateTime notification;
 

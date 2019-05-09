@@ -9,6 +9,7 @@ public class CalendarItem {
     private LocalTime from;
     private LocalTime to;
     private VacationType type;
+    private RequestStatus status;
 
     public LocalDate getDate() {
         return date;
@@ -40,5 +41,13 @@ public class CalendarItem {
 
     public void setType(VacationType type) {
         this.type = type;
+    }
+
+    public RequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RequestStatus status) {
+        this.status = status;
     }
 }

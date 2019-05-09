@@ -38,6 +38,7 @@ public class ApiController {
 
         CalendarItem calendarItem = new CalendarItem();
         calendarItem.setType(VacationType.SICKDAY);
+        calendarItem.setStatus(RequestStatus.ACCEPTED);
         calendarItem.setDate(LocalDate.now());
         calendarItem.setFrom(LocalTime.now());
         calendarItem.setTo(LocalTime.now());
@@ -75,7 +76,7 @@ public class ApiController {
     }
 
     @RequestMapping(value = "/users/requests", method=GET)
-    public UserRequest userRequests(@RequestParam("type") String type) {
+    public UserRequest userRequests(@RequestParam(value = "type", required = false) String type) {
         RequestType requestType = RequestType.valueOf(type);
 
         UserName userName = new UserName();
@@ -111,42 +112,42 @@ public class ApiController {
 
 
     @RequestMapping(value = "/user/calendar", method=GET)
-    public List<CalendarView> personalCalendarView(@RequestParam("viewType") String viewType, @RequestParam("value") String value) {
+    public List<CalendarItem> personalCalendarView(@RequestParam("viewType") String viewType, @RequestParam("value") String value) {
         CalendarViewType calendarViewType = CalendarViewType.valueOf(viewType);
         int numberOfView = Integer.valueOf(value);
 
-        List<CalendarView> calendarViews = new ArrayList<>();
+        List<CalendarItem> calendarItems = new ArrayList<>();
 
-        CalendarView view = new CalendarView();
+        CalendarItem view = new CalendarItem();
         view.setStatus(RequestStatus.PENDING);
         view.setType(VacationType.SICKDAY);
         view.setDate(LocalDate.now());
         view.setFrom(LocalTime.of(9, 30));
         view.setTo(LocalTime.of(18, 30));
 
-        calendarViews.add(view);
+        calendarItems.add(view);
 
-        return calendarViews;
+        return calendarItems;
     }
 
     @RequestMapping(value = "/user/{id}/calendar", method=GET)
-    public List<CalendarView> userCalendarView(@PathVariable("id") String id, @RequestParam("viewType") String viewType, @RequestParam("value") String value) {
+    public List<CalendarItem> userCalendarView(@PathVariable("id") String id, @RequestParam("viewType") String viewType, @RequestParam("value") String value) {
         CalendarViewType calendarViewType = CalendarViewType.valueOf(viewType);
         int numberOfView = Integer.valueOf(value);
         long userId = Long.valueOf(id);
 
-        List<CalendarView> calendarViews = new ArrayList<>();
+        List<CalendarItem> calendarItems = new ArrayList<>();
 
-        CalendarView view = new CalendarView();
+        CalendarItem view = new CalendarItem();
         view.setStatus(RequestStatus.PENDING);
         view.setType(VacationType.SICKDAY);
         view.setDate(LocalDate.now());
         view.setFrom(LocalTime.of(9, 30));
         view.setTo(LocalTime.of(18, 30));
 
-        calendarViews.add(view);
+        calendarItems.add(view);
 
-        return calendarViews;
+        return calendarItems;
     }
 
     @RequestMapping(value = "/settings/default", method=GET)
@@ -166,9 +167,9 @@ public class ApiController {
     // *********************** POST ****************************
 
     @RequestMapping(value = "/user/calendar", method=POST)
-    public ResponseEntity personalCalendarView(@RequestBody CalendarView calendarView) {
+    public ResponseEntity personalCalendarView(@RequestBody CalendarItem calendarItem) {
 
-        if (calendarView == null) {
+        if (calendarItem == null) {
             return ResponseEntity.badRequest().build();
         }
 
