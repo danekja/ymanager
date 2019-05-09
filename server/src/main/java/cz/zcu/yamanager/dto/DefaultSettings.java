@@ -15,6 +15,13 @@ public class DefaultSettings {
         this.sickDay = sickDay;
     }
 
+    public void setSickDay(short count, VacationUnit unit) {
+        VacationInfo info = new VacationInfo();
+        info.setValue(count);
+        info.setUnit(unit);
+        this.setSickDay(info);
+    }
+
     public LocalDateTime getNotification() {
         return notification;
     }

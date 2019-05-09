@@ -24,6 +24,13 @@ public class BasicProfileUser {
         this.name = name;
     }
 
+    public void setName(String firstName, String lastName) {
+        UserName name = new UserName();
+        name.setFirst(firstName);
+        name.setLast(lastName);
+        this.setName(name);
+    }
+
     public String getPhoto() {
         return photo;
     }

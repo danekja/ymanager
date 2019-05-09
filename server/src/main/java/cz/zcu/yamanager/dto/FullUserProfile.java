@@ -1,5 +1,6 @@
 package cz.zcu.yamanager.dto;
 
+
 import java.time.LocalDateTime;
 
 public class FullUserProfile {
@@ -33,6 +34,13 @@ public class FullUserProfile {
         this.name = name;
     }
 
+    public void setName(String firstName, String lastName) {
+        UserName name = new UserName();
+        name.setFirst(firstName);
+        name.setLast(lastName);
+        this.setName(name);
+    }
+
     public String getPhoto() {
         return photo;
     }
@@ -58,12 +66,26 @@ public class FullUserProfile {
         this.vacation = vacation;
     }
 
+    public void setVacation(float count, VacationUnit unit) {
+        VacationInfo info = new VacationInfo();
+        info.setValue(count);
+        info.setUnit(unit);
+        this.setVacation(info);
+    }
+
     public VacationInfo getSickDay() {
         return sickDay;
     }
 
     public void setSickDay(VacationInfo sickDay) {
         this.sickDay = sickDay;
+    }
+
+    public void setSickDay(short count, VacationUnit unit) {
+        VacationInfo info = new VacationInfo();
+        info.setValue(count);
+        info.setUnit(unit);
+        this.setSickDay(info);
     }
 
     public UserStatus getStatus() {

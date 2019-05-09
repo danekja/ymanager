@@ -29,6 +29,13 @@ public class AuthorizationRequest {
         this.user.name = name;
     }
 
+    public void setUserName(String firstName, String lastName) {
+        UserName name = new UserName();
+        name.setFirst(firstName);
+        name.setLast(lastName);
+        this.setUserName(name);
+    }
+
     public LocalDateTime getDate() {
         return date;
     }
