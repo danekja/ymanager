@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BasicService } from './basic.service';
-import {catchError, map} from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 
 import {UserBasicInformation} from '../models/user-basic-information.model';
 import { Requests } from '../models/requests.model';
@@ -12,8 +12,8 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService extends BasicService {
-  private usersUrl = this.baseUrl + '/users?status=';
-  private requestsUrl = this.baseUrl + '/users/requests?type=';
+  private _usersUrl = this.baseUrl + '/users?status=';
+  private _requestsUrl = this.baseUrl + '/users/requests?type=';
 
   getAuthorizedUsers() {
     return this.getUsersWithStatus(ProfileStatus.AUTHORIZED);
@@ -28,8 +28,8 @@ export class UsersService extends BasicService {
   }
 
   private getUsersWithStatus(status: string): Observable<UserBasicInformation[]> {
-    console.log(this.usersUrl + status);
-    return this.http.get<UserBasicInformation[]>(this.usersUrl + status)
+    console.log(this._usersUrl + status);
+    return this.http.get<UserBasicInformation[]>(this._usersUrl + status)
       .pipe(
         catchError(err => this.handleError(err))
       );
@@ -44,7 +44,7 @@ export class UsersService extends BasicService {
   }
 
   private getRequestsWithType(type: string) {
-    return this.http.get<Requests>(this.requestsUrl + type)
+    return this.http.get<Requests>(this._requestsUrl + type)
       .pipe(
         catchError(err => this.handleError(err))
       );

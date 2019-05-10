@@ -8,17 +8,17 @@ import { MenuItem } from './menu-item';
   styleUrls: ['./menu.component.sass']
 })
 export class MenuComponent implements OnInit {
-  menuItems: MenuItem[];
-  selectedMenuItem: MenuItem;
+  _menuItems: MenuItem[];
+  private _selectedMenuItem: MenuItem;
 
 
   getMenuItems(): void {
     this.menuService.getMenuItems()
-      .subscribe(menuItems => this.menuItems = menuItems);
+      .subscribe(menuItems => this._menuItems = menuItems);
   }
 
   onSelect(menuItem: MenuItem): void {
-    this.selectedMenuItem = menuItem;
+    this._selectedMenuItem = menuItem;
   }
 
   constructor(private menuService: MenuService) { }
