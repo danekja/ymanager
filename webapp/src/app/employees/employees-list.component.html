@@ -1,0 +1,33 @@
+<div class="employee-component">
+  <h3>Zaměstnanci
+    <span class="material-icons" style="font-size: medium; margin-right: 5px">add</span>
+    <span class="material-icons" style="font-size: medium">edit</span>
+  </h3>
+
+  <table class="table text-center table-hover">
+    <thead class="thead-light">
+    <tr>
+      <th scope="col" style="width: 15%">Celé jméno</th>
+      <th scope="col" style="width: 5.0%" *ngFor="let day of days">{{day}}</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of users">
+      <th scope="row">{{user.name}}</th>
+      <td *ngFor="let date of user.dates">
+
+        <div
+          [class.sickday]="date.type === 'SICKDAY'"
+          [class.vacation]="date.type === 'VACATION'"
+        >
+          {{date.date.getDate()}}
+        </div>
+      </td>
+      <td>
+        <span class="material-icons" style="font-size: small">edit</span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
