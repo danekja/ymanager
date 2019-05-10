@@ -1,0 +1,54 @@
+<h1 mat-dialog-title>
+  <img
+    [src]="data.imageLink"
+    alt="photo"
+    style="width: 35px; height: 35px; margin-right: 5px"
+  >
+  {{data.name}}
+</h1>
+<hr>
+<div mat-dialog-content>
+  <div>
+    <mat-radio-group
+      aria-labelledby="example-radio-group-label"
+      class="example-radio-group"
+      [(ngModel)]="userType"
+    >
+      <mat-radio-button
+        class="example-radio-button"
+        *ngFor="let season of _userTypes" [value]="season"
+      >
+        {{season}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div>
+    <mat-form-field class="example-margin">
+      <input
+        matInput
+        type="number"
+        placeholder="Sickdays"
+        min="1"
+        value="20"
+        [(ngModel)]="_sickDaysCount"
+      >
+    </mat-form-field>
+  </div>
+  <div>
+
+  </div>
+  <mat-form-field class="example-margin">
+    <input
+      matInput
+      type="number"
+      placeholder="Dovolená"
+      min="1"
+      value="20"
+      [(ngModel)]="_vacationDaysCount"
+    >
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button class="btn btn-primary" style="margin-right: 5px" (click)="onConfirmClick()">Potvrdit</button>
+  <button class="btn btn-danger" (click)="onCloseClick()">Zavřít</button>
+</div>

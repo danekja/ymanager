@@ -12,12 +12,12 @@ import {PostRequest, PostSettings} from '../models/post-requests.model';
   providedIn: 'root'
 })
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
-  private calendarUrl = this.baseUrl + '/user/calendar';
-  private postRequestUrl = this.baseUrl + '/user/requests?type=';
-  private userUrl = this.baseUrl + '/user/';
+  private _calendarUrl = this.baseUrl + '/user/calendar';
+  private _postRequestUrl = this.baseUrl + '/user/requests?type=';
+  private _userUrl = this.baseUrl + '/user/';
 
   getEmployeeProfile(id: number) { // najit jinej zpusob formatovani stringu, prasarna
-    return this.http.get<UserProfile>(this.userUrl + id + '/profile');
+    return this.http.get<UserProfile>(this._userUrl + id + '/profile');
   }
 
   getMonthlyCalendar(value: number) {
@@ -29,7 +29,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   private getCalendar(viewType: string, value: number) {
-    return this.http.get<Calendar[]>(this.calendarUrl + '?viewType=' + viewType + '&value=' + value)
+    return this.http.get<Calendar[]>(this._calendarUrl + '?viewType=' + viewType + '&value=' + value)
       .pipe(
         catchError(err => this.handleError(err))
       );
@@ -44,7 +44,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   private postCalendarWithOptions(calendar: Calendar[], options: any) {
-    return this.http.post<Calendar[]>(this.calendarUrl, calendar, options)
+    return this.http.post<Calendar[]>(this._calendarUrl, calendar, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
@@ -67,7 +67,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   private postRequestWithTypeAndOptions(request: PostRequest, type: string, options: any) {
-    return this.http.post<PostRequest>(this.postRequestUrl + type, request, options)
+    return this.http.post<PostRequest>(this._postRequestUrl + type, request, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
@@ -82,7 +82,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   private postUserSettingsWithOptions(id: number, settings: PostSettings, options: any) {
-    return this.http.post<PostSettings>(this.userUrl + id + '/settings', settings, options)
+    return this.http.post<PostSettings>(this._userUrl + id + '/settings', settings, options)
       .pipe(
         catchError(err => this.handleError(err))
       );

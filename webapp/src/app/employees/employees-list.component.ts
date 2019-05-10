@@ -2,17 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {UserBasicInformation} from '../models/user-basic-information.model';
 import {UsersService} from '../services/users.service';
 import {VacationType} from '../enums/common.enum';
-
-class DayInfo {
-  date: Date;
-  type: VacationType;
-}
-
-class User {
-  id: number;
-  name: string;
-  dates: DayInfo[];
-}
+import {MatDialog} from '@angular/material';
+import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
+import {DayInfo, User} from './user.model';
 
 const daysOfWeek: string[] = [
   'po',
@@ -30,30 +22,36 @@ const daysOfWeek: string[] = [
   styleUrls: ['./employees-list.component.sass']
 })
 export class EmployeesListComponent implements OnInit {
-  private users: User[];
-  private days: string[];
-  private dates: Date[];
-  private employeesBasicInformation: UserBasicInformation[] = [];
-  readonly todayDate: Date = new Date();
+  days: string[];
+  private _users: User[];
+  private _dates: Date[];
+  private _employeesBasicInformation: UserBasicInformation[] = [];
+  readonly _todayDate: Date = new Date();
 
-  constructor(private usersService: UsersService) {
+  constructor(private usersService: UsersService, public dialog: MatDialog) {
     this.generateDays();
     this.generateDates();
     this.editDates();
   }
 
+  openDialog(user: User): void {
+    this.dialog.open(EditEmployeeDialogComponent, {
+     data: user,
+   });
+  }
+
   private generateDays(): void {
     this.days = [];
 
-    for (let i = this.todayDate.getDay() - 8; i < this.todayDate.getDay() + 7; i++) {
+    for (let i = this._todayDate.getDay() - 8; i < this._todayDate.getDay() + 7; i++) {
       this.days.push(daysOfWeek[((i % 7) + 7) % 7]);
     }
   }
 
-  private generateDates() {
-    this.dates = [];
+  private generateDates(): void {
+    this._dates = [];
     for (let i = 0; i < 15; i++) {
-      this.dates.push(new Date());
+      this._dates.push(new Date());
     }
   }
 
@@ -62,28 +60,29 @@ export class EmployeesListComponent implements OnInit {
     let date: Date;
 
     for (let i = -7; i < 8; i++) {
-      date = this.dates[j++];
+      date = this._dates[j++];
       date.setDate(date.getDate() + i);
     }
   }
 
   private mapUsers(): void {
     let user: User;
-    this.users = [];
+    this._users = [];
 
-    for (const info of this.employeesBasicInformation) {
+    for (const info of this._employeesBasicInformation) {
       user = new User();
       user.name = info.name.first + ' ' + info.name.last;
       user.id = info.id;
+      user.imageLink = info.photo;
       user.dates = this.mapDays(info);
-      this.users.push(user);
+      this._users.push(user);
     }
   }
 
   private mapDays(user: UserBasicInformation): DayInfo[] {
     const dayInfo: DayInfo[] = [];
 
-    for (const date of this.dates) {
+    for (const date of this._dates) {
       const day: DayInfo = new DayInfo();
       day.type = VacationType.NONE;
 
@@ -106,10 +105,10 @@ export class EmployeesListComponent implements OnInit {
     this.usersService.getAuthorizedUsers()
       .subscribe((data: UserBasicInformation[]) => {
         for (const entry of data) {
-          this.employeesBasicInformation.push(entry);
+          this._employeesBasicInformation.push(entry);
         }
         this.mapUsers();
-        console.log(this.users);
+        console.log(this._users);
       });
   }
 
