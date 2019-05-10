@@ -9,9 +9,16 @@ export enum RequestStatus {
   REJECTED = 'REJECTED',
 }
 
+export enum ProfileStatus {
+  AUTHORIZED = 'AUTHORIZED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+}
+
 export enum VacationType {
   VACATION = 'VACATION',
   SICKDAY = 'SICKDAY',
+  NONE = 'NONE',
 }
 
 export enum TimeUnit {

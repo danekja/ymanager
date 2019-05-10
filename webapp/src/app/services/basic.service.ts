@@ -8,11 +8,6 @@ import {environment} from '../../environments/environment';
 })
 export class BasicService {
   protected baseUrl = environment.apiUrl;
-  protected withResponse = {
-    headers: new HttpHeaders({
-      observe: 'response',
-    })
-  };
 
   protected handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
