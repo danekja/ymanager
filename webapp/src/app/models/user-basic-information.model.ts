@@ -1,4 +1,5 @@
 import {VacationType} from '../enums/common.enum';
+import {Time} from '@angular/common';
 
 export interface UserBasicInformation {
   id: number;
@@ -10,8 +11,8 @@ export interface UserBasicInformation {
   calendar: [
     {
       date: Date,
-      from: Date,
-      to: Date,
+      from: Time,
+      to: Time,
       type: VacationType;
     }
   ];
