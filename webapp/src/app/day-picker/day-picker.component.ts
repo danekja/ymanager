@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { CalendarView } from 'angular-calendar';
+import {LocalizationService} from '../localization/localization.service';
 
 @Component({
   selector: 'app-day-picker',
@@ -9,8 +10,7 @@ import { CalendarView } from 'angular-calendar';
 })
 export class DayPickerComponent {
 
-  // TODO Move to language service
-  locale = 'cs';
+  private locale;
 
   // Type of calendar (constant)
   view: CalendarView = CalendarView.Month;
@@ -20,6 +20,14 @@ export class DayPickerComponent {
 
   // EventEmitter informing about changes of selected date
   @Output() selectedDate = new EventEmitter<Date>();
+
+  constructor(private localizationService: LocalizationService) {
+    this.locale = localizationService.defaultLanguage;
+    localizationService.currentLanguage
+      .subscribe((data) => {
+        this.locale = data;
+      });
+  }
 
   /**
    * Method that is invoked when user clicks on a day.

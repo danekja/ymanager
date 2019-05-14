@@ -1,19 +1,20 @@
 <div class="days-off-info-container">
 
-  <div class="component-header">
-    Zbývající volno
+  <div class="component-header" translate>
+<!--    TODO-->
+    <span translate>daysOffInfo.remaining</span>
   </div>
 
   <div class="days-off-type-container">
     <span class="days-off-remaining">{{extraVacationRemaining.value}}</span>
     <!--    TODO vypsat jednotky (.unit)-->
-    <span class="days-off-type">Extra dovolená</span>
+    <span class="days-off-type" translate>vacationType.vacation</span>
   </div>
 
   <div class="days-off-type-container">
     <span class="days-off-remaining">{{sickDaysRemaining.value}}</span>
     <!--    TODO vypsat jednotky (.unit)-->
-    <span class="days-off-type">Sickdays</span>
+    <span class="days-off-type" translate>vacationType.sickday</span>
   </div>
 
 </div>
