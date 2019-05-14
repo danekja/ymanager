@@ -3,13 +3,22 @@ package cz.zcu.yamanager.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CalendarItem {
+public class VacationDay {
 
+    private Long id;
     private LocalDate date;
     private LocalTime from;
     private LocalTime to;
     private VacationType type;
-    private RequestStatus status;
+    private Status status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public LocalDate getDate() {
         return date;
@@ -43,11 +52,11 @@ public class CalendarItem {
         this.type = type;
     }
 
-    public RequestStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(RequestStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

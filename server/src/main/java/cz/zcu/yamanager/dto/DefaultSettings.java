@@ -4,22 +4,15 @@ import java.time.LocalDateTime;
 
 public class DefaultSettings {
 
-    private VacationInfo sickDay;
+    private Integer sickdayCount;
     private LocalDateTime notification;
 
-    public VacationInfo getSickDay() {
-        return sickDay;
+    public Integer getSickdayCount() {
+        return sickdayCount;
     }
 
-    public void setSickDay(VacationInfo sickDay) {
-        this.sickDay = sickDay;
-    }
-
-    public void setSickDay(short count, VacationUnit unit) {
-        VacationInfo info = new VacationInfo();
-        info.setValue(count);
-        info.setUnit(unit);
-        this.setSickDay(info);
+    public void setSickdayCount(Integer sickdayCount) {
+        this.sickdayCount = sickdayCount;
     }
 
     public LocalDateTime getNotification() {
@@ -30,3 +23,4 @@ public class DefaultSettings {
         this.notification = notification;
     }
 }
+

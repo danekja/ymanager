@@ -1,209 +1,219 @@
 package cz.zcu.yamanager.ws.rest;
 
-import cz.zcu.yamanager.dto.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.zcu.yamanager.dto.BasicRequest;
+import cz.zcu.yamanager.dto.DefaultSettings;
+import cz.zcu.yamanager.dto.UserSettings;
+import cz.zcu.yamanager.dto.VacationDay;
+import cz.zcu.yamanager.manager.Manager;
+import cz.zcu.yamanager.util.localization.Language;
+import cz.zcu.yamanager.util.localization.Message;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
+import static cz.zcu.yamanager.dto.RequestType.getType;
+import static cz.zcu.yamanager.dto.Status.getStatus;
+import static cz.zcu.yamanager.util.localization.Language.getLanguage;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 public class ApiController {
 
-    // *********************** POST ****************************
+    private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+
+    private final Manager manager;
+
+    @Autowired
+    public ApiController(Manager manager) {
+        this.manager = manager;
+    }
+
+    private ResponseEntity sendError(Integer errorCode, String messageKey, Language language) {
+        String localizedMessage = Message.getString(language, messageKey);
+        String msg = String.format("{\"error\": %s,\"message\": \"%s\"}", errorCode, localizedMessage);
+        return ResponseEntity.status(errorCode).contentType(MediaType.APPLICATION_JSON).body(msg);
+    }
+
+    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler) {
+        try {
+            return ok(handler.get());
+        } catch (RESTFullException e) {
+            log.error(e.getMessage());
+            return sendError(400, e.getLocalizedMessage(), language);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return sendError(401, "rest.exception.generic", language);
+        }
+    }
+
+    private <T> ResponseEntity handle(Language language, RESTInvokeHandler<T> handler) {
+        try {
+            handler.invoke();
+            return ok(OK);
+        } catch (RESTFullException e) {
+            log.error(e.getMessage());
+            return sendError(400, e.getLocalizedMessage(), language);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return sendError(401, "rest.exception.generic", language);
+        }
+    }
+
+    private Long getUserId(String id) {
+        // TODO verify permission
+        if (id.toLowerCase().equals("me")) {
+            return 1L;
+        } else if (StringUtils.isNumeric(id)) {
+            return Long.valueOf(id);
+        } else {
+            throw new IllegalArgumentException("User not found.");
+        }
+    }
+
+    // *********************** GET ****************************
 
     @RequestMapping(value = "/users", method=GET)
-    public List<BasicProfileUser> users(@RequestParam("status") String status) {
-        UserStatus userStatus = UserStatus.valueOf(status);
+    public ResponseEntity users(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "status", required = false) String status)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.getUsers(getStatus(status))
+        );
+    }
 
-        List<BasicProfileUser> users = new ArrayList<>();
+    @RequestMapping(value = "/users/requests/vacation", method=GET)
+    public ResponseEntity usersRequestsVacation(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "status", required = false) String status)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.getVacationRequests(getStatus(status))
+        );
+    }
 
-        BasicProfileUser user = new BasicProfileUser();
-        user.setId(1);
-        UserName userName = new UserName();
-        userName.setFirst("Tomas");
-        userName.setLast("Novak");
-        user.setName(userName);
-        user.setPhoto("https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg");
-
-        List<CalendarItem> calendarItems = new ArrayList<>();
-
-        CalendarItem calendarItem = new CalendarItem();
-        calendarItem.setType(VacationType.SICKDAY);
-        calendarItem.setStatus(RequestStatus.ACCEPTED);
-        calendarItem.setDate(LocalDate.now());
-        calendarItem.setFrom(LocalTime.now());
-        calendarItem.setTo(LocalTime.now());
-        calendarItems.add(calendarItem);
-        user.setCalendar(calendarItems);
-
-        users.add(user);
-
-        return users;
+    @RequestMapping(value = "/users/requests/authorization", method=GET)
+    public ResponseEntity userRequestsAuthorization(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "status", required = false) String status)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.getAuthorizationRequests(getStatus(status))
+         );
     }
 
     @RequestMapping(value = "/user/{id}/profile", method=GET)
-    public FullUserProfile userProfile(@PathVariable("id") String id) {
-        long userId = Long.valueOf(id);
-        FullUserProfile user = new FullUserProfile();
-
-        user.setId(userId);
-        UserName userName = new UserName();
-        userName.setFirst("Tomas");
-        userName.setLast("Novak");
-        user.setName(userName);
-        user.setPhoto("https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg");
-        user.setRole(UserRole.EMPLOYEE);
-        user.setNotification(LocalDateTime.of(2010, 5, 4, 16, 10));
-        user.setStatus(UserStatus.AUTHORIZED);
-        VacationInfo sickday = new VacationInfo();
-        sickday.setValue(3);
-        sickday.setUnit(VacationUnit.DAY);
-        user.setSickDay(sickday);
-        VacationInfo vacation = new VacationInfo();
-        vacation.setValue(15);
-        vacation.setUnit(VacationUnit.HOUR);
-        user.setVacation(vacation);
-        return user;
-    }
-
-    @RequestMapping(value = "/users/requests", method=GET)
-    public UserRequest userRequests(@RequestParam(value = "type", required = false) String type) {
-        RequestType requestType = RequestType.valueOf(type);
-
-        UserName userName = new UserName();
-        userName.setFirst("Tomas");
-        userName.setLast("Novak");
-
-        UserRequest request = new UserRequest();
-
-        List<AuthorizationRequest> authorization = new ArrayList<>();
-        AuthorizationRequest authRequest = new AuthorizationRequest();
-        authRequest.setId(1);
-        authRequest.setUserName(userName);
-        authRequest.setDate(LocalDateTime.now());
-
-        authorization.add(authRequest);
-        request.setAuthorization(authorization);
-
-        List<VacationRequest> vacation = new ArrayList<>();
-        VacationRequest vacRequest = new VacationRequest();
-        vacRequest.setId(1);
-        vacRequest.setUserName(userName);
-        vacRequest.setStatus(RequestStatus.PENDING);
-        vacRequest.setType(VacationType.SICKDAY);
-        vacRequest.setDate(LocalDate.now());
-        vacRequest.setFrom(LocalTime.of(9, 30));
-        vacRequest.setTo(LocalTime.of(18, 30));
-
-        vacation.add(vacRequest);
-        request.setVacation(vacation);
-
-        return request;
-    }
-
-
-    @RequestMapping(value = "/user/calendar", method=GET)
-    public List<CalendarItem> personalCalendarView(@RequestParam("viewType") String viewType, @RequestParam("value") String value) {
-        CalendarViewType calendarViewType = CalendarViewType.valueOf(viewType);
-        int numberOfView = Integer.valueOf(value);
-
-        List<CalendarItem> calendarItems = new ArrayList<>();
-
-        CalendarItem view = new CalendarItem();
-        view.setStatus(RequestStatus.PENDING);
-        view.setType(VacationType.SICKDAY);
-        view.setDate(LocalDate.now());
-        view.setFrom(LocalTime.of(9, 30));
-        view.setTo(LocalTime.of(18, 30));
-
-        calendarItems.add(view);
-
-        return calendarItems;
+    public ResponseEntity userProfile(
+            @PathVariable("id") String id,
+            @RequestParam(value = "lang", required = false) String lang)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.getUserProfile(getUserId(id))
+        );
     }
 
     @RequestMapping(value = "/user/{id}/calendar", method=GET)
-    public List<CalendarItem> userCalendarView(@PathVariable("id") String id, @RequestParam("viewType") String viewType, @RequestParam("value") String value) {
-        CalendarViewType calendarViewType = CalendarViewType.valueOf(viewType);
-        int numberOfView = Integer.valueOf(value);
-        long userId = Long.valueOf(id);
-
-        List<CalendarItem> calendarItems = new ArrayList<>();
-
-        CalendarItem view = new CalendarItem();
-        view.setStatus(RequestStatus.PENDING);
-        view.setType(VacationType.SICKDAY);
-        view.setDate(LocalDate.now());
-        view.setFrom(LocalTime.of(9, 30));
-        view.setTo(LocalTime.of(18, 30));
-
-        calendarItems.add(view);
-
-        return calendarItems;
+    public ResponseEntity userCalendar(
+            @PathVariable("id") String id,
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "from", required = true) String from,
+            @RequestParam(value = "to", required = false) String to,
+            @RequestParam(value = "status", required = false) String status)
+    {
+        return handle(getLanguage(lang), () -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            LocalDate fromDate = LocalDate.parse(from, formatter);
+            LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
+            return manager.getUserCalendar(getUserId(id), fromDate, toDate, getStatus(status));
+        });
     }
 
-    @RequestMapping(value = "/settings/default", method=GET)
-    public DefaultSettings defaultSettings() {
-
-        DefaultSettings settings = new DefaultSettings();
-
-        VacationInfo sickDay = new VacationInfo();
-        sickDay.setUnit(VacationUnit.DAY);
-        sickDay.setValue(3);
-        settings.setSickDay(sickDay);
-        settings.setNotification(LocalDateTime.now());
-
-        return settings;
+    @RequestMapping(value = "/settings", method=GET)
+    public ResponseEntity settings(
+            @RequestParam(value = "lang", required = false) String lang)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.getDefaultSettings()
+        );
     }
 
     // *********************** POST ****************************
 
-    @RequestMapping(value = "/user/calendar", method=POST)
-    public ResponseEntity personalCalendarView(@RequestBody CalendarItem calendarItem) {
-
-        if (calendarItem == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ok(OK);
+    @RequestMapping(value = "/settings", method=POST)
+    public ResponseEntity settings(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestBody DefaultSettings settings)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.createSettings(settings)
+        );
     }
 
-    @RequestMapping(value = "/user/requests", method=POST)
-    public ResponseEntity userRequest(@RequestBody BasicRequest request) {
-
-        if (request == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ok(OK);
+    @RequestMapping(value = "/user/calendar/create", method=POST)
+    public ResponseEntity userCalendarCreate(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestBody VacationDay vacationDay)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.createVacation(getUserId("me"), vacationDay)
+        );
     }
 
-    @RequestMapping(value = "/user/{id}/settings", method=POST)
-    public ResponseEntity userSettings(@PathVariable("id") String id, @RequestBody UserSettings settings) {
+    // *********************** PUT ****************************
 
-        if (settings == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
-         return ok(OK);
+    @RequestMapping(value = "/user/settings", method=PUT)
+    public ResponseEntity userSettings(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestBody UserSettings settings)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.changeSettings(getUserId("me"), settings)
+        );
     }
 
+    @RequestMapping(value = "/user/calendar/edit", method=PUT)
+    public ResponseEntity userCalendarEdit(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestBody VacationDay vacationDay)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.changeVacation(getUserId("me"), vacationDay)
+        );
+    }
 
-    @RequestMapping(value = "/settings/default", method=POST)
-    public ResponseEntity defaultSettings(@RequestBody DefaultSettings settings) {
+    @RequestMapping(value = "/user/requests", method=PUT)
+    public ResponseEntity userRequests(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "type", required = true) String type,
+            @RequestBody BasicRequest request)
+    {
+        return handle(getLanguage(lang), () ->
+                manager.changeRequest(getType(type), request)
+        );
+    }
 
-        if (settings == null) {
-            return ResponseEntity.badRequest().build();
-        }
+    // *********************** DELETE ****************************
 
-        return ok(OK);
+    @RequestMapping(value = "/calendar/delete", method=DELETE)
+    public ResponseEntity calendarDelete(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestBody String id)
+    {
+        return handle(getLanguage(lang), () -> {
+            Long vacationId = ((Integer) new ObjectMapper().readValue(id, HashMap.class).get("id")).longValue();
+            manager.deleteVacation(getUserId("me"), vacationId);
+        });
     }
 }

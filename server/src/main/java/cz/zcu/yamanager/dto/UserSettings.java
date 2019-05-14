@@ -2,9 +2,34 @@ package cz.zcu.yamanager.dto;
 
 public class UserSettings {
 
+    private Long id;
+    private Float vacationCount;
+    private Integer sickdayCount;
     private UserRole role;
-    private VacationInfo vacation;
-    private VacationInfo sickDay;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Float getVacationCount() {
+        return vacationCount;
+    }
+
+    public void setVacationCount(Float vacationCount) {
+        this.vacationCount = vacationCount;
+    }
+
+    public Integer getSickdayCount() {
+        return sickdayCount;
+    }
+
+    public void setSickdayCount(Integer sickdayCount) {
+        this.sickdayCount = sickdayCount;
+    }
 
     public UserRole getRole() {
         return role;
@@ -12,21 +37,5 @@ public class UserSettings {
 
     public void setRole(UserRole role) {
         this.role = role;
-    }
-
-    public VacationInfo getVacation() {
-        return vacation;
-    }
-
-    public void setVacation(VacationInfo vacation) {
-        this.vacation = vacation;
-    }
-
-    public VacationInfo getSickDay() {
-        return sickDay;
-    }
-
-    public void setSickDay(VacationInfo sickDay) {
-        this.sickDay = sickDay;
     }
 }

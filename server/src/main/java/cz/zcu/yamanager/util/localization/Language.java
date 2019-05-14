@@ -17,7 +17,15 @@ public enum  Language {
         return locale;
     }
 
-    public static Language get(String lang) {
-        return valueOf(lang.toUpperCase());
+    public static Language getLanguageOrDefault(String lang, Language defaultLang) {
+        try {
+            return lang != null ? valueOf(lang.toUpperCase()) : defaultLang;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return defaultLang;
+        }
+    }
+
+    public static Language getLanguage(String lang) {
+        return getLanguageOrDefault(lang, EN);
     }
 }

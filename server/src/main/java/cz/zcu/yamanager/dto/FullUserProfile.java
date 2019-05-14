@@ -5,40 +5,38 @@ import java.time.LocalDateTime;
 
 public class FullUserProfile {
 
-    class Settings {
-        public LocalDateTime notification;
-    }
-
-    private long id;
-    private UserName name;
+    private Long id;
+    private String firstName;
+    private String lastName;
     private String photo;
-    private Settings settings;
-    private VacationInfo vacation;
-    private VacationInfo sickDay;
-    private UserStatus status;
+    private Float vacationCount;
+    private Integer sickdayCount;
+    private Status status;
     private UserRole role;
+    private LocalDateTime notification;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public UserName getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(UserName name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setName(String firstName, String lastName) {
-        UserName name = new UserName();
-        name.setFirst(firstName);
-        name.setLast(lastName);
-        this.setName(name);
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPhoto() {
@@ -49,50 +47,27 @@ public class FullUserProfile {
         this.photo = photo;
     }
 
-    public Settings getSettings() {
-        return settings;
+    public Float getVacationCount() {
+        return vacationCount;
     }
 
-    public void setNotification(LocalDateTime notification) {
-        this.settings = new Settings();
-        this.settings.notification = notification;
+    public void setVacationCount(Float vacationCount) {
+        this.vacationCount = vacationCount;
     }
 
-    public VacationInfo getVacation() {
-        return vacation;
+    public Integer getSickdayCount() {
+        return sickdayCount;
     }
 
-    public void setVacation(VacationInfo vacation) {
-        this.vacation = vacation;
+    public void setSickdayCount(Integer sickdayCount) {
+        this.sickdayCount = sickdayCount;
     }
 
-    public void setVacation(float count, VacationUnit unit) {
-        VacationInfo info = new VacationInfo();
-        info.setValue(count);
-        info.setUnit(unit);
-        this.setVacation(info);
-    }
-
-    public VacationInfo getSickDay() {
-        return sickDay;
-    }
-
-    public void setSickDay(VacationInfo sickDay) {
-        this.sickDay = sickDay;
-    }
-
-    public void setSickDay(short count, VacationUnit unit) {
-        VacationInfo info = new VacationInfo();
-        info.setValue(count);
-        info.setUnit(unit);
-        this.setSickDay(info);
-    }
-
-    public UserStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -102,5 +77,13 @@ public class FullUserProfile {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public LocalDateTime getNotification() {
+        return notification;
+    }
+
+    public void setNotification(LocalDateTime notification) {
+        this.notification = notification;
     }
 }

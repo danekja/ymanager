@@ -4,43 +4,49 @@ import java.time.LocalDateTime;
 
 public class AuthorizationRequest {
 
-    class User {
-        public UserName name;
-    }
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private Status status;
+    private LocalDateTime timestamp;
 
-    private long id;
-    private User user;
-    private LocalDateTime date;
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUserName(UserName name) {
-        this.user = new User();
-        this.user.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setUserName(String firstName, String lastName) {
-        UserName name = new UserName();
-        name.setFirst(firstName);
-        name.setLast(lastName);
-        this.setUserName(name);
+    public String getLastName() {
+        return lastName;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

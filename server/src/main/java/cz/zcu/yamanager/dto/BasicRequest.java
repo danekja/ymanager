@@ -2,31 +2,22 @@ package cz.zcu.yamanager.dto;
 
 public class BasicRequest {
 
-    private long id;
-    private RequestType type;
-    private RequestStatus status;
+    private Long id;
+    private Status status;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public RequestType getType() {
-        return type;
-    }
-
-    public void setType(RequestType type) {
-        this.type = type;
-    }
-
-    public RequestStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(RequestStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

@@ -1,15 +1,10 @@
 package cz.zcu.yamanager.repository;
 
-import cz.zcu.yamanager.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.sql.ResultSet;
-import java.time.LocalDate;
-import java.util.List;
 
 @Repository
 public class TestRepository {
@@ -23,6 +18,7 @@ public class TestRepository {
         this.jdbc = jdbc;
     }
 
+    /*
     public List<AuthorizationRequest> getAllUserRequests() {
         return jdbc.query("SELECT id, first_name, last_name FROM end_user", (ResultSet rs, int rowNum) -> {
             AuthorizationRequest request = new AuthorizationRequest();
@@ -55,10 +51,10 @@ public class TestRepository {
         }
     }
 
-    public List<CalendarItem> getCalendarItems(long userId, LocalDate from, LocalDate to) {
+    public List<VacationDay> getCalendarItems(long userId, LocalDate from, LocalDate to) {
         return jdbc.query("SELECT vacation_date, time_from, time_to, type_id, status_id FROM vacation_day WHERE user_id=? AND vacation_date >= ? AND vacation_date <= ?",
                 new Object[]{userId, from, to}, (ResultSet rs, int rowNum) -> {
-            CalendarItem item = new CalendarItem();
+            VacationDay item = new VacationDay();
             item.setDate(rs.getDate("day.vacation_date").toLocalDate());
             item.setFrom(rs.getTime("day.time_from").toLocalTime());
             item.setTo(rs.getTime("day.time_to").toLocalTime());
@@ -68,15 +64,15 @@ public class TestRepository {
         });
     }
 
-    /*public void insertCalendarItem(CalendarItem item) {
+    public void insertCalendarItem(VacationDay item) {
         jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES (?,?,?,?,?,?)",
                 item.getDate(), item.getFrom(), item.getTo(), item.getUserId(), item.getStatus().ordinal(), item.getType().ordinal());
     }
 
-    public void updateCalendarItem(CalendarItem item) {
+    public void updateCalendarItem(VacationDay item) {
         jdbc.update("UPDATE vacation_day SET vacation_date=?, time_from=?, time_to=?, user_id=?, status_id=?, type_id=? WHERE id=?",
                 item.getDate(), item.getFrom(), item.getTo(), item.getUserId(), item.getStatus().ordinal(), item.getType().ordinal(), item.getId());
-    }*/
+    }
 
     public DefaultSettings getLastSettings() {
         return jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", (ResultSet rs, int rowNum) -> {
@@ -112,7 +108,7 @@ public class TestRepository {
             user.setNotification(rs.getTimestamp("alert").toLocalDateTime());
             user.setPhoto(rs.getString("photo"));
             user.setRole(UserRole.values()[rs.getByte("role_id")]);
-            user.setStatus(UserStatus.values()[rs.getByte("status_id")]);
+            user.setStatus(Status.values()[rs.getByte("status_id")]);
             return user;
         });
     }
@@ -128,8 +124,9 @@ public class TestRepository {
             user.setNotification(rs.getTimestamp("alert").toLocalDateTime());
             user.setPhoto(rs.getString("photo"));
             user.setRole(UserRole.values()[rs.getByte("role_id")]);
-            user.setStatus(UserStatus.values()[rs.getByte("status_id")]);
+            user.setStatus(Status.values()[rs.getByte("status_id")]);
             return user;
         });
     }
+    */
 }

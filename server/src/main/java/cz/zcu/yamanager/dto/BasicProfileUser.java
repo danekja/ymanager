@@ -3,32 +3,34 @@ package cz.zcu.yamanager.dto;
 import java.util.List;
 
 public class BasicProfileUser {
-    private long id;
-    private UserName name;
+    private Long id;
+    private String firstName;
+    private String lastName;
     private String photo;
-    private List<CalendarItem> calendar;
+    private List<VacationDay> calendar;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public UserName getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(UserName name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setName(String firstName, String lastName) {
-        UserName name = new UserName();
-        name.setFirst(firstName);
-        name.setLast(lastName);
-        this.setName(name);
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPhoto() {
@@ -39,11 +41,11 @@ public class BasicProfileUser {
         this.photo = photo;
     }
 
-    public List<CalendarItem> getCalendar() {
+    public List<VacationDay> getCalendar() {
         return calendar;
     }
 
-    public void setCalendar(List<CalendarItem> calendar) {
+    public void setCalendar(List<VacationDay> calendar) {
         this.calendar = calendar;
     }
 }
