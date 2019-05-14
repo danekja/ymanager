@@ -25,11 +25,13 @@
     </div>
   </div>
 
+  <!-- Refresh attribute for localization purposes (refresh component after change of language -->
   <mwl-calendar-month-view
     [viewDate]="viewDate"
     (dayClicked)="dayClicked($event.day)"
     weekStartsOn="1"
     [locale]="locale"
+    [refresh]="localizationService.currentLanguage"
   >
   </mwl-calendar-month-view>
 </div>

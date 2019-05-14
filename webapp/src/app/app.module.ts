@@ -7,9 +7,11 @@ import { MenuComponent } from './menu/menu.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { HeaderComponent } from './header/header.component';
 import { MatDialogModule } from '@angular/material';
-import {ProfileSettingsModule} from './profile-settings/profile-settings.module';
-import {HttpClientModule} from '@angular/common/http';
-import {EmployeesModule} from './employees/employees.module';
+import { ProfileSettingsModule } from './profile-settings/profile-settings.module';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { EmployeesModule } from './employees/employees.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,13 @@ import {EmployeesModule} from './employees/employees.module';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
     DashboardModule,
     MatDialogModule,
     ProfileSettingsModule,
@@ -30,3 +39,7 @@ import {EmployeesModule} from './employees/employees.module';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}

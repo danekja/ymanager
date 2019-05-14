@@ -5,7 +5,8 @@ import {UsersService} from '../../services/users.service';
 import {Requests} from '../../models/requests.model';
 import {UserProfile} from '../../models/user-profile.model';
 import {UserService} from '../../services/user.service';
-import {ProfileService} from "../../services/profile.service";
+import {ProfileService} from '../../services/profile.service';
+import {TimeUnit} from '../../enums/common.enum';
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -27,14 +28,35 @@ export class EmployerDashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.profileService.getProfile()
-      .subscribe((data: UserProfile) => this.profile = data);
+    // this.profileService.getProfile()
+    //   .subscribe((data: UserProfile) => this.profile = data);
+    //
+    // this.usersService.getAuthorizationRequests()
+    //   .subscribe((data: Requests) => this.authorizationRequests = data);
+    //
+    // this.usersService.getVacationRequests()
+    //   .subscribe((data: Requests) => this.daysOffRequests = data);
 
-    this.usersService.getAuthorizationRequests()
-      .subscribe((data: Requests) => this.authorizationRequests = data);
-
-    this.usersService.getVacationRequests()
-      .subscribe((data: Requests) => this.daysOffRequests = data);
+    // Tmp mock
+    this.profile = {
+      id: 1,
+      name: {
+        first: 'Jon',
+        last: 'Doe',
+      },
+      photo: 'http://mosaddek.com/theme/diverse/assets/img/user1.png',
+      settings: {
+        notification: new Date(2019, 3, 25, 18, 0)
+      },
+      vacation: {
+        value: 5,
+        unit: TimeUnit.DAY,
+      },
+      sickDay: {
+        value: 10,
+        unit: TimeUnit.DAY
+      }
+    };
   }
 
   private userApproved(requestId: number, approved: boolean) {

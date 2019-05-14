@@ -12,8 +12,8 @@ export class ProfileService {
   constructor(
     private userService: UserService
   ) {
-    userService.getEmployeeProfile(1)
-      .subscribe((data: UserProfile) => this.profile = data);
+    // userService.getEmployeeProfile(1)
+    //   .subscribe((data: UserProfile) => this.profile = data);
   }
 
   getProfile(): Observable<UserProfile> {

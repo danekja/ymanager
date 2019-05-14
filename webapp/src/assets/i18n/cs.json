@@ -1,0 +1,9 @@
+{
+  "daysOffInfo": {
+    "remaining": "Zbývající dovolená"
+  },
+  "vacationType": {
+    "vacation": "Extra dovolená",
+    "sickday": "Sickday"
+  }
+}

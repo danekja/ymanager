@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
 import { ProfileService } from '../services/profile.service';
 import { UserProfile } from '../models/user-profile.model';
+import {LocalizationService} from "../localization/localization.service";
 
 @Component({
   selector: 'app-header',
@@ -16,10 +17,11 @@ export class HeaderComponent {
 
   constructor(
     private dialog: MatDialog,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private localizationService: LocalizationService
     ) {
-    profileService.getProfile()
-      .subscribe((data: UserProfile) => this.notificationSettings = new Date(data.settings.notification));
+    // profileService.getProfile()
+    //   .subscribe((data: UserProfile) => this.notificationSettings = new Date(data.settings.notification));
   }
 
   onProfileClick(): void {

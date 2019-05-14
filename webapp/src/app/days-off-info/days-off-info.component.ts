@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import {TimeUnit} from "../enums/common.enum";
+import {TimeUnit} from '../enums/common.enum';
+import {LocalizationService} from '../localization/localization.service';
 
 @Component({
   selector: 'app-days-off-info',
@@ -18,5 +19,5 @@ export class DaysOffInfoComponent {
     unit: TimeUnit;
   };
 
-  constructor() { }
+  constructor(private localizationService: LocalizationService) { }
 }

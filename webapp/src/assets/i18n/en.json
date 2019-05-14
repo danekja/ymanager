@@ -1,0 +1,9 @@
+{
+  "daysOffInfo": {
+    "remaining": "Vacation remaining"
+  },
+  "vacationType": {
+    "vacation": "Extra vacation",
+    "sickday": "Sickday"
+  }
+}
