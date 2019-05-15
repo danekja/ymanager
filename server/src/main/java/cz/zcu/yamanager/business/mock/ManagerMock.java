@@ -1,7 +1,7 @@
-package cz.zcu.yamanager.manager.mock;
+package cz.zcu.yamanager.business.mock;
 
 import cz.zcu.yamanager.dto.*;
-import cz.zcu.yamanager.manager.Manager;
+import cz.zcu.yamanager.business.Manager;
 import cz.zcu.yamanager.ws.rest.RESTFullException;
 import org.springframework.stereotype.Component;
 

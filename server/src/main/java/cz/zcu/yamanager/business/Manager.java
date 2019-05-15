@@ -1,4 +1,4 @@
-package cz.zcu.yamanager.manager;
+package cz.zcu.yamanager.business;
 
 import cz.zcu.yamanager.dto.*;
 import cz.zcu.yamanager.ws.rest.RESTFullException;

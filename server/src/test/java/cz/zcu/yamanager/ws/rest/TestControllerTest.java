@@ -17,16 +17,11 @@ class TestControllerTest {
                 .addLanguage(Language.EN)
                 .addLanguage(Language.CZ);
 
-        testController = new TestController(null);
-    }
-
-    @Test
-    void hello_inCzech_true() {
-        assertEquals("český jazyk", testController.hello("cz"));
+        testController = new TestController();
     }
 
     @Test
     void hello_inEnglish_true() {
-        assertEquals("english language", testController.hello("en"));
+        assertEquals("english language", testController.hello());
     }
 }

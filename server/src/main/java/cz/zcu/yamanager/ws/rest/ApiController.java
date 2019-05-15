@@ -1,24 +1,30 @@
 package cz.zcu.yamanager.ws.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.zcu.yamanager.business.FileService;
+import cz.zcu.yamanager.business.Manager;
 import cz.zcu.yamanager.dto.BasicRequest;
 import cz.zcu.yamanager.dto.DefaultSettings;
 import cz.zcu.yamanager.dto.UserSettings;
 import cz.zcu.yamanager.dto.VacationDay;
-import cz.zcu.yamanager.manager.Manager;
 import cz.zcu.yamanager.util.localization.Language;
 import cz.zcu.yamanager.util.localization.Message;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import static cz.zcu.yamanager.dto.RequestType.getType;
 import static cz.zcu.yamanager.dto.Status.getStatus;
@@ -34,20 +40,26 @@ public class ApiController {
 
     private final Manager manager;
 
+    private final FileService fileService;
+
     @Autowired
-    public ApiController(Manager manager) {
+    public ApiController(Manager manager, FileService fileService) {
         this.manager = manager;
+        this.fileService = fileService;
     }
 
     private ResponseEntity sendError(Integer errorCode, String messageKey, Language language) {
         String localizedMessage = Message.getString(language, messageKey);
-        String msg = String.format("{\"error\": %s,\"message\": \"%s\"}", errorCode, localizedMessage);
-        return ResponseEntity.status(errorCode).contentType(MediaType.APPLICATION_JSON).body(msg);
+        Map<String, String> result = new HashMap<>();
+        result.put("error", errorCode.toString());
+        result.put("message", localizedMessage);
+        return ResponseEntity.status(errorCode).contentType(MediaType.APPLICATION_JSON).body(result);
     }
 
-    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler) {
+    private <T> ResponseEntity handle(Language language, RESTInvokeHandler<T> handler) {
         try {
-            return ok(handler.get());
+            handler.invoke();
+            return ok(OK);
         } catch (RESTFullException e) {
             log.error(e.getMessage());
             return sendError(400, e.getLocalizedMessage(), language);
@@ -57,10 +69,28 @@ public class ApiController {
         }
     }
 
-    private <T> ResponseEntity handle(Language language, RESTInvokeHandler<T> handler) {
+    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler) {
+        return handleWithHeader(language, handler, null, null);
+    }
+
+    private <T> ResponseEntity handleWithHeader(Language language, RESTGetHandler<T> handler, Function<T, String[]> header, Function<T, Object> bodyValue) {
         try {
-            handler.invoke();
-            return ok(OK);
+            T result = handler.get();
+
+            ResponseEntity.BodyBuilder response = ResponseEntity.ok();
+
+            if (header != null) {
+                String[] headers = header.apply(result);
+
+                if (headers.length > 1) {
+                    response.header(headers[0], Arrays.copyOfRange(headers, 1, headers.length - 1));
+                } else if (headers.length == 1) {
+                    response.header(headers[0]);
+                }
+            }
+
+            return response.body(bodyValue != null ? bodyValue.apply(result) : result);
+
         } catch (RESTFullException e) {
             log.error(e.getMessage());
             return sendError(400, e.getLocalizedMessage(), language);
@@ -215,5 +245,28 @@ public class ApiController {
             Long vacationId = ((Integer) new ObjectMapper().readValue(id, HashMap.class).get("id")).longValue();
             manager.deleteVacation(getUserId("me"), vacationId);
         });
+    }
+
+    // *********************** FILE ****************************
+
+    @RequestMapping(value = "/import/xls", method=POST)
+    public ResponseEntity importXLSFile(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam("file") MultipartFile file)
+    {
+        return handle(getLanguage(lang), () ->
+            fileService.parseXLSFile(file.getOriginalFilename(), file.getBytes())
+        );
+    }
+
+    @RequestMapping(value = "/export/pdf", method=GET)
+    public ResponseEntity exportPDFFile(
+            @RequestParam(value = "lang", required = false) String lang)
+    {
+        return handleWithHeader(getLanguage(lang),
+                () -> fileService.createPDFFile(),
+                (res) -> new String[]{HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getName() + "\""},
+                (res) -> res.getBytes()
+        );
     }
 }
