@@ -1,6 +1,5 @@
 package cz.zcu.yamanager.business.mock;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import cz.zcu.yamanager.business.FileExportResult;
 import cz.zcu.yamanager.business.FileImportResult;
 import cz.zcu.yamanager.business.FileService;
@@ -17,6 +16,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -77,12 +77,12 @@ public class FileServiceMock implements FileService {
 
             cos.close();
 
-            ByteOutputStream output = new ByteOutputStream();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
 
             document.save(output);
             document.close();
 
-            return new FileExportResult("export.pdf", output.getBytes());
+            return new FileExportResult("export.pdf", output.toByteArray());
 
         } catch (IOException ioex) {
             throw new RESTFullException("", "");

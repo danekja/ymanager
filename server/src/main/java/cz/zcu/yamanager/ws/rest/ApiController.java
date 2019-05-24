@@ -70,10 +70,10 @@ public class ApiController {
     }
 
     private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler) {
-        return handleWithHeader(language, handler, null, null);
+        return handle(language, handler, null, null);
     }
 
-    private <T> ResponseEntity handleWithHeader(Language language, RESTGetHandler<T> handler, Function<T, String[]> header, Function<T, Object> bodyValue) {
+    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler, Function<T, String[]> header, Function<T, Object> bodyValue) {
         try {
             T result = handler.get();
 
@@ -263,7 +263,7 @@ public class ApiController {
     public ResponseEntity exportPDFFile(
             @RequestParam(value = "lang", required = false) String lang)
     {
-        return handleWithHeader(getLanguage(lang),
+        return handle(getLanguage(lang),
                 () -> fileService.createPDFFile(),
                 (res) -> new String[]{HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getName() + "\""},
                 (res) -> res.getBytes()
