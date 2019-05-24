@@ -32,3 +32,8 @@ export enum UserType {
   EMPLOYEE = 'EMPLOYEE',
   EMPLOYER = 'EMPLOYER',
 }
+
+export enum Languages {
+  ENGLISH = 'EN',
+  CZECH = 'CZ',
+}

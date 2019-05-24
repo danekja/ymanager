@@ -5,6 +5,7 @@ import {VacationType} from '../enums/common.enum';
 import {MatDialog} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {DayInfo, User} from './user.model';
+import {AuthorizationRequest} from '../models/requests.model';
 
 const daysOfWeek: string[] = [
   'po',
@@ -71,7 +72,7 @@ export class EmployeesListComponent implements OnInit {
 
     for (const info of this._employeesBasicInformation) {
       user = new User();
-      user.name = info.name.first + ' ' + info.name.last;
+      user.name = info.firstName + ' ' + info.lastName;
       user.id = info.id;
       user.imageLink = info.photo;
       user.dates = this.mapDays(info);
@@ -109,6 +110,15 @@ export class EmployeesListComponent implements OnInit {
         }
         this.mapUsers();
         console.log(this._users);
+      });
+
+
+    let authorization: AuthorizationRequest[];
+    this.usersService.getAuthorizationRequests()
+      .subscribe((data: AuthorizationRequest[]) => {
+        authorization = { ...data};
+
+        console.log(authorization);
       });
   }
 
