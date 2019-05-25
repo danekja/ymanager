@@ -1,6 +1,5 @@
 package cz.zcu.yamanager.ws.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.zcu.yamanager.business.FileService;
 import cz.zcu.yamanager.business.Manager;
 import cz.zcu.yamanager.dto.BasicRequest;
@@ -236,15 +235,14 @@ public class ApiController {
 
     // *********************** DELETE ****************************
 
-    @RequestMapping(value = "/calendar/delete", method=DELETE)
+    @RequestMapping(value = "/calendar/{id}/delete", method=DELETE)
     public ResponseEntity calendarDelete(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody String id)
+            @PathVariable("id") String id,
+            @RequestParam(value = "lang", required = false) String lang)
     {
-        return handle(getLanguage(lang), () -> {
-            Long vacationId = ((Integer) new ObjectMapper().readValue(id, HashMap.class).get("id")).longValue();
-            manager.deleteVacation(getUserId("me"), vacationId);
-        });
+        return handle(getLanguage(lang), () ->
+            manager.deleteVacation(getUserId("me"), StringUtils.isNumeric(id) ? Long.parseLong(id) : -1)
+        );
     }
 
     // *********************** FILE ****************************
