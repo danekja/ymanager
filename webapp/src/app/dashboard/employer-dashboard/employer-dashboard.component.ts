@@ -76,4 +76,9 @@ export class EmployerDashboardComponent implements OnInit {
       }
     });
   }
+
+  onMonthSelect(month: number) {
+    // TODO API CALL
+    console.log(month);
+  }
 }
