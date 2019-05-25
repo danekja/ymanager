@@ -5,6 +5,7 @@ import {VacationType} from '../enums/common.enum';
 import {MatDialog} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {DayInfo, User} from './user.model';
+import {AuthorizationRequest} from '../models/requests.model';
 
 const daysOfWeek: string[] = [
   'po',
@@ -65,13 +66,17 @@ export class EmployeesListComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Map from UserBasicInformation model to inner class model User
+   */
   private mapUsers(): void {
     let user: User;
     this._users = [];
 
     for (const info of this._employeesBasicInformation) {
       user = new User();
-      user.name = info.name.first + ' ' + info.name.last;
+      user.name = info.firstName + ' ' + info.lastName;
       user.id = info.id;
       user.imageLink = info.photo;
       user.dates = this.mapDays(info);
@@ -79,6 +84,11 @@ export class EmployeesListComponent implements OnInit {
     }
   }
 
+  /**
+   * Creates array of days with information about the user's
+   * vacation and sick days in range 7 days before and 7 days after
+   * @param user one user row with
+   */
   private mapDays(user: UserBasicInformation): DayInfo[] {
     const dayInfo: DayInfo[] = [];
 
@@ -86,11 +96,9 @@ export class EmployeesListComponent implements OnInit {
       const day: DayInfo = new DayInfo();
       day.type = VacationType.NONE;
 
-      for (const vacationDay of user.calendar) {
-        const vacationDate: Date = new Date(vacationDay.date);
-
-        if (vacationDate.getDate() === date.getDate()) {
-          day.type = vacationDay.type;
+      for (const calendarDay of user.calendar) {
+        if (new Date(calendarDay.date).getDate() === date.getDate()) {
+          day.type = calendarDay.type;
         }
       }
 
@@ -104,12 +112,24 @@ export class EmployeesListComponent implements OnInit {
   ngOnInit() {
     this.usersService.getAuthorizedUsers()
       .subscribe((data: UserBasicInformation[]) => {
-        for (const entry of data) {
-          this._employeesBasicInformation.push(entry);
-        }
+        this._employeesBasicInformation = data;
         this.mapUsers();
-        console.log(this._users);
       });
+
+    // const calendar: PostCalendar = { date: '1999/10/10', from: '15:00', to: '17:00', type: VacationType.VACATION };
+    // this.userService.postCalendar(calendar)
+    //   .subscribe((data: any) => console.log(data));
+
+    // const settings: PostUserSettings = {
+    //   id: 1,
+    //   role: UserType.EMPLOYEE,
+    //   sickdayCount: 1,
+    //   vacationCount: 1,
+    // };
+    //
+    // this.userService.putUserSettings(settings)
+    //   .subscribe((data: any) => console.log(data));
+
   }
 
 }

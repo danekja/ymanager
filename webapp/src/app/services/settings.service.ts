@@ -1,39 +1,68 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
 import { BasicService } from './basic.service';
 import { Settings } from '../models/settings.model';
+import {Languages} from '../enums/common.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService extends BasicService {
-  defaultSettingsUrl = this.baseUrl + '/settings/default';
+  defaultSettingsUrl = this.baseUrl + '/api/settings';
 
+  constructor(protected http: HttpClient) {
+    super(http);
+  }
+
+  /**
+   * Returns default application settings
+   * with sickday count and notification
+   */
   getDefaultSettings() {
-    return this.http.get<Settings>(this.defaultSettingsUrl)
+    return this.makeGetSettingsApiCall(null);
+  }
+
+  /**
+   * Returns default application settings
+   * with sickday count and notification
+   * @param language filter by language
+   */
+  getDefaultSettingsWithLanguage(language: Languages) {
+    return this.makeGetSettingsApiCall(language);
+  }
+
+  /**
+   * Získání aktuálně použitého výchozího nastavení v aplikaci
+   * GET /setttings?[lang=<CZ,EN>]
+   * @param language filter with language
+   */
+  private makeGetSettingsApiCall(language: string) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
+
+    return this.http.get<Settings>(this.defaultSettingsUrl, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
   }
 
-  postDefaultSettingsWithResponse(settings: Settings) {
-    return this.postDefaultSettingsWithOptions(settings, {observe: 'response'});
-  }
-
   postDefaultSettings(settings: Settings) {
-    return this.postDefaultSettingsWithOptions(settings, {});
+    return this.postDefaultSettingsWithOptions(settings, null);
   }
 
-  private postDefaultSettingsWithOptions(settings: Settings, options: any) {
+  postDefaultSettingsWithLanguage(settings: Settings, language: Languages) {
+    return this.postDefaultSettingsWithOptions(settings, language);
+  }
+
+  private postDefaultSettingsWithOptions(settings: Settings, language: Languages) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
+
     return this.http.post<Settings>(this.defaultSettingsUrl, settings, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
-  }
-
-  constructor(protected http: HttpClient) {
-    super(http);
   }
 }

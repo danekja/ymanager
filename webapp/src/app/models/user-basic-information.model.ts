@@ -3,13 +3,12 @@ import {Time} from '@angular/common';
 
 export interface UserBasicInformation {
   id: number;
-  name: {
-    first: string;
-    last: string;
-  };
+  firstName: string;
+  lastName: string;
   photo: string;
   calendar: [
     {
+      id: number,
       date: Date,
       from: Time,
       to: Time,
