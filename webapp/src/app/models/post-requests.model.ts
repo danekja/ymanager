@@ -1,4 +1,4 @@
-import {RequestStatus, TimeUnit, UserType} from '../enums/common.enum';
+import {RequestStatus} from '../enums/common.enum';
 
 export interface UserRequest {
   id: number;

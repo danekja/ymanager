@@ -5,7 +5,7 @@ import {UserProfile} from '../models/user-profile.model';
 import {Calendar, CalendarEdit, PostCalendar} from '../models/calendar.model';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
-import {Languages, RequestStatus} from '../enums/common.enum';
+import {Languages, RequestStatus, RequestTypes} from '../enums/common.enum';
 import {UserRequest} from '../models/post-requests.model';
 import {PostUserSettings} from '../models/settings.model';
 
@@ -116,8 +116,8 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * Accept or deny user request
    * @param request request to accept or deny
    */
-  putUserRequest(request: UserRequest) {
-    return this.makePutUserRequestApiCall(request, null);
+  putUserRequest(request: UserRequest, type: RequestTypes) {
+    return this.makePutUserRequestApiCall(request, type, null);
   }
 
   /**
@@ -125,8 +125,8 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param request request to accept or deny
    * @param language specify language
    */
-  putUserRequestWithLanguage(request: UserRequest, language: Languages) {
-    return this.makePutUserRequestApiCall(request, language);
+  putUserRequestWithLanguage(request: UserRequest, type: RequestTypes, language: Languages) {
+    return this.makePutUserRequestApiCall(request, type, language);
   }
 
   /**
@@ -195,11 +195,11 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param request request to accept or reject
    * @param language specify language
    */
-  private makePutUserRequestApiCall(request: UserRequest, language: Languages) {
-    const httpParams: HttpParams = this.createParams({lang: language});
+  private makePutUserRequestApiCall(request: UserRequest, reqType: RequestTypes, language: Languages) {
+    const httpParams: HttpParams = this.createParams({type: reqType, lang: language});
     const options = {params: httpParams};
 
-    return this.http.put<UserRequest>(this._userUrl + 'request', request, options)
+    return this.http.put<UserRequest>(this._userUrl + 'requests', request, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
