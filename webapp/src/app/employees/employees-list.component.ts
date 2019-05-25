@@ -66,6 +66,10 @@ export class EmployeesListComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Map from UserBasicInformation model to inner class model User
+   */
   private mapUsers(): void {
     let user: User;
     this._users = [];
@@ -80,6 +84,11 @@ export class EmployeesListComponent implements OnInit {
     }
   }
 
+  /**
+   * Creates array of days with information about the user's
+   * vacation and sick days in range 7 days before and 7 days after
+   * @param user one user row with
+   */
   private mapDays(user: UserBasicInformation): DayInfo[] {
     const dayInfo: DayInfo[] = [];
 
@@ -87,11 +96,9 @@ export class EmployeesListComponent implements OnInit {
       const day: DayInfo = new DayInfo();
       day.type = VacationType.NONE;
 
-      for (const vacationDay of user.calendar) {
-        const vacationDate: Date = new Date(vacationDay.date);
-
-        if (vacationDate.getDate() === date.getDate()) {
-          day.type = vacationDay.type;
+      for (const calendarDay of user.calendar) {
+        if (new Date(calendarDay.date).getDate() === date.getDate()) {
+          day.type = calendarDay.type;
         }
       }
 
@@ -105,21 +112,24 @@ export class EmployeesListComponent implements OnInit {
   ngOnInit() {
     this.usersService.getAuthorizedUsers()
       .subscribe((data: UserBasicInformation[]) => {
-        for (const entry of data) {
-          this._employeesBasicInformation.push(entry);
-        }
+        this._employeesBasicInformation = data;
         this.mapUsers();
-        console.log(this._users);
       });
 
+    // const calendar: PostCalendar = { date: '1999/10/10', from: '15:00', to: '17:00', type: VacationType.VACATION };
+    // this.userService.postCalendar(calendar)
+    //   .subscribe((data: any) => console.log(data));
 
-    let authorization: AuthorizationRequest[];
-    this.usersService.getAuthorizationRequests()
-      .subscribe((data: AuthorizationRequest[]) => {
-        authorization = { ...data};
+    // const settings: PostUserSettings = {
+    //   id: 1,
+    //   role: UserType.EMPLOYEE,
+    //   sickdayCount: 1,
+    //   vacationCount: 1,
+    // };
+    //
+    // this.userService.putUserSettings(settings)
+    //   .subscribe((data: any) => console.log(data));
 
-        console.log(authorization);
-      });
   }
 
 }
