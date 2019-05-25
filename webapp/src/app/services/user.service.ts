@@ -115,6 +115,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   /**
    * Accept or deny user request
    * @param request request to accept or deny
+   * @param type request type
    */
   putUserRequest(request: UserRequest, type: RequestTypes) {
     return this.makePutUserRequestApiCall(request, type, null);
@@ -123,6 +124,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   /**
    * Accept or deny user request
    * @param request request to accept or deny
+   * @param type reqeust type
    * @param language specify language
    */
   putUserRequestWithLanguage(request: UserRequest, type: RequestTypes, language: Languages) {
@@ -193,6 +195,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * Povolení nebo zamítnutí žádosti nebo “smazání“ uživatele (změna statusu na REJECTED)
    * PUT /user/requests?[lang=<CZ,EN>]&type=<VACATION, AUTHORIZATION>
    * @param request request to accept or reject
+   * @param reqType request type
    * @param language specify language
    */
   private makePutUserRequestApiCall(request: UserRequest, reqType: RequestTypes, language: Languages) {
@@ -249,7 +252,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
     const httpParams: HttpParams = this.createParams({lang: language});
     const options = {params: httpParams};
 
-    return this.http.delete(this._userUrl + 'calendar/delete/' + id, options)
+    return this.http.delete(this._userUrl + 'calendar/' + id + '/delete', options)
       .pipe(
         catchError(err => this.handleError(err))
       );
