@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {environment} from '../../environments/environment';
 
@@ -8,6 +8,8 @@ import {environment} from '../../environments/environment';
 })
 export class BasicService {
   protected baseUrl = environment.apiUrl;
+
+  constructor(protected http: HttpClient) { }
 
   protected handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -21,5 +23,16 @@ export class BasicService {
       'Something bad happened; please try again later.');
   }
 
-  constructor(protected http: HttpClient) { }
+  protected createParams(params: any) {
+    let httpParams = new HttpParams();
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        if (params[key] != null) {
+          httpParams = httpParams.set(key, params[key]);
+        }
+      }
+    }
+
+    return httpParams;
+  }
 }

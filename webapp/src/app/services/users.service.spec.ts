@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 
 import {UsersService} from './users.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {VacationRequest} from '../models/requests.model';
 import {RequestStatus, VacationType} from '../enums/common.enum';
 import {environment} from '../../environments/environment';
 
@@ -40,7 +39,7 @@ describe('UsersService', () => {
       expect(data[4].timestamp).toBeDefined();
     });
 
-    const req = httpMock.expectOne(baseUrl + '/api/users/requests/authorization?');
+    const req = httpMock.expectOne(baseUrl + '/api/users/requests/authorization');
     expect(req.request.method).toBe('GET');
     req.flush(dummyRequests);
   });
@@ -68,7 +67,7 @@ describe('UsersService', () => {
       expect(data[1].from).toBeDefined();
     });
 
-    const req = httpMock.expectOne(baseUrl + '/api/users/requests/vacation?');
+    const req = httpMock.expectOne(baseUrl + '/api/users/requests/vacation');
     expect(req.request.method).toBe('GET');
     req.flush(dummyRequests);
   });
@@ -209,7 +208,7 @@ describe('UsersService', () => {
       expect(data[0].calendar[1].id).toBe(2);
     });
 
-    const req = httpMock.expectOne(baseUrl + '/api/users?');
+    const req = httpMock.expectOne(baseUrl + '/api/users');
     expect(req.request.method).toBe('GET');
     req.flush(dummyRequests);
   });

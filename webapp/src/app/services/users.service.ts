@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 
@@ -12,17 +12,17 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class UsersService extends BasicService {
-  private _usersUrl = this.baseUrl + '/api/users?';
-  private _statusPrefix = 'status=';
-  private _languagePrefix = 'language=';
-  private _vacationRequestsUrl = this.baseUrl + '/api/users/requests/vacation?';
-  private _authorizationRequestsUrl = this.baseUrl + '/api/users/requests/authorization?';
+  private _usersUrl = this.baseUrl + '/api/users';
+
+  constructor(protected http: HttpClient) {
+    super(http);
+  }
 
   /**
    * Returns all authorized users
    */
   getAuthorizedUsers() {
-    return this.makeUsersApiCall(ProfileStatus.AUTHORIZED, '');
+    return this.makeGetUsersApiCall(ProfileStatus.AUTHORIZED, null);
   }
 
   /**
@@ -31,14 +31,14 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getAuthorizedUsersWithLanguage(language: Languages) {
-    return this.makeUsersApiCall(ProfileStatus.AUTHORIZED, language);
+    return this.makeGetUsersApiCall(ProfileStatus.AUTHORIZED, language);
   }
 
   /**
    * Returns all pending users
    */
   getPendingUsers() {
-    return this.makeUsersApiCall(ProfileStatus.PENDING, '');
+    return this.makeGetUsersApiCall(ProfileStatus.PENDING, null);
   }
 
   /**
@@ -47,14 +47,14 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getPendingUsersWithLanguage(language: Languages) {
-    return this.makeUsersApiCall(ProfileStatus.PENDING, language);
+    return this.makeGetUsersApiCall(ProfileStatus.PENDING, language);
   }
 
   /**
    * Return all rejected users
    */
   getRejectedUsers() {
-    return this.makeUsersApiCall(ProfileStatus.REJECTED, '');
+    return this.makeGetUsersApiCall(ProfileStatus.REJECTED, null);
   }
 
   /**
@@ -63,7 +63,7 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getRejectedUsersWithLanguage(language: Languages) {
-    return this.makeUsersApiCall(ProfileStatus.REJECTED, language);
+    return this.makeGetUsersApiCall(ProfileStatus.REJECTED, language);
   }
 
  /**
@@ -71,14 +71,14 @@ export class UsersService extends BasicService {
   * regardless of language and status
   */
   getUsers() {
-    return this.makeUsersApiCall('', '');
+    return this.makeGetUsersApiCall(null, null);
   }
 
   /**
    * Returns all vacation requests
    */
   getVacationRequests() {
-    return this.makeVacationRequestsApiCall('');
+    return this.makeGetVacationRequestsApiCall(null);
   }
 
   /**
@@ -86,7 +86,7 @@ export class UsersService extends BasicService {
    * @param language filter by passed language
    */
   getVacationRequestsWithLanguage(language: Languages) {
-    return this.makeVacationRequestsApiCall(language);
+    return this.makeGetVacationRequestsApiCall(language);
   }
 
 
@@ -94,7 +94,7 @@ export class UsersService extends BasicService {
    * Returns all authorization requests
    */
   getAuthorizationRequests() {
-    return this.makeAuthorizationRequestsApiCall('');
+    return this.makeGetAuthorizationRequestsApiCall(null);
   }
 
 
@@ -103,51 +103,53 @@ export class UsersService extends BasicService {
    * @param language filter by passed language
    */
   getAuthorizationRequestsWithLanguage(language: Languages) {
-    return this.makeAuthorizationRequestsApiCall(language);
+    return this.makeGetAuthorizationRequestsApiCall(language);
   }
 
-  private makeAuthorizationRequestsApiCall(language: string) {
-    const apiUrl: string = this.createApiUrl(this._authorizationRequestsUrl, '', language);
+  /**
+   * Získání žádostí o autorizaci všech uživatelů s možností filtrace pomocí úrovně schválení.
+   * GET /users/requests/authorization?[lang=<CZ,EN>]&[status=<ACCEPTED, PENDING, REJECTED>
+   * @param language filter by language
+   */
+  private makeGetAuthorizationRequestsApiCall(language: string) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
 
-    return this.http.get<AuthorizationRequest[]>(apiUrl)
+    return this.http.get<AuthorizationRequest[]>(this._usersUrl + '/requests/authorization', options)
       .pipe(
         catchError(err => this.handleError(err))
       );
   }
 
-  private makeVacationRequestsApiCall(language: string) {
-    const apiUrl: string = this.createApiUrl(this._vacationRequestsUrl, '', language);
+  /**
+   * Získání žádostí o dovolené a sick days všech uživatelů s možností filtrace pomocí úrovně schválení.
+   * GET /users/requests/vacation? [lang=<CZ,EN>]&[status=<ACCEPTED, PENDING, REJECTED>]
+   * @param language filter by language
+   */
+  private makeGetVacationRequestsApiCall(language: string) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
 
-    return this.http.get<VacationRequest[]>(apiUrl)
+    return this.http.get<VacationRequest[]>(this._usersUrl + '/requests/vacation', options)
       .pipe(
         catchError(err => this.handleError(err))
       );
   }
 
-  private makeUsersApiCall(status: string, language: string): Observable<UserBasicInformation[]> {
-    const apiUrl: string = this.createApiUrl(this._usersUrl, status, language);
+  /**
+   * Získání všech uživatelů s možností filtrace pomocí statusu
+   * GET /users?[lang=<CZ,EN>]&[status=<ACCEPTED, PENDING, REJECTED>]
+   * @param status filter by status
+   * @param language filter by language
+   */
+  private makeGetUsersApiCall(status: string, language: string): Observable<UserBasicInformation[]> {
+    const httpParams: HttpParams = this.createParams({lang: language, status});
+    const options = {params: httpParams};
 
-    return this.http.get<UserBasicInformation[]>(apiUrl)
+    return this.http.get<UserBasicInformation[]>(this._usersUrl, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
-  }
-
-  private createApiUrl(base: string, status: string, language: string): string {
-    let apiUrl = base;
-
-    if (status.length > 0) {
-      apiUrl += this._statusPrefix + status + '&';
-    }
-    if (language.length > 0) {
-      apiUrl += this._languagePrefix + language;
-    }
-
-    return apiUrl;
-  }
-
-  constructor(protected http: HttpClient) {
-    super(http);
   }
 
 }
