@@ -25,7 +25,8 @@ public class RESTConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("/api/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 
     @Bean
