@@ -1,7 +1,8 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
-import {User} from '../user.model';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {UserType} from '../../enums/common.enum';
+import {UserProfile} from '../../models/user.model';
+import {UserSettings} from '../../models/settings.model';
 
 
 @Component({
@@ -10,29 +11,39 @@ import {UserType} from '../../enums/common.enum';
   styleUrls: ['./edit-employee-dialog.component.sass']
 })
 export class EditEmployeeDialogComponent implements OnInit {
-  readonly _userTypes: string[] = ['Zaměstnanec', 'Zaměstnavatel'];
+  readonly _userTypes: string[] = ['EMPLOYER', 'EMPLOYEE'];
   private _sickDaysCount: number;
   private _vacationDaysCount: number;
   private _userType: UserType;
+  private readonly _userId: number;
+  @Output() postUserSettings = new EventEmitter<UserSettings>();
 
   constructor(public dialogRef: MatDialogRef<EditEmployeeDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: User) {
-
+              @Inject(MAT_DIALOG_DATA) public data: UserProfile,
+              private snackBar: MatSnackBar) {
+    this._sickDaysCount = data.sickdayCount;
+    this._vacationDaysCount = data.vacationCount;
+    this._userType = data.role;
+    this._userId = data.id;
   }
 
   ngOnInit() {
   }
 
-  @Input()
-  set userType(userType: string) {
-    this._userType = UserType.EMPLOYEE;
-    console.log('intercepted ' + this._userType);
-  }
-
   onConfirmClick(): void {
-    this.dialogRef.close();
-  }
+    if (this._sickDaysCount == null || this._vacationDaysCount == null || this._userType == null) {
+      this.snackBar.open('Vyplňte prosím všechny údaje', 'Zavřít');
+    } else {
+      this.postUserSettings.emit({
+        id: this._userId,
+        role: this._userType,
+        sickdayCount: this._sickDaysCount,
+        vacationCount: this._vacationDaysCount
+      });
 
+      this.dialogRef.close();
+    }
+  }
 
   onCloseClick(): void {
     this.dialogRef.close();

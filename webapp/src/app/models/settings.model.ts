@@ -5,7 +5,7 @@ export interface Settings {
   notification: string;
 }
 
-export interface PostUserSettings {
+export interface UserSettings {
   id: number;
   vacationCount: number;
   sickdayCount: number;

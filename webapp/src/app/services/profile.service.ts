@@ -12,7 +12,7 @@ export class ProfileService {
   constructor(
     private userService: UserService
   ) {
-    // userService.getEmployeeProfile(1)
+    // userService.getUserProfile(1)
     //   .subscribe((data: UserProfile) => this.profile = data);
   }
 
@@ -22,7 +22,7 @@ export class ProfileService {
         observer.next(this.profile);
         observer.complete();
       } else {
-        this.userService.getEmployeeProfile(1) // TODO zmenit id na prihlaseneho uzivatele
+        this.userService.getUserProfile(1) // TODO zmenit id na prihlaseneho uzivatele
           .subscribe((data: UserProfile) => {
             this.profile = data;
             observer.next(this.profile);
