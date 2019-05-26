@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { registerLocaleData } from '@angular/common';
+import {Injectable} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
+import {registerLocaleData} from '@angular/common';
 import localeEn from '@angular/common/locales/en';
 import localeCs from '@angular/common/locales/cs';
-import { Subject } from 'rxjs';
+import {Subject} from 'rxjs';
+import {Languages} from "../enums/common.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,12 @@ import { Subject } from 'rxjs';
 export class LocalizationService {
   readonly defaultLanguage = 'en';
 
-  currentLanguage: Subject<string>;
+  currentLanguageSubject: Subject<string>;
+
+  private currentLanguage = this.defaultLanguage;
 
   constructor(private translate: TranslateService) {
-    this.currentLanguage = new Subject<string>();
+    this.currentLanguageSubject = new Subject<string>();
 
     registerLocaleData(localeEn);
     registerLocaleData(localeCs);
@@ -24,6 +27,17 @@ export class LocalizationService {
 
   switchLanguage(lang: string) {
     this.translate.use(lang);
-    this.currentLanguage.next(lang);
+    this.currentLanguageSubject.next(lang);
+    this.currentLanguage = lang;
+  }
+
+  getCurrentLanguage(): Languages {
+    switch (this.currentLanguage) {
+      case 'cs':
+        return Languages.CZECH;
+      case 'en':
+      default:
+        return Languages.ENGLISH;
+    }
   }
 }
