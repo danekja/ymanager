@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {AddDaysOffDialogComponent} from '../../add-days-off-dialog/add-days-off-dialog.component';
-import {UsersService} from '../../services/users.service';
+import {UsersService} from '../../services/api/users.service';
 import {Requests} from '../../models/requests.model';
-import {UserService} from '../../services/user.service';
-import {ProfileService} from '../../services/profile.service';
+import {UserService} from '../../services/api/user.service';
+import {ProfileService} from '../../services/api/profile.service';
 import {UserProfile} from '../../models/user.model';
 
 @Component({

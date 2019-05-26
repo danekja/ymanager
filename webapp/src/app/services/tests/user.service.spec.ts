@@ -1,9 +1,9 @@
 import {TestBed} from '@angular/core/testing';
 
-import {UserService} from './user.service';
+import {UserService} from '../api/user.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Languages, RequestStatus, UserType, VacationType} from '../enums/common.enum';
-import {environment} from '../../environments/environment';
+import {Languages, RequestStatus, UserType, VacationType} from '../../enums/common.enum';
+import {environment} from '../../../environments/environment';
 
 describe('UsersService', () => {
   let service: UserService;

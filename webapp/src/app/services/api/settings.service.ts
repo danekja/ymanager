@@ -3,8 +3,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 
 import { BasicService } from './basic.service';
-import { Settings } from '../models/settings.model';
-import {Languages} from '../enums/common.enum';
+import { Settings } from '../../models/settings.model';
+import {Languages} from '../../enums/common.enum';
 
 @Injectable({
   providedIn: 'root'

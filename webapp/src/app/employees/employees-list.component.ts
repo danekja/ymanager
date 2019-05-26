@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UsersService} from '../services/users.service';
+import {UsersService} from '../services/api/users.service';
 import {Languages, VacationType} from '../enums/common.enum';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
@@ -7,10 +7,10 @@ import {DayInfo, User} from './user.model';
 import {UserBasicInformation, UserProfile} from '../models/user.model';
 import {DefaultSettingsDialogComponent} from './default-settings-dialog/default-settings-dialog.component';
 import {Settings} from '../models/settings.model';
-import {SettingsService} from '../services/settings.service';
-import {UserService} from '../services/user.service';
+import {SettingsService} from '../services/api/settings.service';
+import {UserService} from '../services/api/user.service';
 import {LocalizationService} from '../localization/localization.service';
-import {DateFormatterService} from '../shared/date-formatter.service';
+import {DateFormatterService} from '../services/util/date-formatter.service';
 
 const daysOfWeek: string[] = [
   'po',
@@ -78,8 +78,8 @@ export class EmployeesListComponent implements OnInit {
           })
           .afterClosed().subscribe(data => {
             if (data && data.isConfirmed) {
-              // TODO API CALL
-              // this.settingsService.postDefaultSettingsWithLanguage(this.toSettings(data), this.localizationService.getCurrentLanguage());
+              this.settingsService.postDefaultSettingsWithLanguage(this.toSettings(data), this.localizationService.getCurrentLanguage())
+                .subscribe((foo: any) => console.log(foo));
             }
           });
       });

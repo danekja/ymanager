@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 
-import {Calendar, CalendarEdit, PostCalendar} from '../models/calendar.model';
+import {Calendar, CalendarEdit, PostCalendar} from '../../models/calendar.model';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
-import {Languages, RequestStatus, RequestTypes} from '../enums/common.enum';
-import {UserSettings} from '../models/settings.model';
-import {UserProfile} from '../models/user.model';
-import {UserRequest} from '../models/requests.model';
+import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
+import {UserSettings} from '../../models/settings.model';
+import {UserProfile} from '../../models/user.model';
+import {UserRequest} from '../../models/requests.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,9 +1,9 @@
 import {TestBed} from '@angular/core/testing';
 
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {environment} from '../../environments/environment';
-import {SettingsService} from './settings.service';
-import {Languages} from '../enums/common.enum';
+import {environment} from '../../../environments/environment';
+import {SettingsService} from '../api/settings.service';
+import {Languages} from '../../enums/common.enum';
 
 describe('SettingsService', () => {
   let service: SettingsService;
