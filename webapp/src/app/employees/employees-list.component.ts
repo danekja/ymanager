@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {UserBasicInformation} from '../models/user-basic-information.model';
 import {UsersService} from '../services/users.service';
 import {VacationType} from '../enums/common.enum';
 import {MatDialog} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {DayInfo, User} from './user.model';
-import {AuthorizationRequest} from '../models/requests.model';
+import {UserBasicInformation} from '../models/user.model';
 
 const daysOfWeek: string[] = [
   'po',

@@ -53,3 +53,8 @@ export interface Requests {
     }
   ];
 }
+
+export interface UserRequest {
+  id: number;
+  status: RequestStatus;
+}
