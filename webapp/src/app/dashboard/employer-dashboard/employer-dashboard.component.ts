@@ -35,27 +35,6 @@ export class EmployerDashboardComponent implements OnInit {
     //
     // this.usersService.getVacationRequests()
     //   .subscribe((data: Requests) => this.daysOffRequests = data);
-
-    // Tmp mock
-    // this.profile = {
-    //   id: 1,
-    //   name: {
-    //     first: 'Jon',
-    //     last: 'Doe',
-    //   },
-    //   photo: 'http://mosaddek.com/theme/diverse/assets/img/user1.png',
-    //   settings: {
-    //     notification: new Date(2019, 3, 25, 18, 0)
-    //   },
-    //   vacation: {
-    //     value: 5,
-    //     unit: TimeUnit.DAY,
-    //   },
-    //   sickDay: {
-    //     value: 10,
-    //     unit: TimeUnit.DAY
-    //   }
-    // };
   }
 
   private userApproved(requestId: number, approved: boolean) {
@@ -78,6 +57,5 @@ export class EmployerDashboardComponent implements OnInit {
 
   onMonthSelect(month: number) {
     // TODO API CALL
-    console.log(month);
   }
 }

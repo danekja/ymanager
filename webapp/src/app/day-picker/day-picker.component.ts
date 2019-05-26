@@ -34,14 +34,13 @@ export class DayPickerComponent {
 
   constructor(private localizationService: LocalizationService) {
     this.locale = localizationService.defaultLanguage;
-    localizationService.currentLanguage
+    localizationService.currentLanguageSubject
       .subscribe((data) => {
         this.locale = data;
       });
 
     this.viewDate = new Date();
     this.currentMonth = this.viewDate.getMonth();
-    console.log(this.currentMonth);
   }
 
   /**
