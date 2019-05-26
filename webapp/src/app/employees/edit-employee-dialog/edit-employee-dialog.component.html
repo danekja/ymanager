@@ -1,10 +1,10 @@
 <h1 mat-dialog-title>
   <img
-    [src]="data.imageLink"
+    [src]="data.photo"
     alt="photo"
     style="width: 35px; height: 35px; margin-right: 5px"
   >
-  {{data.name}}
+  {{data.firstName + ' ' + data.lastName}}
 </h1>
 <hr>
 <div mat-dialog-content>
@@ -12,13 +12,13 @@
     <mat-radio-group
       aria-labelledby="example-radio-group-label"
       class="example-radio-group"
-      [(ngModel)]="userType"
+      [(ngModel)]="_userType"
     >
       <mat-radio-button
         class="example-radio-button"
-        *ngFor="let season of _userTypes" [value]="season"
+        *ngFor="let type of _userTypes" [value]="type"
       >
-        {{season}}
+        {{type}}
       </mat-radio-button>
     </mat-radio-group>
   </div>
@@ -29,7 +29,7 @@
         type="number"
         placeholder="Sickdays"
         min="1"
-        value="20"
+        step="0.5"
         [(ngModel)]="_sickDaysCount"
       >
     </mat-form-field>
@@ -43,7 +43,7 @@
       type="number"
       placeholder="Dovolená"
       min="1"
-      value="20"
+      step="0.5"
       [(ngModel)]="_vacationDaysCount"
     >
   </mat-form-field>

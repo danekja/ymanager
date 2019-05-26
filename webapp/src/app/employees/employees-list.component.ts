@@ -1,10 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {UsersService} from '../services/users.service';
 import {VacationType} from '../enums/common.enum';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {DayInfo, User} from './user.model';
-import {UserBasicInformation} from '../models/user.model';
+import {UserBasicInformation, UserProfile} from '../models/user.model';
+import {UserService} from '../services/user.service';
+import {SettingsService} from '../services/settings.service';
 
 const daysOfWeek: string[] = [
   'po',
@@ -28,16 +30,28 @@ export class EmployeesListComponent implements OnInit {
   private _employeesBasicInformation: UserBasicInformation[] = [];
   readonly _todayDate: Date = new Date();
 
-  constructor(private usersService: UsersService, public dialog: MatDialog) {
+  constructor(private usersService: UsersService,
+              private userService: UserService,
+              private settingsService: SettingsService,
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar) {
     this.generateDays();
     this.generateDates();
     this.editDates();
   }
 
-  openDialog(user: User): void {
-    this.dialog.open(EditEmployeeDialogComponent, {
-     data: user,
-   });
+  openEditUserDialog(user: User): void {
+    this.userService.getUserProfile(user.id)
+      .subscribe((userProfile: UserProfile) => {
+        const dialogRef = this.dialog.open(EditEmployeeDialogComponent, {
+          data: userProfile,
+        });
+
+        dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
+          this.userService.putUserSettings(emittedData)
+            .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit'));
+        });
+      });
   }
 
   private generateDays(): void {
@@ -119,7 +133,7 @@ export class EmployeesListComponent implements OnInit {
     // this.userService.postCalendar(calendar)
     //   .subscribe((data: any) => console.log(data));
 
-    // const settings: PostUserSettings = {
+    // const settings: UserSettings = {
     //   id: 1,
     //   role: UserType.EMPLOYEE,
     //   sickdayCount: 1,
