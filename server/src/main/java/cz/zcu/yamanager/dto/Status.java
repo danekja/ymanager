@@ -1,9 +1,8 @@
 package cz.zcu.yamanager.dto;
 
 public enum Status {
-    ACCEPTED, PENDING, REJECTED
+    ACCEPTED, PENDING, REJECTED;
 
-    ;
     public static Status getStatus(String status) {
         if (status == null || status.isEmpty()) return null;
         try {
