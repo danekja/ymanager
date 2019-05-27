@@ -4,8 +4,8 @@ import {RequestStatus, VacationType} from '../enums/common.enum';
 export interface Calendar {
   id: number;
   date: string;
-  from: Time;
-  to: Time;
+  from: string;
+  to: string;
   type: VacationType;
   status: RequestStatus;
 }

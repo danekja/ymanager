@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
-import { ProfileService } from '../services/api/profile.service';
 import {LocalizationService} from '../localization/localization.service';
+import {UserService} from '../services/api/user.service';
+import {UserProfile} from '../models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -10,29 +11,27 @@ import {LocalizationService} from '../localization/localization.service';
   styleUrls: ['./header.component.sass']
 })
 export class HeaderComponent {
-  @Input() name = 'John Doe';
-
-  private notificationSettings: Date;
+  profile: UserProfile;
 
   constructor(
     private dialog: MatDialog,
-    private profileService: ProfileService,
-    private localizationService: LocalizationService
+    private localizationService: LocalizationService,
+    private userService: UserService
     ) {
-    // profileService.getProfile()
-    //   .subscribe((data: UserProfile) => this.notificationSettings = new Date(data.settings.notification));
+    userService.getLoggedUserProfile()
+      .subscribe((data: UserProfile) => this.profile = data);
   }
 
   onProfileClick(): void {
-    this.dialog.open(ProfileSettingsComponent, {
-      data: {
-        shouldNotify: this.notificationSettings, // TODO potřeba?
-        notifyDate: this.notificationSettings,
-        notifyTime: {
-          hour: this.notificationSettings.getHours(),
-          minute: this.notificationSettings.getMinutes()
-        }
-      }
-    });
+    // TODO (až bude hotovej endpoint na post notifikace)
+    // this.dialog.open(ProfileSettingsComponent, {
+    //   data: {
+    //     notifyDate: this.notificationSettings,
+    //     notifyTime: {
+    //       hour: this.notificationSettings.getHours(),
+    //       minute: this.notificationSettings.getMinutes()
+    //     }
+    //   }
+    // });
   }
 }

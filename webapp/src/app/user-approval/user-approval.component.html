@@ -4,25 +4,32 @@
     Schvalování uživatelů
   </div>
 
-  <div class="row user-approval-header">
-    <div class="col-md-5"> Jméno </div>
-    <div class="col-md-5"> Datum žádosti </div>
-    <div class="col-md-2"></div>
-  </div>
-
-  <div class="user-approval-list" *ngIf="authorizationRequests">
-    <div class="row user-to-approve-container" *ngFor="let request of authorizationRequests.authorization">
-      <div class="col-md-5">
-        {{request.user.name.first}} {{request.user.name.last}}
-      </div>
-      <div class="col-md-5">
-        {{request.date | date:'yyyy/MM/dd'}}
-      </div>
-      <div class="col-md-2">
-        <div class="btn btn-success approve-user-btn" (click)="userApproved(request.id, true)">✓</div>
-        <div class="btn btn-danger reject-user-btn"   (click)="userApproved(request.id, false)">X</div>
-      </div>
-    </div>
-  </div>
+  <table class="table text-center table-hover">
+    <thead class="thead-light">
+    <tr>
+      <th style="width: 40%"> Jméno </th>
+      <th style="width: 40%"> Datum žádosti </th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let request of authorizationRequests">
+        <td>
+          {{request.firstName}} {{request.lastName}}
+        </td>
+        <td>
+          {{request.timestamp | date:'yyyy/MM/dd'}}
+        </td>
+        <td class="buttons">
+          <button mat-icon-button (click)="userApproved(request.id, true)">
+            <i class="material-icons approve-btn">done</i>
+          </button>
+          <button mat-icon-button (click)="userApproved(request.id, false)">
+            <i class="material-icons reject-btn">delete</i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
 </div>

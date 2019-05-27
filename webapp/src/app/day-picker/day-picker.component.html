@@ -29,11 +29,10 @@
     </div>
   </div>
 
-  <!-- Refresh attribute for localization purposes (refresh component after change of language) -->
   <mwl-calendar-month-view
     [viewDate]="viewDate"
     [locale]="locale"
-    [refresh]="localizationService.currentLanguageSubject"
+    [refresh]="refresh"
     [events]="events"
     [cellTemplate]="customCellTemplate"
     (dayClicked)="dayClicked($event.day)"
@@ -51,7 +50,9 @@
         <i class="material-icons sickday" *ngIf="event.title == vacationType.SICKDAY">local_hospital</i>
         <i class="material-icons vacation" *ngIf="event.title == vacationType.VACATION">beach_access</i>
 
-        {{ event.start | date:'HH:mm' }} - {{ event.end | date:'HH:mm' }}
+        <span class="time-interval" *ngIf="event.title == vacationType.VACATION">
+          {{ event.start | date:'HH:mm' }} - {{ event.end | date:'HH:mm' }}
+        </span>
       </span>
   </ng-template>
 </div>

@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>Výběr volna</h1>
+<h1 mat-dialog-title>Úprava volna</h1>
 
 <div mat-dialog-content>
   <div>
     <label id="days-off-type-radio-group-label" class="dialog-label">Typ volna</label>
-    <mat-radio-group aria-labelledby="days-off-type-radio-group-label" class="days-off-type-radio-group" [(ngModel)]="selectedDaysOffType">
-      <mat-radio-button class="days-off-type-radio-button" *ngFor="let type of daysOffTypes" [value]="type" >
+    <mat-radio-group aria-labelledby="days-off-type-radio-group-label" class="days-off-type-radio-group" [(ngModel)]="selectedVacationType">
+      <mat-radio-button class="days-off-type-radio-button" *ngFor="let type of vacationTypes" [value]="type" >
         {{type}}
       </mat-radio-button>
     </mat-radio-group>

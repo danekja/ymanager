@@ -5,7 +5,7 @@
     <button (click)="localizationService.switchLanguage('en')">EN</button>
     <button class="user-info" (click)="onProfileClick()">
       <img class="user-icon" src="../../assets/images/default-user.png"/>
-      <span class="user-name">{{name}}</span>
+      <span *ngIf="profile" class="user-name">{{profile.firstName}} {{profile.lastName}}</span>
     </button>
   </div>
 </div>

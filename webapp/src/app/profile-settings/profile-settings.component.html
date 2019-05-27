@@ -1,15 +1,8 @@
 <h1 mat-dialog-title>Nastavení</h1>
 
 <div mat-dialog-content>
-  <mat-checkbox [(ngModel)]="data.shouldNotify">Upozorňovat na blížící se vypršění extra dovolené</mat-checkbox>
-  <div class="datetime-picker" *ngIf="data.shouldNotify">
-    <mat-form-field>
-      <input id="from-datetime-input" matInput [matDatepicker]="startDatePicker" [(ngModel)]="data.notifyDate" placeholder="Datum upozornění">
-      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-      <mat-datepicker #startDatePicker></mat-datepicker>
-    </mat-form-field>
-    <ngb-timepicker [(ngModel)]="data.notifyTime"></ngb-timepicker>
-  </div>
+  <span class="notification-label">Notifikace o vypršení dovolené: </span>
+  <app-datetime [(date)]="data.notifyDate" [(time)]="data.notifyTime" [minuteStep]="15"></app-datetime>
 </div>
 
 <div mat-dialog-actions align="end">

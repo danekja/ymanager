@@ -1,7 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { CalendarView, CalendarEvent } from 'angular-calendar';
+import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
+import {CalendarEvent, CalendarView} from 'angular-calendar';
 import {LocalizationService} from '../localization/localization.service';
 import {VacationType} from '../enums/common.enum';
+import {Calendar} from '../models/calendar.model';
+import {DateToolsService} from '../services/util/date-tools.service';
+import {Subject} from 'rxjs';
 
 @Component({
   selector: 'app-day-picker',
@@ -17,6 +20,8 @@ export class DayPickerComponent {
 
   private currentMonth: number;
 
+  private currentYear: number;
+
   // Type of calendar (constant)
   view: CalendarView = CalendarView.Month;
 
@@ -24,15 +29,20 @@ export class DayPickerComponent {
   private viewDate: Date;
 
   // Events which are shown in calendar (title = VacationType)
-  @Input() events: CalendarEvent[] = [];
+  private events: CalendarEvent[] = [];
 
   // EventEmitter informing about changes of selected date
   @Output() selectedDate = new EventEmitter<Date>();
 
-  // EventEmitter informing about changes of selected month
-  @Output() selectedMonth = new EventEmitter<number>();
+  // EventEmitter informing about changes of selected month (emits start of the selected month)
+  @Output() selectedMonth = new EventEmitter<Date>();
 
-  constructor(private localizationService: LocalizationService) {
+  private refresh: Subject<any> = new Subject();
+
+  constructor(
+    private localizationService: LocalizationService,
+    private dateToolsService: DateToolsService) {
+
     this.locale = localizationService.defaultLanguage;
     localizationService.currentLanguageSubject
       .subscribe((data) => {
@@ -41,6 +51,24 @@ export class DayPickerComponent {
 
     this.viewDate = new Date();
     this.currentMonth = this.viewDate.getMonth();
+    this.currentYear = this.viewDate.getFullYear();
+
+    // Calendar component needs to be refreshed on language switch or else language switch doesn't have an effect
+    this.localizationService.currentLanguageSubject.subscribe(e => this.refresh.next());
+  }
+
+  public setVacation(vacations: Calendar[]) {
+    this.events = [];
+
+    for (const vac of vacations) {
+      this.events.push({
+        start: this.dateToolsService.toDate(vac.date, vac.from),
+        end: this.dateToolsService.toDate(vac.date, vac.to),
+        title: vac.type
+      });
+    }
+
+    this.refresh.next();
   }
 
   /**
@@ -56,9 +84,16 @@ export class DayPickerComponent {
 
   private setMonth(newMonth: number): void {
     this.currentMonth = newMonth % 12;
-    if (this.currentMonth < 0) {
+    if (newMonth < 0) {
       this.currentMonth = 11;
+      this.currentYear--;
+    } else if (newMonth > 11) {
+      this.currentMonth = 0;
+      this.currentYear++;
+    } else {
+      this.currentMonth = newMonth;
     }
-    this.selectedMonth.emit(this.currentMonth);
+
+    this.selectedMonth.emit(new Date(this.currentYear, this.currentMonth, 1, 0, 0, 0));
   }
 }

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Requests} from '../models/requests.model';
+import {AuthorizationRequest, Requests} from '../models/requests.model';
 
 @Component({
   selector: 'app-user-approval',
@@ -8,7 +8,7 @@ import {Requests} from '../models/requests.model';
 })
 export class UserApprovalComponent {
 
-  @Input() authorizationRequests: Requests;
+  @Input() authorizationRequests: AuthorizationRequest[];
   @Output() userApprovalEvent = new EventEmitter<{requestId: number, approved: boolean}>();
 
   constructor() { }

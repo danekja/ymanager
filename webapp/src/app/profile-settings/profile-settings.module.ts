@@ -10,6 +10,7 @@ import {
 } from '@angular/material';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {SharedModule} from '../shared/shared.module';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ],
   entryComponents: [
     ProfileSettingsComponent

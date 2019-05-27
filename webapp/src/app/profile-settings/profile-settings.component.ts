@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-profile-settings',
@@ -12,23 +11,24 @@ export class ProfileSettingsComponent {
     public dialogRef: MatDialogRef<ProfileSettingsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ProfileSettingsDialogData,
   ) {
-    if (data.notifyTime == null) {
-      data.notifyTime = { hour: 8, minute: 0 };
-    }
   }
 
   onConfirmClick(): void {
-    // TODO API CALL
-    this.dialogRef.close();
+    this.dialogRef.close({
+      isConfirmed: true,
+      notifyDate: this.data.notifyDate,
+      notifyTime: this.data.notifyTime
+    });
   }
 
   onCloseClick(): void {
-    this.dialogRef.close();
+    this.dialogRef.close({
+      isConfirmed: false
+    });
   }
 }
 
 export interface ProfileSettingsDialogData {
-  shouldNotify: boolean;
-  notifyDate: FormControl;
-  notifyTime: { hour: number, minute: number };
+  notifyDate: Date;
+  notifyTime: string;
 }

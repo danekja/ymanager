@@ -4,20 +4,13 @@ import {LocalizationService} from '../localization/localization.service';
 
 @Component({
   selector: 'app-days-off-info',
-  templateUrl: './days-off-info.component.html',
-  styleUrls: ['./days-off-info.component.sass']
+  templateUrl: './vacation-info.component.html',
+  styleUrls: ['./vacation-info.component.sass']
 })
-export class DaysOffInfoComponent {
+export class VacationInfoComponent {
 
-  @Input() sickDaysRemaining: {
-    value: number;
-    unit: TimeUnit;
-  };
-
-  @Input() extraVacationRemaining: {
-    value: number;
-    unit: TimeUnit;
-  };
+  @Input() sickDaysRemaining: number;
+  @Input() extraVacationRemaining: number;
 
   constructor(private localizationService: LocalizationService) { }
 }

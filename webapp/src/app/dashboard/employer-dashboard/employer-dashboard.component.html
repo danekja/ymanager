@@ -2,29 +2,32 @@
   <div class="row">
     <div class="col-lg-8 mid-panel">
 
-      <div class="employer-dashboard-user-approval" *ngIf="authorizationRequests && authorizationRequests.authorization.length > 0">
+      <div class="employer-dashboard-user-approval" *ngIf="authorizationRequests && authorizationRequests.length > 0">
         <app-user-approval
           [authorizationRequests]="authorizationRequests"
           (userApprovalEvent)="userApproved($event.requestId, $event.approved)"
         ></app-user-approval>
       </div>
 
-      <div class="employer-dashboard-days-off-approval" *ngIf="daysOffRequests && daysOffRequests.vacation.length > 0">
+      <div class="employer-dashboard-days-off-approval" *ngIf="vacationRequests && vacationRequests.length > 0">
         <app-days-off-approval
-          [daysOffRequests]="daysOffRequests"
-          (daysOffApprovalEvent)="daysOffApproved($event.requestId, $event.approved)"
+          [vacationRequests]="vacationRequests"
+          (vacationApprovalEvent)="vacationApproved($event.requestId, $event.approved)"
         ></app-days-off-approval>
       </div>
 
-<!--      TODO odkomentovat, až bude komponenta hotova -->
-<!--      <div class="employer-dashboard-coming-days-off">-->
-<!--        <app-coming-days-off></app-coming-days-off>-->
-<!--      </div>-->
+      <div class="employer-dashboard-coming-days-off" *ngIf="oncomingVacation && oncomingVacation.length > 0">
+        <app-coming-days-off
+          [oncomingVacation]="oncomingVacation"
+          (vacationEdit)="editVacation($event)"
+          (vacationRemove)="removeVacation($event)"
+        ></app-coming-days-off>
+      </div>
 
       <div class="employer-dashboard-day-picker">
-        <app-day-picker
+        <app-day-picker #dayPicker
           (selectedDate)="onDateSelect($event)"
-          (selectedMonth)="onMonthSelect($event)"
+          (selectedMonth)="onSelectedMonthChange($event)"
         ></app-day-picker>
       </div>
 
@@ -34,8 +37,8 @@
 
       <div class="days-off-info" *ngIf="profile">
         <app-days-off-info
-          [sickDaysRemaining]="profile.sickDay"
-          [extraVacationRemaining]="profile.vacation"
+          [sickDaysRemaining]="profile.sickdayCount"
+          [extraVacationRemaining]="profile.vacationCount"
         ></app-days-off-info>
       </div>
 

@@ -1,11 +1,15 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialog} from '@angular/material';
-import {AddDaysOffDialogComponent} from '../../add-days-off-dialog/add-days-off-dialog.component';
+import {AddVacationDialogComponent} from '../../add-vacation-dialog/add-vacation-dialog.component';
 import {UsersService} from '../../services/api/users.service';
-import {Requests} from '../../models/requests.model';
+import {AuthorizationRequest, VacationRequest} from '../../models/requests.model';
 import {UserService} from '../../services/api/user.service';
-import {ProfileService} from '../../services/api/profile.service';
 import {UserProfile} from '../../models/user.model';
+import {LocalizationService} from '../../localization/localization.service';
+import {RequestStatus, RequestTypes} from '../../enums/common.enum';
+import {Calendar} from '../../models/calendar.model';
+import {DateToolsService} from '../../services/util/date-tools.service';
+import {EditVacationDialogComponent} from "../../edit-vacation-dialog/edit-vacation-dialog.component";
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -13,49 +17,111 @@ import {UserProfile} from '../../models/user.model';
   styleUrls: ['./employer-dashboard.component.sass']
 })
 export class EmployerDashboardComponent implements OnInit {
+  @ViewChild('dayPicker') calendar;
 
-  @Input() profile: UserProfile;
-  private authorizationRequests: Requests;
-  private daysOffRequests: Requests;
+  private profile: UserProfile;
+  private authorizationRequests: AuthorizationRequest[];
+  private vacationRequests: VacationRequest[];
+  private currentMonthVacation: Calendar[];
+  private oncomingVacation: Calendar[];
 
   constructor(
     public dialog: MatDialog,
-    private profileService: ProfileService,
-    // API
+    private localizationService: LocalizationService,
+    private dateToolsService: DateToolsService,
     private userService: UserService,
     private usersService: UsersService
   ) { }
 
   ngOnInit() {
-    // this.profileService.getProfile()
-    //   .subscribe((data: UserProfile) => this.profile = data);
-    //
-    // this.usersService.getAuthorizationRequests()
-    //   .subscribe((data: Requests) => this.authorizationRequests = data);
-    //
-    // this.usersService.getVacationRequests()
-    //   .subscribe((data: Requests) => this.daysOffRequests = data);
+    this.loadProfile();
+    this.loadAuthorizationRequests();
+    this.loadVacationRequests();
+    this.loadMonthVacation(this.dateToolsService.toStartOfMonth(new Date()));
+    this.loadOncomingVacation();
   }
 
-  private userApproved(requestId: number, approved: boolean) {
-    // TODO api post call
-    this.authorizationRequests.authorization.splice(0, 1);
+  userApproved(requestId: number, approved: boolean) {
+    this.requestApproved(requestId, RequestTypes.AUTHORIZATION, approved)
+      .subscribe(e => this.loadAuthorizationRequests());
   }
 
-  private daysOffApproved(requestId: number, approved: boolean) {
-    // TODO api post call
-    this.daysOffRequests.vacation.splice(0, 1);
+  vacationApproved(requestId: number, approved: boolean) {
+    this.requestApproved(requestId, RequestTypes.VACATION, approved)
+      .subscribe(e => this.loadVacationRequests());
+  }
+
+  requestApproved(requestId: number, requestType: RequestTypes, approved: boolean) {
+    const request = {
+      id: requestId,
+      status: approved ? RequestStatus.ACCEPTED : RequestStatus.REJECTED
+    };
+
+    return this.userService.putUserRequestWithLanguage(request, requestType, this.localizationService.getCurrentLanguage());
+  }
+
+  removeVacation(vac: Calendar) {
+    this.userService.deleteCalendar(vac.id, this.localizationService.getCurrentLanguage())
+      .subscribe(e => this.loadOncomingVacation());
+  }
+
+  editVacation(vac: Calendar) {
+    // this.dialog.open(EditVacationDialogComponent, {
+    //   data: {
+    //     vacation: vac
+    //   }
+    // });
   }
 
   onDateSelect( date: Date ) {
-    this.dialog.open(AddDaysOffDialogComponent, {
-      data: {
-        fromDate: date
-      }
-    });
+    this.dialog
+      .open(AddVacationDialogComponent, {
+        data: {
+          fromDate: date
+        }
+      })
+      .afterClosed().subscribe(data => {
+        if (data && data.isConfirmed) {
+          // TODO
+        }
+      });
   }
 
-  onMonthSelect(month: number) {
-    // TODO API CALL
+  onSelectedMonthChange(monthStart: Date) {
+    this.loadMonthVacation(monthStart);
+  }
+
+  private loadProfile() {
+    this.userService.getLoggedUserProfile()
+      .subscribe((data: UserProfile) => this.profile = data);
+  }
+
+  private loadAuthorizationRequests() {
+    this.usersService.getAuthorizationRequestsWithLanguage(this.localizationService.getCurrentLanguage())
+      .subscribe((data: AuthorizationRequest[]) => this.authorizationRequests = data);
+  }
+
+  private loadVacationRequests() {
+    this.usersService.getVacationRequestsWithLanguage(this.localizationService.getCurrentLanguage())
+      .subscribe((data: VacationRequest[]) => this.vacationRequests = data);
+  }
+
+  private loadMonthVacation(month: Date) {
+    const fromDate = this.dateToolsService.toStartOfMonth(month);
+    const toDate = this.dateToolsService.toEndOfMonth(fromDate);
+
+    this.userService.getLoggedUserCalendarWithOptions(fromDate, toDate, this.localizationService.getCurrentLanguage(), RequestStatus.ACCEPTED)
+      .subscribe((data: Calendar[]) => {
+        if (data) {
+          this.calendar.setVacation(data);
+        }
+      });
+  }
+
+  private loadOncomingVacation() {
+    const fromDate = new Date();
+
+    this.userService.getLoggedUserCalendarWithOptions(fromDate, null, this.localizationService.getCurrentLanguage(), null)
+      .subscribe((data: Calendar[]) => this.oncomingVacation = data);
   }
 }

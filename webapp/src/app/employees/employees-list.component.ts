@@ -121,7 +121,7 @@ export class EmployeesListComponent implements OnInit {
             .afterClosed().subscribe(data => {
             if (data && data.isConfirmed) {
               this.settingsService.postDefaultSettingsWithLanguage(this.toSettings(data), this.localizationService.getCurrentLanguage())
-                .subscribe((foo: any) => console.log(foo));
+                .subscribe();
             }
           });
         },

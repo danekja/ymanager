@@ -9,6 +9,7 @@ import {UserSettings} from '../../models/settings.model';
 import {UserProfile} from '../../models/user.model';
 import {UserRequest} from '../../models/requests.model';
 import {MatSnackBar} from '@angular/material';
+import {DateFormatterService} from '../util/date-formatter.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ import {MatSnackBar} from '@angular/material';
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
   private _userUrl = this.baseUrl + '/api/user/';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, private dateFormater: DateFormatterService) {
     super(http, snackBar);
   }
 
@@ -188,10 +189,10 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param status filter by status
    */
   private makeGetCalendarApiCall(id: string, from: Date, to: Date, language: Languages, status: RequestStatus) {
-    const fromString: string = from.getFullYear() + '/' + from.getMonth() + '/' + from.getDate();
+    const fromString: string = this.dateFormater.formatDate(from);
     let toString: string;
     if (to != null) {
-      toString = to.getFullYear() + '/' + to.getMonth() + '/' + to.getDate();
+      toString = this.dateFormater.formatDate(to);
     }
 
     const httpParams: HttpParams = this.createParams({lang: language, from: fromString, to: toString, status});

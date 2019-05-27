@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AddDaysOffDialogComponent } from './add-days-off-dialog.component';
+import { AddVacationDialogComponent } from './add-vacation-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   MatButtonModule,
@@ -12,9 +12,10 @@ import {
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [AddDaysOffDialogComponent],
+  declarations: [AddVacationDialogComponent],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
@@ -28,13 +29,14 @@ import {BrowserModule} from '@angular/platform-browser';
     BrowserModule,
     MatInputModule,
     MatRadioModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    SharedModule
   ],
   exports: [
-    AddDaysOffDialogComponent
+    AddVacationDialogComponent
   ],
   entryComponents: [
-    AddDaysOffDialogComponent
+    AddVacationDialogComponent
   ]
 })
-export class AddDaysOffDialogModule { }
+export class AddVacationDialogModule { }
