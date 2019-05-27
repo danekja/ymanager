@@ -23,6 +23,12 @@ export class BasicService {
       'Something bad happened; please try again later.');
   }
 
+  /**
+   * Creates http parameters (query for request) for given
+   * object (parameter - value), if the value is null
+   * it's not added into the query
+   * @param params object from which the query is created
+   */
   protected createParams(params: any) {
     let httpParams = new HttpParams();
     for (const key in params) {

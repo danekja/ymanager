@@ -11,6 +11,7 @@ import {SettingsService} from '../services/api/settings.service';
 import {UserService} from '../services/api/user.service';
 import {LocalizationService} from '../localization/localization.service';
 import {DateFormatterService} from '../services/util/date-formatter.service';
+import {FileService} from '../services/api/file.service';
 
 const daysOfWeek: string[] = [
   'po',
@@ -40,6 +41,7 @@ export class EmployeesListComponent implements OnInit {
     private settingsService: SettingsService,
     private localizationService: LocalizationService,
     private dateFormatterService: DateFormatterService,
+    private fileService: FileService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar) {
     this.generateDays();
@@ -47,6 +49,41 @@ export class EmployeesListComponent implements OnInit {
     this.editDates();
   }
 
+
+  /**
+   * Sends a request to the GET /api/export/pdf end point
+   * After receiving the answer downloads the pdf file to user's download folder
+   */
+  downloadPdf(): void {
+    // https://stackoverflow.com/a/52687792/6204336
+    this.fileService.getExportedPdf()
+      .subscribe((data: any) => {
+        console.log(data);
+        const blob = new Blob([data], {type: 'application/pdf'});
+        const link = window.URL.createObjectURL(blob);
+        const linkElement = document.createElement('a');
+        linkElement.href = link;
+        linkElement.download = 'super.pdf';
+        linkElement.click();
+      });
+  }
+
+  /**
+   * Uploads first file from the file list to the
+   * endpoint /api/import/xlsx
+   * @param files file list, uses only files.item(0)
+   */
+  uploadXlsxFile(files: FileList): void {
+    this.fileService.uploadXlsFile(files)
+      .subscribe(() => this.snackBar.open('Import souboru se provedl', 'Zavřít', {duration: 5000}));
+  }
+
+  /**
+   * Opens a dialog to edit users settings after closing
+   * the dialog if user clicked to confirm new settings
+   * new settings are sent to the PUT /api/user/settings end point
+   * @param user user information
+   */
   openEditUserDialog(user: User): void {
     this.userService.getUserProfile(user.id)
       .subscribe((userProfile: UserProfile) => {
@@ -56,7 +93,7 @@ export class EmployeesListComponent implements OnInit {
 
         dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
           this.userService.putUserSettings(emittedData)
-            .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit'));
+            .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit', {duration: 5000}));
         });
       });
   }
