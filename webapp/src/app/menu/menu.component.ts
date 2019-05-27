@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuService } from '../services/menu.service';
 import { MenuItem } from './menu-item';
+
+const MENU_ITEMS: MenuItem[] = [
+  {name: 'Dashboard', routePath: 'dashboard'},
+  {name: 'Zaměstnanci', routePath: 'employees'},
+];
 
 @Component({
   selector: 'app-menu',
@@ -11,21 +15,14 @@ export class MenuComponent implements OnInit {
   _menuItems: MenuItem[];
   private _selectedMenuItem: MenuItem;
 
+  constructor() {
+    this._menuItems = MENU_ITEMS;
+  }
 
-  getMenuItems(): void {
-    this.menuService.getMenuItems()
-      .subscribe(menuItems => this._menuItems = menuItems);
+  ngOnInit() {
   }
 
   onSelect(menuItem: MenuItem): void {
     this._selectedMenuItem = menuItem;
   }
-
-  constructor(private menuService: MenuService) { }
-
-  ngOnInit() {
-    this.getMenuItems();
-  }
-
-
 }

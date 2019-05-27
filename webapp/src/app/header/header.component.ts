@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
-import { ProfileService } from '../services/profile.service';
-import { UserProfile } from '../models/user-profile.model';
-import {LocalizationService} from "../localization/localization.service";
+import { ProfileService } from '../services/api/profile.service';
+import {LocalizationService} from '../localization/localization.service';
 
 @Component({
   selector: 'app-header',

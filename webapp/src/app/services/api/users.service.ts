@@ -3,10 +3,10 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 
-import {UserBasicInformation} from '../models/user-basic-information.model';
-import {AuthorizationRequest, VacationRequest} from '../models/requests.model';
-import {Languages, ProfileStatus} from '../enums/common.enum';
+import {AuthorizationRequest, VacationRequest} from '../../models/requests.model';
+import {Languages, ProfileStatus} from '../../enums/common.enum';
 import {Observable} from 'rxjs';
+import {UserBasicInformation} from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'

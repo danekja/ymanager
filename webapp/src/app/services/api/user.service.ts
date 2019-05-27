@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 
-import {UserProfile} from '../models/user-profile.model';
-import {Calendar, CalendarEdit, PostCalendar} from '../models/calendar.model';
+import {Calendar, CalendarEdit, PostCalendar} from '../../models/calendar.model';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
-import {Languages, RequestStatus, RequestTypes} from '../enums/common.enum';
-import {UserRequest} from '../models/post-requests.model';
-import {PostUserSettings} from '../models/settings.model';
+import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
+import {UserSettings} from '../../models/settings.model';
+import {UserProfile} from '../../models/user.model';
+import {UserRequest} from '../../models/requests.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,23 +20,23 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   /**
-   * Returns employee profile if the user making this call
+   * Returns user profile if the user making this call
    * is logged as admin
    * UserProfile.notification might be returned as string instead of date
    * @param id employee id
    */
-  getEmployeeProfile(id: number) {
-    return this.makeGetProfileApiCall(id.toString(), '');
+  getUserProfile(id: number) {
+    return this.makeGetProfileApiCall(id.toString(), null);
   }
 
   /**
-   * Overloaded version of getEmployeeProfile to filter profiles
+   * Overloaded version of getUserProfile to filter profiles
    * by language
    * UserProfile.notification might be returned as string instead of date
-   * @param id employee profile id
+   * @param id user profile id
    * @param language language to filtery by
    */
-  getEmployeeProfileWithLanguage(id: number, language: Languages) {
+  getUserProfileWithLanguage(id: number, language: Languages) {
     return this.makeGetProfileApiCall(id.toString(), language);
   }
 
@@ -99,7 +99,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * Put user settings with given id for the user
    * @param settings settings to be put
    */
-  putUserSettings(settings: PostUserSettings) {
+  putUserSettings(settings: UserSettings) {
     return this.makePutUserSettingsApiCall(settings, null);
   }
 
@@ -108,13 +108,14 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param settings settings to be put
    * @param language specified language
    */
-  putUserSettingsWithLanguage(settings: PostUserSettings, language: Languages) {
+  putUserSettingsWithLanguage(settings: UserSettings, language: Languages) {
     return this.makePutUserSettingsApiCall(settings, language);
   }
 
   /**
    * Accept or deny user request
    * @param request request to accept or deny
+   * @param type request type
    */
   putUserRequest(request: UserRequest, type: RequestTypes) {
     return this.makePutUserRequestApiCall(request, type, null);
@@ -123,6 +124,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   /**
    * Accept or deny user request
    * @param request request to accept or deny
+   * @param type reqeust type
    * @param language specify language
    */
   putUserRequestWithLanguage(request: UserRequest, type: RequestTypes, language: Languages) {
@@ -155,7 +157,6 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    */
   private makeGetProfileApiCall(id: string, language: string) {
     const httpParams: HttpParams = this.createParams({lang: language});
-
     const options = {params: httpParams};
 
     return this.http.get<UserProfile>(this._userUrl + id + '/profile', options)
@@ -193,6 +194,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * Povolení nebo zamítnutí žádosti nebo “smazání“ uživatele (změna statusu na REJECTED)
    * PUT /user/requests?[lang=<CZ,EN>]&type=<VACATION, AUTHORIZATION>
    * @param request request to accept or reject
+   * @param reqType request type
    * @param language specify language
    */
   private makePutUserRequestApiCall(request: UserRequest, reqType: RequestTypes, language: Languages) {
@@ -212,11 +214,11 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param settings setting to be set for given user
    * @param language specified language
    */
-  private makePutUserSettingsApiCall(settings: PostUserSettings, language: Languages) {
+  private makePutUserSettingsApiCall(settings: UserSettings, language: Languages) {
     const httpParams: HttpParams = this.createParams({lang: language});
     const options = {params: httpParams};
 
-    return this.http.put<PostUserSettings>(this._userUrl + 'settings', settings, options)
+    return this.http.put<UserSettings>(this._userUrl + 'settings', settings, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
@@ -249,7 +251,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
     const httpParams: HttpParams = this.createParams({lang: language});
     const options = {params: httpParams};
 
-    return this.http.delete(this._userUrl + 'calendar/delete/' + id, options)
+    return this.http.delete(this._userUrl + 'calendar/' + id + '/delete', options)
       .pipe(
         catchError(err => this.handleError(err))
       );

@@ -1,11 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {UserBasicInformation} from '../models/user-basic-information.model';
-import {UsersService} from '../services/users.service';
-import {VacationType} from '../enums/common.enum';
-import {MatDialog} from '@angular/material';
+import {UsersService} from '../services/api/users.service';
+import {Languages, VacationType} from '../enums/common.enum';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {DayInfo, User} from './user.model';
-import {AuthorizationRequest} from '../models/requests.model';
+import {UserBasicInformation, UserProfile} from '../models/user.model';
+import {DefaultSettingsDialogComponent} from './default-settings-dialog/default-settings-dialog.component';
+import {Settings} from '../models/settings.model';
+import {SettingsService} from '../services/api/settings.service';
+import {UserService} from '../services/api/user.service';
+import {LocalizationService} from '../localization/localization.service';
+import {DateFormatterService} from '../services/util/date-formatter.service';
 
 const daysOfWeek: string[] = [
   'po',
@@ -29,16 +34,62 @@ export class EmployeesListComponent implements OnInit {
   private _employeesBasicInformation: UserBasicInformation[] = [];
   readonly _todayDate: Date = new Date();
 
-  constructor(private usersService: UsersService, public dialog: MatDialog) {
+  constructor(
+    private usersService: UsersService,
+    private userService: UserService,
+    private settingsService: SettingsService,
+    private localizationService: LocalizationService,
+    private dateFormatterService: DateFormatterService,
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar) {
     this.generateDays();
     this.generateDates();
     this.editDates();
   }
 
-  openDialog(user: User): void {
-    this.dialog.open(EditEmployeeDialogComponent, {
-     data: user,
-   });
+  openEditUserDialog(user: User): void {
+    this.userService.getUserProfile(user.id)
+      .subscribe((userProfile: UserProfile) => {
+        const dialogRef = this.dialog.open(EditEmployeeDialogComponent, {
+          data: userProfile,
+        });
+
+        dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
+          this.userService.putUserSettings(emittedData)
+            .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit'));
+        });
+      });
+  }
+
+  openDefaultSettingsDialog(): void {
+    this.settingsService.getDefaultSettingsWithLanguage(Languages.CZECH)
+      .subscribe((settingsData: Settings) => {
+        const parsedDate = new Date(settingsData.notification);
+
+        const parsedSettings = {
+          notificationDate: new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()),
+          notificationTime: parsedDate.getHours() + ':' + parsedDate.getMinutes(),
+          sickdaysCount: settingsData.sickdayCount
+        };
+
+        this.dialog.open(DefaultSettingsDialogComponent, {
+            data: parsedSettings,
+            width: '300px'
+          })
+          .afterClosed().subscribe(data => {
+            if (data && data.isConfirmed) {
+              this.settingsService.postDefaultSettingsWithLanguage(this.toSettings(data), this.localizationService.getCurrentLanguage())
+                .subscribe((foo: any) => console.log(foo));
+            }
+          });
+      });
+  }
+
+  private toSettings(data): Settings {
+    return {
+      sickdayCount: data.sickdayCount,
+      notification: this.dateFormatterService.formatDate(data.notificationDatetime)
+    };
   }
 
   private generateDays(): void {
@@ -120,7 +171,7 @@ export class EmployeesListComponent implements OnInit {
     // this.userService.postCalendar(calendar)
     //   .subscribe((data: any) => console.log(data));
 
-    // const settings: PostUserSettings = {
+    // const settings: UserSettings = {
     //   id: 1,
     //   role: UserType.EMPLOYEE,
     //   sickdayCount: 1,
