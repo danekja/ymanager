@@ -11,9 +11,20 @@ public class FullUserProfile {
     private String photo;
     private Float vacationCount;
     private Integer sickdayCount;
+    private Float takenVacationCount;
+    private Integer takenSickdayCount;
     private Status status;
     private UserRole role;
     private LocalDateTime notification;
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
@@ -25,6 +36,22 @@ public class FullUserProfile {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public Float getTakenVacationCount() {
+        return takenVacationCount;
+    }
+
+    public void setTakenVacationCount(Float takenVacationCount) {
+        this.takenVacationCount = takenVacationCount;
+    }
+
+    public Integer getTakenSickdayCount() {
+        return takenSickdayCount;
+    }
+
+    public void setTakenSickdayCount(Integer takenSickdayCount) {
+        this.takenSickdayCount = takenSickdayCount;
     }
 
     public void setFirstName(String firstName) {
