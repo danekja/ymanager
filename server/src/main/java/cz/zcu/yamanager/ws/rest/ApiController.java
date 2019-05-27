@@ -110,6 +110,10 @@ public class ApiController {
         }
     }
 
+    private Long getUserId(Long id) {
+        return id == null ? getUserId("me") : id;
+    }
+
     // *********************** GET ****************************
 
     @RequestMapping(value = "/users", method=GET)
@@ -208,7 +212,7 @@ public class ApiController {
             @RequestBody UserSettings settings)
     {
         return handle(getLanguage(lang), () ->
-                manager.changeSettings(getUserId("me"), settings)
+                manager.changeSettings(getUserId(settings.getId()), settings)
         );
     }
 
