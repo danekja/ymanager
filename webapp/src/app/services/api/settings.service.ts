@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { BasicService } from './basic.service';
 import { Settings } from '../../models/settings.model';
 import {Languages} from '../../enums/common.enum';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ import {Languages} from '../../enums/common.enum';
 export class SettingsService extends BasicService {
   defaultSettingsUrl = this.baseUrl + '/api/settings';
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
+    super(http, snackBar);
   }
 
   /**

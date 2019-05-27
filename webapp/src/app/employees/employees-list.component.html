@@ -1,5 +1,5 @@
 <div class="employee-component">
-  <h3> <span class="align-baseline">Zaměstnanci</span>
+  <h3> <span class="align-baseline" style="font-size: medium">Zaměstnanci</span>
 
     <button
       id="settings-button"
@@ -19,7 +19,7 @@
       (change)="uploadXlsxFile(fileInput.files); fileInput.value = null;"
     />
 
-    <label for="input-file" class="btn btn-primary align-baseline">Import</label>
+    <label for="input-file" class="btn btn-primary align-baseline" style="margin-right: 5px">Import</label>
     <button class="btn btn-danger align-baseline" (click)="downloadPdf()">
       Export
     </button>

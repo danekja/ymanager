@@ -3,14 +3,15 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 import {Languages} from '../../enums/common.enum';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService extends BasicService {
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
+    super(http, snackBar);
   }
 
   /**
@@ -75,7 +76,6 @@ export class FileService extends BasicService {
     if (fileCount > 0) {
 
       formData.append('file', file.item(0));
-      console.log('posilam data');
       return this.http.post(this.baseUrl + '/api/import/xls', formData, options);
     }
   }
