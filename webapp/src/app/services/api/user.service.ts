@@ -24,7 +24,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * Returns user profile if the user making this call
    * is logged as admin
    * UserProfile.notification might be returned as string instead of date
-   * @param id employee id
+   * @param id user profile id
    */
   getUserProfile(id: number) {
     return this.makeGetProfileApiCall(id.toString(), null);
