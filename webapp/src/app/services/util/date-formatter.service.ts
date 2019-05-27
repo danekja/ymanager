@@ -10,7 +10,7 @@ export class DateFormatterService {
    * Formats date to a following format: yyyy/mm/dd hh:mm:ss
    * @param date Date which is formatted
    */
-  formatDate(date: Date): string {
+  formatDatetime(date: Date): string {
     let result = '';
 
     result += this.formatToDoubleDigits(date.getFullYear()) + '/';
@@ -20,6 +20,20 @@ export class DateFormatterService {
     result += this.formatToDoubleDigits(date.getHours()) + ':';
     result += this.formatToDoubleDigits(date.getMinutes()) + ':';
     result += this.formatToDoubleDigits(date.getSeconds());
+
+    return result;
+  }
+
+  /**
+   * Formats date to a following format: yyyy/mm/dd
+   * @param date Date which is formatted
+   */
+  formatDate(date: Date): string {
+    let result = '';
+
+    result += this.formatToDoubleDigits(date.getFullYear()) + '/';
+    result += this.formatToDoubleDigits(date.getMonth() + 1) + '/';
+    result += this.formatToDoubleDigits(date.getDate());
 
     return result;
   }

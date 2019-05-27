@@ -16,12 +16,14 @@ import {FormsModule} from '@angular/forms';
 import {DefaultSettingsDialogComponent} from './default-settings-dialog/default-settings-dialog.component';
 import {NgbTimepickerModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../shared/shared.module';
+import { UserProfileDialogComponent } from './user-profile/user-profile-dialog.component';
 
 @NgModule({
   declarations: [
     EmployeesListComponent,
     EditEmployeeDialogComponent,
-    DefaultSettingsDialogComponent
+    DefaultSettingsDialogComponent,
+    UserProfileDialogComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +40,8 @@ import {SharedModule} from '../shared/shared.module';
   ],
   entryComponents: [
     EditEmployeeDialogComponent,
-    DefaultSettingsDialogComponent
+    DefaultSettingsDialogComponent,
+    UserProfileDialogComponent
   ]
 })
 export class EmployeesModule { }

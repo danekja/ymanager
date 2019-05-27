@@ -88,7 +88,7 @@ export class EmployeesListComponent implements OnInit {
   private toSettings(data): Settings {
     return {
       sickdayCount: data.sickdayCount,
-      notification: this.dateFormatterService.formatDate(data.notificationDatetime)
+      notification: this.dateFormatterService.formatDatetime(data.notificationDatetime)
     };
   }
 

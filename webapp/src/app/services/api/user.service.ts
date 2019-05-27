@@ -79,6 +79,18 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   /**
+   * Returns vacation and sick days in interval between given dates
+   * @param id user's id
+   * @param from days from this date forward
+   * @param to limit returned days, returns <from, to>
+   * @param language error's language
+   * @param status filter by status
+   */
+  getUserCalendarWithOptions(id: string, from: Date, to: Date, language: Languages, status: RequestStatus) {
+    return this.makeGetCalendarApiCall(id, from, to, language, status);
+  }
+
+  /**
    * Post user calendar using POST
    * @param calendar to be posted
    */
