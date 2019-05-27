@@ -58,14 +58,15 @@ export class EmployeesListComponent implements OnInit {
     // https://stackoverflow.com/a/52687792/6204336
     this.fileService.getExportedPdf()
       .subscribe((data: any) => {
-        console.log(data);
-        const blob = new Blob([data], {type: 'application/pdf'});
-        const link = window.URL.createObjectURL(blob);
-        const linkElement = document.createElement('a');
-        linkElement.href = link;
-        linkElement.download = 'super.pdf';
-        linkElement.click();
-      });
+          console.log(data);
+          const blob = new Blob([data], {type: 'application/pdf'});
+          const link = window.URL.createObjectURL(blob);
+          const linkElement = document.createElement('a');
+          linkElement.href = link;
+          linkElement.download = 'dochazka.pdf';
+          linkElement.click();
+        },
+        error1 => this.showSnackBarError(error1, 'Export PDF souboru se nezdařil'));
   }
 
   /**
@@ -75,7 +76,9 @@ export class EmployeesListComponent implements OnInit {
    */
   uploadXlsxFile(files: FileList): void {
     this.fileService.uploadXlsFile(files)
-      .subscribe(() => this.snackBar.open('Import souboru se provedl', 'Zavřít', {duration: 5000}));
+      .subscribe(() => this.snackBar.open('Import souboru se provedl', 'Zavřít', {duration: 5000}),
+        error1 => this.showSnackBarError(error1, 'Import soubor se nezdařil')
+      );
   }
 
   /**
@@ -87,39 +90,42 @@ export class EmployeesListComponent implements OnInit {
   openEditUserDialog(user: User): void {
     this.userService.getUserProfile(user.id)
       .subscribe((userProfile: UserProfile) => {
-        const dialogRef = this.dialog.open(EditEmployeeDialogComponent, {
-          data: userProfile,
-        });
+          const dialogRef = this.dialog.open(EditEmployeeDialogComponent, {
+            data: userProfile,
+          });
 
-        dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
-          this.userService.putUserSettings(emittedData)
-            .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit', {duration: 5000}));
-        });
-      });
+          dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
+            this.userService.putUserSettings(emittedData)
+              .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit', {duration: 5000}));
+          });
+        },
+        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila')
+      );
   }
 
   openDefaultSettingsDialog(): void {
     this.settingsService.getDefaultSettingsWithLanguage(Languages.CZECH)
       .subscribe((settingsData: Settings) => {
-        const parsedDate = new Date(settingsData.notification);
+          const parsedDate = new Date(settingsData.notification);
 
-        const parsedSettings = {
-          notificationDate: new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()),
-          notificationTime: parsedDate.getHours() + ':' + parsedDate.getMinutes(),
-          sickdaysCount: settingsData.sickdayCount
-        };
+          const parsedSettings = {
+            notificationDate: new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()),
+            notificationTime: parsedDate.getHours() + ':' + parsedDate.getMinutes(),
+            sickdaysCount: settingsData.sickdayCount
+          };
 
-        this.dialog.open(DefaultSettingsDialogComponent, {
+          this.dialog.open(DefaultSettingsDialogComponent, {
             data: parsedSettings,
             width: '300px'
           })
-          .afterClosed().subscribe(data => {
+            .afterClosed().subscribe(data => {
             if (data && data.isConfirmed) {
               this.settingsService.postDefaultSettingsWithLanguage(this.toSettings(data), this.localizationService.getCurrentLanguage())
                 .subscribe((foo: any) => console.log(foo));
             }
           });
-      });
+        },
+        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila'));
   }
 
   private toSettings(data): Settings {
@@ -197,27 +203,18 @@ export class EmployeesListComponent implements OnInit {
     return dayInfo;
   }
 
+  private showSnackBarError(error1, message: string) {
+    console.log(error1);
+    this.snackBar.open(message, 'Zavřít', {duration: 5000});
+  }
+
   ngOnInit() {
     this.usersService.getAuthorizedUsers()
       .subscribe((data: UserBasicInformation[]) => {
-        this._employeesBasicInformation = data;
-        this.mapUsers();
-      });
-
-    // const calendar: PostCalendar = { date: '1999/10/10', from: '15:00', to: '17:00', type: VacationType.VACATION };
-    // this.userService.postCalendar(calendar)
-    //   .subscribe((data: any) => console.log(data));
-
-    // const settings: UserSettings = {
-    //   id: 1,
-    //   role: UserType.EMPLOYEE,
-    //   sickdayCount: 1,
-    //   vacationCount: 1,
-    // };
-    //
-    // this.userService.putUserSettings(settings)
-    //   .subscribe((data: any) => console.log(data));
-
+          this._employeesBasicInformation = data;
+          this.mapUsers();
+        },
+        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila'));
   }
 
 }

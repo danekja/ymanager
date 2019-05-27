@@ -7,6 +7,7 @@ import {AuthorizationRequest, VacationRequest} from '../../models/requests.model
 import {Languages, ProfileStatus} from '../../enums/common.enum';
 import {Observable} from 'rxjs';
 import {UserBasicInformation} from '../../models/user.model';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ import {UserBasicInformation} from '../../models/user.model';
 export class UsersService extends BasicService {
   private _usersUrl = this.baseUrl + '/api/users';
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
+    super(http, snackBar);
   }
 
   /**

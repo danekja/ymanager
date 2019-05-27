@@ -8,6 +8,7 @@ import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
 import {UserSettings} from '../../models/settings.model';
 import {UserProfile} from '../../models/user.model';
 import {UserRequest} from '../../models/requests.model';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ import {UserRequest} from '../../models/requests.model';
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
   private _userUrl = this.baseUrl + '/api/user/';
 
-  constructor(protected http: HttpClient) {
-    super(http);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
+    super(http, snackBar);
   }
 
   /**

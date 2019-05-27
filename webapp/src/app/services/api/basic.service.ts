@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import {MatSnackBar} from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import {environment} from '../../../environments/environment';
 export class BasicService {
   protected baseUrl = environment.apiUrl;
 
-  constructor(protected http: HttpClient) { }
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) { }
 
   protected handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
@@ -19,6 +20,8 @@ export class BasicService {
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error}`);
     }
+
+    this.snackBar.open('Komunikace se serverem se nezdařila', 'Zavřít');
     return throwError(
       'Something bad happened; please try again later.');
   }
