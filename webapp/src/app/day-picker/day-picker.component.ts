@@ -44,7 +44,7 @@ export class DayPickerComponent {
     private dateToolsService: DateToolsService) {
 
     this.locale = localizationService.getCurrentLocale();
-    localizationService.currentLanguageSubject
+    localizationService.currentLocaleSubject
       .subscribe((data) => {
         this.locale = data;
       });
@@ -54,7 +54,7 @@ export class DayPickerComponent {
     this.currentYear = this.viewDate.getFullYear();
 
     // Calendar component needs to be refreshed on language switch or else language switch doesn't have an effect
-    this.localizationService.currentLanguageSubject.subscribe(e => this.refresh.next());
+    this.localizationService.currentLocaleSubject.subscribe(e => this.refresh.next());
   }
 
   public setVacation(vacations: Calendar[]) {
