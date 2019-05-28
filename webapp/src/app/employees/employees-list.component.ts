@@ -12,6 +12,7 @@ import {UserService} from '../services/api/user.service';
 import {LocalizationService} from '../localization/localization.service';
 import {DateFormatterService} from '../services/util/date-formatter.service';
 import {FileService} from '../services/api/file.service';
+import {ProfileService} from '../services/util/profile.service';
 
 const daysOfWeek: string[] = [
   'po',
@@ -42,6 +43,7 @@ export class EmployeesListComponent implements OnInit {
     private localizationService: LocalizationService,
     private dateFormatterService: DateFormatterService,
     private fileService: FileService,
+    private profileService: ProfileService,
     public dialog: MatDialog,
     private snackBar: MatSnackBar) {
     this.generateDays();
