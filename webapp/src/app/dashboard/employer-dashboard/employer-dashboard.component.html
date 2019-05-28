@@ -36,10 +36,10 @@
     <div class="col-lg-4 right-panel">
 
       <div class="days-off-info" *ngIf="profile">
-        <app-days-off-info
+        <app-vacation-info
           [sickDaysRemaining]="profile.sickdayCount"
           [extraVacationRemaining]="profile.vacationCount"
-        ></app-days-off-info>
+        ></app-vacation-info>
       </div>
 
     </div>

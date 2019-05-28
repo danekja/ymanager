@@ -9,7 +9,6 @@ import {LocalizationService} from '../../localization/localization.service';
 import {RequestStatus, RequestTypes} from '../../enums/common.enum';
 import {Calendar} from '../../models/calendar.model';
 import {DateToolsService} from '../../services/util/date-tools.service';
-import {EditVacationDialogComponent} from "../../edit-vacation-dialog/edit-vacation-dialog.component";
 
 @Component({
   selector: 'app-employer-dashboard',
@@ -22,7 +21,6 @@ export class EmployerDashboardComponent implements OnInit {
   private profile: UserProfile;
   private authorizationRequests: AuthorizationRequest[];
   private vacationRequests: VacationRequest[];
-  private currentMonthVacation: Calendar[];
   private oncomingVacation: Calendar[];
 
   constructor(

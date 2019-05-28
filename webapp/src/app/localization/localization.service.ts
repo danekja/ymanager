@@ -40,4 +40,8 @@ export class LocalizationService {
         return Languages.ENGLISH;
     }
   }
+
+  getCurrentLocale(): string {
+    return this.currentLanguage;
+  }
 }

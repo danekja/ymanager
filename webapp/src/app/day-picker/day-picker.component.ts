@@ -43,7 +43,7 @@ export class DayPickerComponent {
     private localizationService: LocalizationService,
     private dateToolsService: DateToolsService) {
 
-    this.locale = localizationService.defaultLanguage;
+    this.locale = localizationService.getCurrentLocale();
     localizationService.currentLanguageSubject
       .subscribe((data) => {
         this.locale = data;
