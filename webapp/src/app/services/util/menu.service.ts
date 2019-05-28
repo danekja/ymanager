@@ -15,22 +15,27 @@ const MENU_ITEMS: MenuItem[] = [
 })
 export class MenuService {
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {
+  }
 
   getMenuItems() {
     const menuItems: MenuItem[] = [];
-    menuItems.push({name: 'Dashboard', routePath: 'dashboard'});
 
     return new Observable((observer) => {
       this.userService.getLoggedUserProfile()
         .subscribe((profile: UserProfile) => {
-          if (profile.role === UserType.EMPLOYER) {
-            menuItems.push({name: 'Zaměstnanci', routePath: 'employees'});
-          }
+            menuItems.push({name: 'Dashboard', routePath: 'dashboard'});
+            if (profile.role === UserType.EMPLOYER) {
+              menuItems.push({name: 'Zaměstnanci', routePath: 'employees'});
+            }
 
-          observer.next(menuItems);
-          observer.complete();
-        });
+            observer.next(menuItems);
+            observer.complete();
+          },
+          () => {
+            observer.next(menuItems);
+            observer.complete();
+          });
     });
   }
 }
