@@ -1,3 +1,24 @@
-<p>
-  user-profile works!
-</p>
+<div mat-dialog-content style="height: 100%">
+  <div class="row">
+    <div class="col-md-9">
+      <app-day-picker #dayPicker
+        (selectedMonth)="onSelectedMonthChange($event)"
+      >
+      </app-day-picker>
+    </div>
+    <div class="col-md-3" *ngIf="profile">
+      <div class="user-info">
+        <img class="user-photo" src="{{profile.photo}}" />
+        <span class="user-name">{{profile.firstName}} {{profile.lastName}}</span>
+      </div>
+      <app-vacation-info
+        [sickDaysRemaining]="profile.sickdayCount"
+        [extraVacationRemaining]="profile.vacationCount"
+      ></app-vacation-info>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-raised-button color="basic" (click)="onCloseClick()">Zavřít</button>
+</div>

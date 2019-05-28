@@ -13,6 +13,7 @@ import {LocalizationService} from '../localization/localization.service';
 import {DateFormatterService} from '../services/util/date-formatter.service';
 import {FileService} from '../services/api/file.service';
 import {ProfileService} from '../services/util/profile.service';
+import {UserProfileDialogComponent} from "./user-profile/user-profile-dialog.component";
 
 const daysOfWeek: string[] = [
   'po',
@@ -81,6 +82,15 @@ export class EmployeesListComponent implements OnInit {
       .subscribe(() => this.snackBar.open('Import souboru se provedl', 'Zavřít', {duration: 5000}),
         error1 => this.showSnackBarError(error1, 'Import soubor se nezdařil')
       );
+  }
+
+  openUserProfile(user: User): void {
+    this.dialog.open(UserProfileDialogComponent, {
+      data: {
+        userId: user.id
+      },
+      width: '1100px'
+    });
   }
 
   /**
