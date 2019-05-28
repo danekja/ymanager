@@ -29,9 +29,9 @@ export class EmployeeComponentGuard extends BaseGuard implements CanActivate {
             if (userProfile.role === UserType.EMPLOYER) {
               console.log('User can navigate to the page');
               obs.next(true);
+            } else {
+              obs.next(this.navigateUserToDashboard());
             }
-
-            obs.next(this.navigateUserToDashboard());
             obs.complete();
           },
           () => {
