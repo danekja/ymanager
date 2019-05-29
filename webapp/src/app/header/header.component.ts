@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { ProfileSettingsComponent } from '../profile-settings/profile-settings.component';
+import {Component} from '@angular/core';
+import {MatDialog} from '@angular/material';
 import {LocalizationService} from '../localization/localization.service';
 import {UserService} from '../services/api/user.service';
 import {UserProfile} from '../models/user.model';

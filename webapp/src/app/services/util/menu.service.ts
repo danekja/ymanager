@@ -3,12 +3,7 @@ import {UserService} from '../api/user.service';
 import {UserProfile} from '../../models/user.model';
 import {MenuItem} from '../../models/menu-item.model';
 import {UserType} from '../../enums/common.enum';
-import {Observable, of} from 'rxjs';
-
-const MENU_ITEMS: MenuItem[] = [
-  {name: 'Zaměstnanci', routePath: 'employees'},
-  {name: 'Dashboard', routePath: 'dashboard'},
-];
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

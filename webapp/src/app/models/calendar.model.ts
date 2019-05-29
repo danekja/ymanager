@@ -1,4 +1,3 @@
-import {Time} from '@angular/common';
 import {RequestStatus, VacationType} from '../enums/common.enum';
 
 export interface Calendar {

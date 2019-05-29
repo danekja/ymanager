@@ -1,6 +1,5 @@
-import {Component, Inject, Output} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { FormControl } from '@angular/forms';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {Calendar} from '../models/calendar.model';
 
 @Component({
