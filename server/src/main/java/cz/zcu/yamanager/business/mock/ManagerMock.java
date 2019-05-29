@@ -212,7 +212,14 @@ public class ManagerMock implements Manager {
 
     @Override
     public void changeSettings(Long userId, UserSettings settings) {
-        userSettings.put(userId, settings);
+
+        if (userSettings.containsKey(userId)) {
+            if (settings.getId().equals(userId)) {
+                userSettings.get(userId).setNotification(settings.getNotification());
+            }
+        } else {
+            userSettings.put(userId, settings);
+        }
     }
 
     @Override

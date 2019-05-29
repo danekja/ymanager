@@ -1,11 +1,14 @@
 package cz.zcu.yamanager.dto;
 
+import java.time.LocalDateTime;
+
 public class UserSettings {
 
     private Long id;
     private Float vacationCount;
     private Integer sickdayCount;
     private UserRole role;
+    private LocalDateTime notification;
 
     public Long getId() {
         return id;
@@ -37,5 +40,13 @@ public class UserSettings {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public LocalDateTime getNotification() {
+        return notification;
+    }
+
+    public void setNotification(LocalDateTime notification) {
+        this.notification = notification;
     }
 }
