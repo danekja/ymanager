@@ -60,7 +60,6 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
         paramList.add(new SqlOutParameter("out_alert", Types.DATE));
         paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
@@ -70,21 +69,20 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
         Map<String, Object> resultMap = this.jdbc.call(con -> {
-            CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             callableStatement.setLong(1, id);
             callableStatement.registerOutParameter(2, Types.BIGINT);
             callableStatement.registerOutParameter(3, Types.VARCHAR);
             callableStatement.registerOutParameter(4, Types.VARCHAR);
             callableStatement.registerOutParameter(5, Types.FLOAT);
             callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.FLOAT);
-            callableStatement.registerOutParameter(8, Types.INTEGER);
-            callableStatement.registerOutParameter(9, Types.DATE);
-            callableStatement.registerOutParameter(10, Types.VARCHAR);
-            callableStatement.registerOutParameter(11, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(12, Types.DATE);
+            callableStatement.registerOutParameter(7, Types.INTEGER);
+            callableStatement.registerOutParameter(8, Types.DATE);
+            callableStatement.registerOutParameter(9, Types.VARCHAR);
+            callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
+            callableStatement.registerOutParameter(11, Types.DATE);
+            callableStatement.registerOutParameter(12, Types.VARCHAR);
             callableStatement.registerOutParameter(13, Types.VARCHAR);
-            callableStatement.registerOutParameter(14, Types.VARCHAR);
             return callableStatement;
         }, paramList);
 
@@ -94,7 +92,6 @@ public class UserRepository {
         user.setLastName((String)resultMap.get("out_last_name"));
         user.setVacationCount((float)resultMap.get("out_no_vacations"));
         user.setSickdayCount((int)resultMap.get("out_no_sick_days"));
-        user.setTakenVacationCount((float)resultMap.get("out_taken_vacations"));
         user.setTakenSickdayCount((int)resultMap.get("out_taken_sick_days"));
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));
@@ -113,7 +110,6 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
         paramList.add(new SqlOutParameter("out_alert", Types.DATE));
         paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
@@ -123,21 +119,20 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
         Map<String, Object> resultMap = this.jdbc.call(con -> {
-            CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             callableStatement.setString(1, token);
             callableStatement.registerOutParameter(2, Types.BIGINT);
             callableStatement.registerOutParameter(3, Types.VARCHAR);
             callableStatement.registerOutParameter(4, Types.VARCHAR);
             callableStatement.registerOutParameter(5, Types.FLOAT);
             callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.FLOAT);
-            callableStatement.registerOutParameter(8, Types.INTEGER);
-            callableStatement.registerOutParameter(9, Types.DATE);
-            callableStatement.registerOutParameter(10, Types.VARCHAR);
-            callableStatement.registerOutParameter(11, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(12, Types.DATE);
+            callableStatement.registerOutParameter(7, Types.INTEGER);
+            callableStatement.registerOutParameter(8, Types.DATE);
+            callableStatement.registerOutParameter(9, Types.VARCHAR);
+            callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
+            callableStatement.registerOutParameter(11, Types.DATE);
+            callableStatement.registerOutParameter(12, Types.VARCHAR);
             callableStatement.registerOutParameter(13, Types.VARCHAR);
-            callableStatement.registerOutParameter(14, Types.VARCHAR);
             return callableStatement;
         }, paramList);
 
@@ -147,7 +142,6 @@ public class UserRepository {
         user.setLastName((String)resultMap.get("out_last_name"));
         user.setVacationCount((float)resultMap.get("out_no_vacations"));
         user.setSickdayCount((int)resultMap.get("out_no_sick_days"));
-        user.setTakenVacationCount((float)resultMap.get("out_taken_vacations"));
         user.setTakenSickdayCount((int)resultMap.get("out_taken_sick_days"));
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));

@@ -11,7 +11,6 @@ public class FullUserProfile {
     private String photo;
     private Float vacationCount;
     private Integer sickdayCount;
-    private Float takenVacationCount;
     private Integer takenSickdayCount;
     private Status status;
     private UserRole role;
@@ -36,14 +35,6 @@ public class FullUserProfile {
 
     public String getFirstName() {
         return firstName;
-    }
-
-    public Float getTakenVacationCount() {
-        return takenVacationCount;
-    }
-
-    public void setTakenVacationCount(Float takenVacationCount) {
-        this.takenVacationCount = takenVacationCount;
     }
 
     public Integer getTakenSickdayCount() {

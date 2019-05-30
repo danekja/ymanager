@@ -36,9 +36,8 @@ CREATE TABLE end_user (
   id BIGINT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(45) NOT NULL,
   last_name VARCHAR(45) NOT NULL,
-  no_vacations FLOAT,
+  no_vacations FLOAT NOT NULL,
   no_sick_days INT,
-  taken_vacations FLOAT NOT NULL,
   taken_sick_days INT NOT NULL,
   alert DATETIME,
   token TEXT NOT NULL,
@@ -111,7 +110,6 @@ CREATE PROCEDURE GetUserId(
   OUT out_last_name VARCHAR(45),
   OUT out_no_vacations FLOAT,
   OUT out_no_sick_days INT,
-  OUT out_taken_vacations FLOAT,
   OUT out_taken_sick_days INT,
   OUT out_alert DATETIME,
   OUT out_email VARCHAR(100),
@@ -124,8 +122,8 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
-     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_vacations, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
      INNER JOIN approval_status APS ON EU.status_id=APS.id
@@ -140,7 +138,6 @@ CREATE PROCEDURE GetUserToken(
   OUT out_last_name VARCHAR(45),
   OUT out_no_vacations FLOAT,
   OUT out_no_sick_days INT,
-  OUT out_taken_vacations FLOAT,
   OUT out_taken_sick_days INT,
   OUT out_alert DATETIME,
   OUT out_email VARCHAR(100),
@@ -153,8 +150,8 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
-     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_vacations, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
      INNER JOIN approval_status APS ON EU.status_id=APS.id
@@ -185,7 +182,7 @@ INSERT INTO vacation_type (name) VALUES ('vacation');
 -- -----------------------------------------------------
 -- Insert table end_user
 -- -----------------------------------------------------
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_vacations, taken_sick_days, alert, token, email, photo, role_id, status_id) VALUES ('admin', 'admin', NULL, 5, 0, 0, NULL, '', '', '', 2, 1);
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, role_id, status_id) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', '', 2, 1);
 
 -- -----------------------------------------------------
 -- Insert table vacation_day
