@@ -12,3 +12,6 @@ export interface UserSettings {
   role: UserType;
 }
 
+export interface NotificationSettings {
+  notification: string;
+}

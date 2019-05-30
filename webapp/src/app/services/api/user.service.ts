@@ -5,7 +5,7 @@ import {Calendar, CalendarEdit, PostCalendar} from '../../models/calendar.model'
 import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
-import {UserSettings} from '../../models/settings.model';
+import {NotificationSettings, UserSettings} from '../../models/settings.model';
 import {UserProfile} from '../../models/user.model';
 import {UserRequest} from '../../models/requests.model';
 import {MatSnackBar} from '@angular/material';
@@ -126,6 +126,10 @@ export class UserService extends BasicService { // dost podobny k usersService, 
     return this.makePutUserSettingsApiCall(settings, language);
   }
 
+  putNotificationSettingsWithLanguage(settings: NotificationSettings, language: Languages) {
+    console.log(settings);
+    return this.makePutNotificationSettingsApiCall(settings, language);
+  }
   /**
    * Accept or deny user request
    * @param request request to accept or deny
@@ -232,6 +236,22 @@ export class UserService extends BasicService { // dost podobny k usersService, 
     const options = {params: httpParams};
 
     return this.http.put<UserSettings>(this._userUrl + 'settings', settings, options)
+      .pipe(
+        catchError(err => this.handleError(err))
+      );
+  }
+
+  /**
+   * Změna nastavení notifikace uživatele podle id
+   * PUT /user/settings?[lang=<CZ,EN>]
+   * @param settings notification setting to be set for given user
+   * @param language specified language
+   */
+  private makePutNotificationSettingsApiCall(settings: NotificationSettings, language: Languages) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
+
+    return this.http.put<NotificationSettings>(this._userUrl + 'settings', settings, options)
       .pipe(
         catchError(err => this.handleError(err))
       );
