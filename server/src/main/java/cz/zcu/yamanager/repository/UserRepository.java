@@ -70,7 +70,7 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
         Map<String, Object> resultMap = this.jdbc.call(con -> {
-            CallableStatement callableStatement = con.prepareCall("{call GetUserId(?)}");
+            CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             callableStatement.setLong(1, id);
             callableStatement.registerOutParameter(2, Types.BIGINT);
             callableStatement.registerOutParameter(3, Types.VARCHAR);
@@ -123,7 +123,7 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
         Map<String, Object> resultMap = this.jdbc.call(con -> {
-            CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?)}");
+            CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             callableStatement.setString(1, token);
             callableStatement.registerOutParameter(2, Types.BIGINT);
             callableStatement.registerOutParameter(3, Types.VARCHAR);
