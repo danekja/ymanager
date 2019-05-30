@@ -9,7 +9,6 @@ export interface Calendar {
   status: RequestStatus;
 }
 
-
 export interface PostCalendar {
   date: string;
   from: string;
