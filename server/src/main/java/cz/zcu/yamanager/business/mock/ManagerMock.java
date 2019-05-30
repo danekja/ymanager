@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 
-@Component
 public class ManagerMock implements Manager {
 
     private List<DefaultSettings> settings = new LinkedList<>();

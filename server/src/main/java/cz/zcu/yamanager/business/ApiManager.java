@@ -6,11 +6,14 @@ import cz.zcu.yamanager.repository.UserRepository;
 import cz.zcu.yamanager.repository.VacationRepository;
 import cz.zcu.yamanager.ws.rest.RESTFullException;
 import org.apache.tomcat.jni.Local;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Component
 public class ApiManager implements Manager {
 
     private static final int DAYS_IN_WEEK = 7;
@@ -19,10 +22,11 @@ public class ApiManager implements Manager {
     private UserRepository userRepository;
     private VacationRepository vacationRepository;
 
-    public ApiManager(JdbcTemplate jdbc) {
-        this.requestRepository = new RequestRepository(jdbc);
-        this.userRepository = new UserRepository(jdbc);
-        this.vacationRepository = new VacationRepository(jdbc);
+    @Autowired
+    public ApiManager(RequestRepository requestRepository, UserRepository userRepository, VacationRepository vacationRepository) {
+        this.requestRepository = requestRepository;
+        this.userRepository = userRepository;
+        this.vacationRepository = vacationRepository;
     }
 
     @Override
