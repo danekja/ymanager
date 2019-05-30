@@ -55,7 +55,6 @@ CREATE TABLE end_user (
   CONSTRAINT fk_end_user_approval_status FOREIGN KEY (status_id)
     REFERENCES approval_status (id)
     ON DELETE NO ACTION ON UPDATE CASCADE,
-  CONSTRAINT check_taken_vacation CHECK (taken_vacations >= 0),
   CONSTRAINT check_taken_sick_days CHECK (taken_sick_days >= 0)
 );
 
@@ -122,7 +121,7 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
@@ -150,7 +149,7 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
@@ -187,7 +186,7 @@ INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_s
 -- -----------------------------------------------------
 -- Insert table vacation_day
 -- -----------------------------------------------------
---INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES ();
+-- INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES ();
 
 -- -----------------------------------------------------
 -- Insert table default_settings

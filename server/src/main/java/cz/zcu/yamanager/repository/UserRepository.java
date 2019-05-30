@@ -54,7 +54,7 @@ public class UserRepository {
 
     public FullUserProfile getFullUser(long id) {
         List<SqlParameter> paramList = new ArrayList<>();
-        paramList.add(new SqlParameter(Types.BIGINT));
+        paramList.add(new SqlParameter("in_id", Types.BIGINT));
         paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
         paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
