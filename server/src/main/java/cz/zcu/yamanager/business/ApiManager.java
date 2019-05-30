@@ -70,8 +70,7 @@ public class ApiManager implements Manager {
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-        //this.vacationRepository.
-        // TODO
+        this.vacationRepository.insertVacationDay(userId, vacationDay);
     }
 
     @Override

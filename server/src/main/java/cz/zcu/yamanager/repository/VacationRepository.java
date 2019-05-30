@@ -126,9 +126,9 @@ public class VacationRepository {
                 });
     }
 
-    public void insertVacationDay(String token, VacationDay day) {
-        jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status_id, type_id) VALUES (?,?,?,?,?)",
-                day.getDate(), day.getFrom(), day.getTo(), day.getStatus().ordinal(), day.getType().ordinal());
+    public void insertVacationDay(Long userId, VacationDay day) {
+        jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES (?,?,?,?,?,?)",
+                day.getDate(), day.getFrom(), day.getTo(), userId, day.getStatus().ordinal(), day.getType().ordinal());
     }
 
     public void updateVacationDay(VacationDay item) {
