@@ -11,10 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -61,10 +58,10 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
         paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.DATE));
+        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
         paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.DATE));
+        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
         paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
@@ -77,22 +74,22 @@ public class UserRepository {
             callableStatement.registerOutParameter(5, Types.FLOAT);
             callableStatement.registerOutParameter(6, Types.INTEGER);
             callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.DATE);
+            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
             callableStatement.registerOutParameter(9, Types.VARCHAR);
             callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(11, Types.DATE);
+            callableStatement.registerOutParameter(11, Types.TIMESTAMP);
             callableStatement.registerOutParameter(12, Types.VARCHAR);
             callableStatement.registerOutParameter(13, Types.VARCHAR);
             return callableStatement;
         }, paramList);
 
         FullUserProfile user = new FullUserProfile();
-        user.setId((long)resultMap.get("out_id"));
+        user.setId((Long)resultMap.get("out_id"));
         user.setFirstName((String)resultMap.get("out_first_name"));
         user.setLastName((String)resultMap.get("out_last_name"));
-        user.setVacationCount((float)resultMap.get("out_no_vacations"));
-        user.setSickdayCount((int)resultMap.get("out_no_sick_days"));
-        user.setTakenSickdayCount((int)resultMap.get("out_taken_sick_days"));
+        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
+        user.setSickdayCount((Integer)resultMap.get("out_no_sick_days"));
+        user.setTakenSickdayCount((Integer)resultMap.get("out_taken_sick_days"));
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));
         user.setPhoto((String)resultMap.get("out_photo"));
@@ -111,10 +108,10 @@ public class UserRepository {
         paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
         paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
         paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.DATE));
+        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
         paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.DATE));
+        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
         paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
         paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
 
@@ -127,22 +124,22 @@ public class UserRepository {
             callableStatement.registerOutParameter(5, Types.FLOAT);
             callableStatement.registerOutParameter(6, Types.INTEGER);
             callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.DATE);
+            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
             callableStatement.registerOutParameter(9, Types.VARCHAR);
             callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(11, Types.DATE);
+            callableStatement.registerOutParameter(11, Types.TIMESTAMP);
             callableStatement.registerOutParameter(12, Types.VARCHAR);
             callableStatement.registerOutParameter(13, Types.VARCHAR);
             return callableStatement;
         }, paramList);
 
         FullUserProfile user = new FullUserProfile();
-        user.setId((long)resultMap.get("out_id"));
+        user.setId((Long)resultMap.get("out_id"));
         user.setFirstName((String)resultMap.get("out_first_name"));
         user.setLastName((String)resultMap.get("out_last_name"));
-        user.setVacationCount((float)resultMap.get("out_no_vacations"));
-        user.setSickdayCount((int)resultMap.get("out_no_sick_days"));
-        user.setTakenSickdayCount((int)resultMap.get("out_taken_sick_days"));
+        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
+        user.setSickdayCount((Integer)resultMap.get("out_no_sick_days"));
+        user.setTakenSickdayCount((Integer)resultMap.get("out_taken_sick_days"));
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));
         user.setPhoto((String)resultMap.get("out_photo"));
