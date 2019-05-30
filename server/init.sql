@@ -124,7 +124,7 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_vacations, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
@@ -153,7 +153,7 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacation, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_vacations, EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_vacations, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user EU
      INNER JOIN role R ON EU.role_id=R.id
