@@ -23,6 +23,7 @@ export class EmployerDashboardComponent implements OnInit {
   private vacationRequests: VacationRequest[];
   private oncomingVacation: Calendar[];
 
+  private selectedMonth: Date;
   constructor(
     public dialog: MatDialog,
     private localizationService: LocalizationService,
@@ -32,10 +33,12 @@ export class EmployerDashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.selectedMonth = this.dateToolsService.toStartOfMonth(new Date());
+
     this.loadProfile();
     this.loadAuthorizationRequests();
     this.loadVacationRequests();
-    this.loadMonthVacation(this.dateToolsService.toStartOfMonth(new Date()));
+    this.loadMonthVacation(this.selectedMonth);
     this.loadOncomingVacation();
   }
 
@@ -75,17 +78,26 @@ export class EmployerDashboardComponent implements OnInit {
     this.dialog
       .open(AddVacationDialogComponent, {
         data: {
-          fromDate: date
+          date
         }
       })
       .afterClosed().subscribe(data => {
         if (data && data.isConfirmed) {
-          // TODO
+          this.userService.postCalendarWithLanguage(
+            {
+              date: data.date,
+              from: data.fromTime,
+              to: data.toTime,
+              type: data.vacationType
+            },
+            this.localizationService.getCurrentLanguage()
+          ).subscribe(() => this.loadMonthVacation(this.selectedMonth));
         }
       });
   }
 
   onSelectedMonthChange(monthStart: Date) {
+    this.selectedMonth = monthStart;
     this.loadMonthVacation(monthStart);
   }
 

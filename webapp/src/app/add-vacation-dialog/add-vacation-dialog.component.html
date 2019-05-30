@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Výběr volna</h1>
 
 <div mat-dialog-content>
-  <div>
+  <div class="vacation-selection-container">
     <label id="vacation-type-radio-group-label" class="dialog-label">Typ volna: </label>
     <mat-radio-group aria-labelledby="vacation-type-radio-group-label" class="vacation-type-radio-group" [(ngModel)]="selectedVacationType">
       <mat-radio-button class="vacation-type-radio-button" [value]=vacationType.SICKDAY>
@@ -12,15 +12,32 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-
-  <div class="datetime-interval">
-    <div class="from-datetime">
-      <span class="datetime-interval-label">Od:</span>
-      <app-datetime [(date)]="data.fromDate" [(time)]="data.fromTime" [minuteStep]="MINUTE_STEP"></app-datetime>
+  <div class="datetime-selection-container">
+    <div class="date-selection">
+      <span class="dialog-label">Datum:</span>
+      <mat-form-field class="date-input">
+        <input id="date-input" matInput [matDatepicker]="datePicker" [(ngModel)]="data.date">
+        <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-datepicker #datePicker></mat-datepicker>
+      </mat-form-field>
     </div>
-    <div class="to-datetime">
-      <span class="datetime-interval-label">Do:</span>
-      <app-datetime [(date)]="data.toDate" [(time)]="data.toTime" [minuteStep]="MINUTE_STEP"></app-datetime>
+    <div class="datetime-interval" *ngIf="selectedVacationType == vacationType.VACATION">
+      <div class="from-time">
+        <span class="dialog-label">Od:</span>
+        <div class="time-input-container">
+          <input class="time-input" [format]="24" [value]="data.fromTime" [ngxTimepicker]="fromTimePicker">
+          <ngx-material-timepicker [minutesGap]="MINUTE_STEP" (timeSet)="data.fromTime = $event" #fromTimePicker></ngx-material-timepicker>
+          <i class="material-icons">access_time</i>
+        </div>
+      </div>
+      <div class="to-time">
+        <span class="dialog-label">Do:</span>
+        <div class="time-input-container">
+          <input class="time-input" [format]="24" [value]="data.toTime" [ngxTimepicker]="toTimePicker">
+          <ngx-material-timepicker [minutesGap]="MINUTE_STEP" (timeSet)="data.toTime = $event" #toTimePicker></ngx-material-timepicker>
+          <i class="material-icons">access_time</i>
+        </div>
+      </div>
     </div>
   </div>
 </div>
