@@ -93,8 +93,8 @@ public class UserRepository {
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));
         user.setPhoto((String)resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role_id")));
-        user.setStatus(Status.getStatus((String)resultMap.get("out_status_id")));
+        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
+        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
         return user;
 
     }
@@ -143,8 +143,8 @@ public class UserRepository {
         user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String)resultMap.get(("out_email")));
         user.setPhoto((String)resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role_id")));
-        user.setStatus(Status.getStatus((String)resultMap.get("out_status_id")));
+        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
+        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
         return user;
     }
 
