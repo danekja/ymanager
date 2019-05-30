@@ -1,6 +1,8 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {VacationType} from '../enums/common.enum';
+import {FormControl} from '@angular/forms';
+import {DateFormatterService} from '../services/util/date-formatter.service';
 
 @Component({
   selector: 'app-add-days-off-dialog',
@@ -14,36 +16,48 @@ export class AddVacationDialogComponent {
 
   selectedVacationType: VacationType;
 
+  dateFormControl: FormControl = new FormControl();
+
   constructor(
     public dialogRef: MatDialogRef<AddVacationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddVacationDialogData,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private dateFormatterService: DateFormatterService
   ) {
-    if (this.data.toDate == null) {
-      this.data.toDate = this.data.fromDate;
-    }
     if (this.data.fromTime == null) {
       this.data.fromTime = '08:00';
     }
     if (data.toTime == null) {
       this.data.toTime = '16:00';
     }
+
+    this.dateFormControl.setValue(data.date);
   }
 
   onConfirmClick(): void {
     if (this.selectedVacationType == null) {
       this.snackBar.open('Nevybrán typ volna', 'Zavřít', { duration: 5000 });
-    } else if (this.data.fromDate > this.data.toDate) {
-      this.snackBar.open('Datum "od" nemůže být větší než "do"', 'Zavřít', { duration: 5000 });
     } else {
-      this.dialogRef.close({
-        isConfirmed: true,
-        vacationType: this.selectedVacationType,
-        fromDate: this.data.fromDate,
-        fromTime: this.data.fromTime,
-        toDate: this.data.toDate,
-        toTime: this.data.toTime
-      });
+      let data;
+      const formattedDate = this.dateFormatterService.formatDate(this.data.date);
+
+      if (this.selectedVacationType === VacationType.VACATION) {
+        data = {
+          isConfirmed: true,
+          vacationType: this.selectedVacationType,
+          date: formattedDate,
+          fromTime: this.data.fromTime,
+          toTime: this.data.toTime
+        };
+      } else {
+        data = {
+          isConfirmed: true,
+          vacationType: this.selectedVacationType,
+          date: formattedDate
+        };
+      }
+
+      this.dialogRef.close(data);
     }
   }
 
@@ -56,8 +70,7 @@ export class AddVacationDialogComponent {
 }
 
 export interface AddVacationDialogData {
-  fromDate: Date;
-  toDate: Date;
+  date: Date;
   fromTime: string; // 'HH:mm' format
   toTime: string; // 'HH:mm' format
 }

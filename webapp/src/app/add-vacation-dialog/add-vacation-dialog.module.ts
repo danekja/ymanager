@@ -13,6 +13,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {SharedModule} from '../shared/shared.module';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+
 
 @NgModule({
   declarations: [AddVacationDialogComponent],
@@ -30,7 +32,8 @@ import {SharedModule} from '../shared/shared.module';
     MatInputModule,
     MatRadioModule,
     MatSnackBarModule,
-    SharedModule
+    SharedModule,
+    NgxMaterialTimepickerModule
   ],
   exports: [
     AddVacationDialogComponent

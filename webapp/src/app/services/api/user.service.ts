@@ -221,7 +221,6 @@ export class UserService extends BasicService { // dost podobny k usersService, 
       );
   }
 
-
   /**
    * Změna nastavení uživatele podle id
    * PUT /user/settings?[lang=<CZ,EN>]
