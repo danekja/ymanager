@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -44,27 +45,32 @@ public class ApiManager implements Manager {
 
     @Override
     public List<VacationRequest> getVacationRequests(Status status) throws RESTFullException {
-        return this.requestRepository.getAllVacationRequests(status);
+        List<VacationRequest> requests = this.requestRepository.getAllVacationRequests(status);
+        return requests == null ? Collections.emptyList() : requests;
     }
 
     @Override
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
-        return this.requestRepository.getAllAuthorizations(status);
+        List<AuthorizationRequest> requests = this.requestRepository.getAllAuthorizations(status);
+        return requests == null ? Collections.emptyList() : requests;
     }
 
     @Override
     public FullUserProfile getUserProfile(Long userId) throws RESTFullException {
-        return this.userRepository.getFullUser(userId);
+        FullUserProfile userProfile = this.userRepository.getFullUser(userId);
+        return userProfile == null ? new FullUserProfile() : userProfile;
     }
 
     @Override
     public DefaultSettings getDefaultSettings() throws RESTFullException {
-        return this.userRepository.getLastDefaultSettings();
+        DefaultSettings settings = this.userRepository.getLastDefaultSettings();
+        return settings == null ? new DefaultSettings() : settings;
     }
 
     @Override
     public List<VacationDay> getUserCalendar(Long userId, LocalDate fromDate, LocalDate toDate, Status status) throws RESTFullException {
-        return this.vacationRepository.getVacationDays(userId, fromDate, toDate, status);
+        List<VacationDay> vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate, status);
+        return vacations == null ? Collections.emptyList() : vacations;
     }
 
     @Override
