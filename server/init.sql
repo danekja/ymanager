@@ -185,12 +185,12 @@ INSERT INTO vacation_type (name) VALUES ('vacation');
 -- -----------------------------------------------------
 -- Insert table end_user
 -- -----------------------------------------------------
--- INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, alert, token, email, photo, role_id, status_id) VALUES ();
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_vacations, taken_sick_days, alert, token, email, photo, role_id, status_id) VALUES ('admin', 'admin', NULL, 5, 0, 0, NULL, '', '', '', 2, 1);
 
 -- -----------------------------------------------------
 -- Insert table vacation_day
 -- -----------------------------------------------------
--- INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES ();
+--INSERT INTO vacation_day (vacation_date, time_from, time_to, user_id, status_id, type_id) VALUES ();
 
 -- -----------------------------------------------------
 -- Insert table default_settings
