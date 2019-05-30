@@ -61,4 +61,22 @@ export class DateToolsService {
 
     return result;
   }
+
+  /**
+   * Creates {date: Date, time: string} object from string representation of datetime in format 'yyyy/mm/dd hh:mm:ss'
+   * @param datetime string representation of datetime in format 'yyyy/mm/dd hh:mm:ss'
+   */
+  toDateAndTime(datetime: string) {
+    const parsedDatetime = datetime.split(' ');
+    const parsedDate = parsedDatetime[0].split('/');
+    const parsedTime = parsedDatetime[1].split(':');
+
+    const date = new Date(Number(parsedDate[0]), Number(parsedDate[1]), Number(parsedDate[2]));
+    const time = parsedTime[0] + ':' + parsedTime[1];
+
+    return {
+      date,
+      time
+    };
+  }
 }

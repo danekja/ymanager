@@ -3,6 +3,7 @@ import {MatDialog} from '@angular/material';
 import {LocalizationService} from '../localization/localization.service';
 import {UserService} from '../services/api/user.service';
 import {UserProfile} from '../models/user.model';
+import {ProfileSettingsComponent} from "../profile-settings/profile-settings.component";
 
 @Component({
   selector: 'app-header',
@@ -22,15 +23,24 @@ export class HeaderComponent {
   }
 
   onProfileClick(): void {
-    // TODO (až bude hotovej endpoint na post notifikace)
-    // this.dialog.open(ProfileSettingsComponent, {
-    //   data: {
-    //     notifyDate: this.notificationSettings,
-    //     notifyTime: {
-    //       hour: this.notificationSettings.getHours(),
-    //       minute: this.notificationSettings.getMinutes()
-    //     }
-    //   }
-    // });
+    this.userService.getLoggedUserProfile()
+      .subscribe((data: UserProfile) => {
+        this.profile = data;
+
+        this.dialog.open(ProfileSettingsComponent, {
+          data: {
+            notification: this.profile.notification
+          }
+        }).afterClosed().subscribe(dialogData => {
+          this.userService.putNotificationSettingsWithLanguage(
+            {
+              notification: dialogData.notification
+            },
+            this.localizationService.getCurrentLanguage()
+          ).subscribe(() => {
+            this.userService.getLoggedUserProfile().subscribe((profile: UserProfile) => this.profile = profile);
+          });
+        });
+      });
   }
 }

@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import {DateToolsService} from '../services/util/date-tools.service';
+import {DateFormatterService} from "../services/util/date-formatter.service";
 
 @Component({
   selector: 'app-profile-settings',
@@ -7,17 +9,30 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
   styleUrls: ['./profile-settings.component.sass']
 })
 export class ProfileSettingsComponent {
+  private date: Date;
+  private time: string;
+
   constructor(
+    private dateToolsService: DateToolsService,
+    private dateFormatterService: DateFormatterService,
     public dialogRef: MatDialogRef<ProfileSettingsComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ProfileSettingsDialogData,
   ) {
+    const parsedDatetime = this.dateToolsService.toDateAndTime(this.data.notification);
+
+    this.date = parsedDatetime.date;
+    this.time = parsedDatetime.time;
   }
 
   onConfirmClick(): void {
     this.dialogRef.close({
       isConfirmed: true,
-      notifyDate: this.data.notifyDate,
-      notifyTime: this.data.notifyTime
+      notification: this.dateFormatterService.formatDatetime(
+        this.dateToolsService.toDate(
+          this.dateFormatterService.formatDate(this.date),
+          this.time
+        )
+      )
     });
   }
 
@@ -29,6 +44,5 @@ export class ProfileSettingsComponent {
 }
 
 export interface ProfileSettingsDialogData {
-  notifyDate: Date;
-  notifyTime: string;
+  notification: string; // yyyy/mm/dd hh:mm:ss
 }
