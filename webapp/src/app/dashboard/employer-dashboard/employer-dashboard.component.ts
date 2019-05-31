@@ -83,7 +83,10 @@ export class EmployerDashboardComponent implements OnInit {
               type: data.vacationType
             },
             this.localizationService.getCurrentLanguage()
-          ).subscribe(() => this.loadMonthVacation(this.selectedMonth));
+          ).subscribe(() => {
+            this.loadMonthVacation(this.selectedMonth);
+            this.loadOncomingVacation();
+          });
         }
       });
   }
