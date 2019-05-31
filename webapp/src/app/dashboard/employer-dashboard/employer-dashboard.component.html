@@ -18,10 +18,10 @@
         ></app-days-off-approval>
       </div>
 
-      <div class="employer-dashboard-coming-vacation">
+      <div class="employer-dashboard-oncoming-days-off"
+           *ngIf="oncomingVacation && oncomingVacation.length > 0">
         <app-coming-days-off
           [oncomingVacation]="oncomingVacation"
-          (vacationEdit)="editVacation($event)"
           (vacationRemove)="removeVacation($event)"
         ></app-coming-days-off>
       </div>

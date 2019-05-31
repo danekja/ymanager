@@ -12,8 +12,6 @@ export class OncomingVacationComponent implements OnInit {
 
   @Output() vacationRemove = new EventEmitter<Calendar>();
 
-  @Output() vacationEdit = new EventEmitter<Calendar>();
-
   constructor() { }
 
   ngOnInit() { }

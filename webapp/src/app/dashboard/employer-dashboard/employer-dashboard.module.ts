@@ -9,7 +9,6 @@ import { OncomingVacationModule } from '../../oncoming-vacation/oncoming-vacatio
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AddVacationDialogModule} from '../../add-vacation-dialog/add-vacation-dialog.module';
 import {MatDialogModule} from '@angular/material';
-import {EditVacationDialogModule} from '../../edit-vacation-dialog/edit-vacation-dialog.module';
 
 @NgModule({
   declarations: [ EmployerDashboardComponent ],
@@ -24,7 +23,6 @@ import {EditVacationDialogModule} from '../../edit-vacation-dialog/edit-vacation
     OncomingVacationModule,
     BrowserAnimationsModule,
     AddVacationDialogModule,
-    EditVacationDialogModule,
     MatDialogModule
   ]
 })

@@ -66,14 +66,6 @@ export class EmployerDashboardComponent implements OnInit {
       .subscribe(e => this.loadOncomingVacation());
   }
 
-  editVacation(vac: Calendar) {
-    // this.dialog.open(EditVacationDialogComponent, {
-    //   data: {
-    //     vacation: vac
-    //   }
-    // });
-  }
-
   onDateSelect( date: Date ) {
     this.dialog
       .open(AddVacationDialogComponent, {
