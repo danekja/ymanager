@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserService} from '../api/user.service';
 import {UserProfile} from '../../models/user.model';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,11 @@ export class ProfileService {
    * the changes to logged user would not be seen until
    * the user logged off and then logged back in
    */
-  public getLoggedUser() {
+  public getLoggedUser(cached?: boolean) {
+    if (cached && this.isUserLogged()) {
+      return of(this.profile);
+    }
+
     return new Observable<UserProfile>((obs) => {
       this.userService.getLoggedUserProfile()
         .subscribe((userProfile: UserProfile) => {
