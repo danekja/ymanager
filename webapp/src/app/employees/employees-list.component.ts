@@ -13,16 +13,16 @@ import {LocalizationService} from '../localization/localization.service';
 import {DateFormatterService} from '../services/util/date-formatter.service';
 import {FileService} from '../services/api/file.service';
 import {ProfileService} from '../services/util/profile.service';
-import {UserProfileDialogComponent} from "./user-profile/user-profile-dialog.component";
+import {UserProfileDialogComponent} from './user-profile/user-profile-dialog.component';
 
 const daysOfWeek: string[] = [
-  'po',
-  'ut',
-  'st',
-  'ct',
-  'pa',
-  'so',
-  'ne',
+  'dayShortName.mon',
+  'dayShortName.tue',
+  'dayShortName.wed',
+  'dayShortName.thu',
+  'dayShortName.fri',
+  'dayShortName.sat',
+  'dayShortName.sun',
 ];
 
 @Component({

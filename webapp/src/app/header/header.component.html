@@ -1,11 +1,22 @@
 <div class="row header">
-  <img class="logo" src="../../assets/images/logo.png" />
+  <img class="logo" src="../../assets/images/logo.png" alt="logo"/>
   <div class="language-and-user">
-    <button (click)="localizationService.switchLanguage('cs')">CS</button>
-    <button (click)="localizationService.switchLanguage('en')">EN</button>
-    <button class="user-info" (click)="onProfileClick()">
-      <img class="user-icon" src="../../assets/images/default-user.png"/>
-      <span *ngIf="profile" class="user-name">{{profile.firstName}} {{profile.lastName}}</span>
+    <label [matMenuTriggerFor]="menu" class="language-menu">
+      <span class="flag-icon flags flag-icon-gb" *ngIf="language === 'EN'"></span>
+      <span class="flag-icon flags flag-icon-cz" *ngIf="language === 'CZ'"></span>
+    </label>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="switchLanguage('en')">
+          English <span class="flag-icon flag-icon-gb" ></span>
+        </button>
+        <button mat-menu-item (click)="switchLanguage('cs')">
+          Česky <span class="flag-icon flag-icon-cz"></span>
+        </button>
+      </mat-menu>
+    <button *ngIf="profile" class="user-info" (click)="onProfileClick()">
+      <img class="user-icon" src="{{profile.photo}}" alt="profile-photo"/>
+      <span class="user-name">{{profile.firstName}} {{profile.lastName}}</span>
     </button>
   </div>
 </div>

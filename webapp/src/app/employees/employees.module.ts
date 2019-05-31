@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {EmployeesListComponent} from './employees-list.component';
+import {TranslateModule} from '@ngx-translate/core';
 
 import {
   MatButtonModule,
@@ -9,7 +10,8 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatRadioModule,
-  MatTableModule
+  MatTableModule,
+
 } from '@angular/material';
 import {EditEmployeeDialogComponent} from './edit-employee-dialog/edit-employee-dialog.component';
 import {FormsModule} from '@angular/forms';
@@ -40,7 +42,8 @@ import {VacationInfoModule} from '../vacation-info/vacation-info.module';
     MatButtonModule,
     DayPickerModule,
     SharedModule,
-    VacationInfoModule
+    VacationInfoModule,
+    TranslateModule,
   ],
   entryComponents: [
     EditEmployeeDialogComponent,
