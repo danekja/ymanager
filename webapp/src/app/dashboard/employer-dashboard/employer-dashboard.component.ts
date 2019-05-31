@@ -24,6 +24,7 @@ export class EmployerDashboardComponent implements OnInit {
   private oncomingVacation: Calendar[];
 
   private selectedMonth: Date;
+
   constructor(
     public dialog: MatDialog,
     private localizationService: LocalizationService,
@@ -44,12 +45,12 @@ export class EmployerDashboardComponent implements OnInit {
 
   userApproved(requestId: number, approved: boolean) {
     this.requestApproved(requestId, RequestTypes.AUTHORIZATION, approved)
-      .subscribe(e => this.loadAuthorizationRequests());
+      .subscribe(() => this.loadAuthorizationRequests());
   }
 
   vacationApproved(requestId: number, approved: boolean) {
     this.requestApproved(requestId, RequestTypes.VACATION, approved)
-      .subscribe(e => this.loadVacationRequests());
+      .subscribe(() => this.loadVacationRequests());
   }
 
   requestApproved(requestId: number, requestType: RequestTypes, approved: boolean) {
@@ -63,7 +64,10 @@ export class EmployerDashboardComponent implements OnInit {
 
   removeVacation(vac: Calendar) {
     this.userService.deleteCalendar(vac.id, this.localizationService.getCurrentLanguage())
-      .subscribe(e => this.loadOncomingVacation());
+      .subscribe(() => {
+        this.loadOncomingVacation();
+        this.loadMonthVacation(this.selectedMonth);
+      });
   }
 
   onDateSelect( date: Date ) {
