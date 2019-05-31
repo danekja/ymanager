@@ -12,6 +12,7 @@ import {ProfileSettingsComponent} from '../profile-settings/profile-settings.com
 })
 export class HeaderComponent {
   profile: UserProfile;
+  language: string;
 
   constructor(
     private dialog: MatDialog,
@@ -20,8 +21,12 @@ export class HeaderComponent {
     ) {
     userService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => this.profile = data);
+    this.language = this.localizationService.getCurrentLanguage();
   }
 
+  switchLanguage(language: string) {
+    this.language = this.localizationService.switchLocale(language);
+  }
   onProfileClick(): void {
     this.userService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => {

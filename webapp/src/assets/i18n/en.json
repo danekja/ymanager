@@ -2,8 +2,47 @@
   "daysOffInfo": {
     "remaining": "Vacation remaining"
   },
+  "userApproval": {
+    "headline": "User approval",
+    "requestDate": "Date of request"
+  },
+  "vacationApproval": {
+    "headline": "Vacation approval",
+    "requestDate": "Date of request"
+  },
   "vacationType": {
     "vacation": "Extra vacation",
     "sickday": "Sickday"
-  }
+  },
+  "oncomingVacation": {
+    "headline": "My oncoming vacation",
+    "status": "Status"
+  },
+  "basic": {
+    "name": "Name",
+    "employees": "Employees",
+    "vacation": "Vacation days",
+    "date": "Date",
+    "from": "From",
+    "to": "To",
+    "vacationType": "Type"
+  },
+  "dayShortName" : {
+    "mon": "mon",
+    "tue": "tue",
+    "wed": "wed",
+    "thu": "thu",
+    "fri": "fri",
+    "sat": "sat",
+    "sun": "sun"
+  },
+  "button": {
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "EMPLOYER": "Employer",
+  "EMPLOYEE": "Employee",
+  "VACATION": "Vacation",
+  "SICKDAY": "Sickday"
+
 }

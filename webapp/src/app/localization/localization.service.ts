@@ -4,35 +4,37 @@ import {registerLocaleData} from '@angular/common';
 import localeEn from '@angular/common/locales/en';
 import localeCs from '@angular/common/locales/cs';
 import {Subject} from 'rxjs';
-import {Languages} from "../enums/common.enum";
+import {Languages} from '../enums/common.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocalizationService {
-  readonly defaultLanguage = 'en';
+  readonly defaultLocale = 'cs';
 
-  currentLanguageSubject: Subject<string>;
+  currentLocaleSubject: Subject<string>;
 
-  private currentLanguage = this.defaultLanguage;
+  private currentLocale = this.defaultLocale;
 
   constructor(private translate: TranslateService) {
-    this.currentLanguageSubject = new Subject<string>();
+    this.currentLocaleSubject = new Subject<string>();
 
     registerLocaleData(localeEn);
     registerLocaleData(localeCs);
 
-    translate.setDefaultLang(this.defaultLanguage);
+    translate.setDefaultLang(this.defaultLocale);
   }
 
-  switchLanguage(lang: string) {
-    this.translate.use(lang);
-    this.currentLanguageSubject.next(lang);
-    this.currentLanguage = lang;
+  switchLocale(locale: string): string {
+    this.translate.use(locale);
+    this.currentLocaleSubject.next(locale);
+    this.currentLocale = locale;
+
+    return this.getCurrentLanguage();
   }
 
   getCurrentLanguage(): Languages {
-    switch (this.currentLanguage) {
+    switch (this.currentLocale) {
       case 'cs':
         return Languages.CZECH;
       case 'en':
@@ -42,6 +44,6 @@ export class LocalizationService {
   }
 
   getCurrentLocale(): string {
-    return this.currentLanguage;
+    return this.currentLocale;
   }
 }
