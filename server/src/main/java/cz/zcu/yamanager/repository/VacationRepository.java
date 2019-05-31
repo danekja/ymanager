@@ -134,8 +134,8 @@ public class VacationRepository {
                         item.setTo(timeTo.toLocalTime());
                     }
 
-                    item.setStatus(Status.getStatus(rs.getString("s.name")));
-                    item.setType(VacationType.getVacationType(rs.getString("t.name")));
+                    item.setStatus(Status.getStatus(rs.getString("v.status")));
+                    item.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
                     return item;
                 });
     }
