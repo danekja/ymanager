@@ -284,7 +284,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
     const httpParams: HttpParams = this.createParams({lang: language});
     const options = {params: httpParams};
 
-    return this.http.delete(this._userUrl + 'calendar/' + id + '/delete', options)
+    return this.http.delete(this.baseUrl + '/calendar/' + id + '/delete', options)
       .pipe(
         catchError(err => this.handleError(err))
       );

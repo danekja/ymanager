@@ -36,9 +36,15 @@ export class EmployerDashboardComponent implements OnInit {
   ngOnInit() {
     this.selectedMonth = this.dateToolsService.toStartOfMonth(new Date());
 
-    this.loadProfile();
-    this.loadAuthorizationRequests();
-    this.loadVacationRequests();
+    this.userService.getLoggedUserProfile()
+      .subscribe((data: UserProfile) => {
+        this.profile = data;
+        if (this.isEmployer()) {
+          this.loadAuthorizationRequests();
+          this.loadVacationRequests();
+        }
+      });
+
     this.loadMonthVacation(this.selectedMonth);
     this.loadOncomingVacation();
   }
@@ -67,6 +73,7 @@ export class EmployerDashboardComponent implements OnInit {
       .subscribe(() => {
         this.loadOncomingVacation();
         this.loadMonthVacation(this.selectedMonth);
+        this.loadProfile();
       });
   }
 
@@ -90,6 +97,7 @@ export class EmployerDashboardComponent implements OnInit {
           ).subscribe(() => {
             this.loadMonthVacation(this.selectedMonth);
             this.loadOncomingVacation();
+            this.loadProfile();
           });
         }
       });
@@ -107,6 +115,7 @@ export class EmployerDashboardComponent implements OnInit {
       return false;
     }
   }
+
   private loadProfile() {
     this.userService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => this.profile = data);
