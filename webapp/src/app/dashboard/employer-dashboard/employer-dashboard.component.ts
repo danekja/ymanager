@@ -6,7 +6,7 @@ import {AuthorizationRequest, VacationRequest} from '../../models/requests.model
 import {UserService} from '../../services/api/user.service';
 import {UserProfile} from '../../models/user.model';
 import {LocalizationService} from '../../localization/localization.service';
-import {RequestStatus, RequestTypes} from '../../enums/common.enum';
+import {RequestStatus, RequestTypes, UserType} from '../../enums/common.enum';
 import {Calendar} from '../../models/calendar.model';
 import {DateToolsService} from '../../services/util/date-tools.service';
 
@@ -101,6 +101,13 @@ export class EmployerDashboardComponent implements OnInit {
     this.loadMonthVacation(monthStart);
   }
 
+  isEmployer(): boolean {
+    if (this.profile) {
+      return this.profile.role === UserType.EMPLOYER;
+    } else {
+      return false;
+    }
+  }
   private loadProfile() {
     this.userService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => this.profile = data);
