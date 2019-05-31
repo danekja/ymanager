@@ -3,7 +3,7 @@ import {MatDialog} from '@angular/material';
 import {LocalizationService} from '../localization/localization.service';
 import {UserService} from '../services/api/user.service';
 import {UserProfile} from '../models/user.model';
-import {ProfileSettingsComponent} from "../profile-settings/profile-settings.component";
+import {ProfileSettingsComponent} from '../profile-settings/profile-settings.component';
 
 @Component({
   selector: 'app-header',
@@ -32,6 +32,10 @@ export class HeaderComponent {
             notification: this.profile.notification
           }
         }).afterClosed().subscribe(dialogData => {
+          if (!dialogData.isConfirmed) {
+            return;
+          }
+
           this.userService.putNotificationSettingsWithLanguage(
             {
               notification: dialogData.notification

@@ -23,7 +23,7 @@ export class UsersService extends BasicService {
    * Returns all authorized users
    */
   getAuthorizedUsers() {
-    return this.makeGetUsersApiCall(ProfileStatus.AUTHORIZED, null);
+    return this.makeGetUsersApiCall(null, ProfileStatus.AUTHORIZED);
   }
 
   /**
@@ -32,14 +32,14 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getAuthorizedUsersWithLanguage(language: Languages) {
-    return this.makeGetUsersApiCall(ProfileStatus.AUTHORIZED, language);
+    return this.makeGetUsersApiCall(language, ProfileStatus.AUTHORIZED);
   }
 
   /**
    * Returns all pending users
    */
   getPendingUsers() {
-    return this.makeGetUsersApiCall(ProfileStatus.PENDING, null);
+    return this.makeGetUsersApiCall(null, ProfileStatus.PENDING);
   }
 
   /**
@@ -48,14 +48,14 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getPendingUsersWithLanguage(language: Languages) {
-    return this.makeGetUsersApiCall(ProfileStatus.PENDING, language);
+    return this.makeGetUsersApiCall(language, ProfileStatus.PENDING);
   }
 
   /**
    * Return all rejected users
    */
   getRejectedUsers() {
-    return this.makeGetUsersApiCall(ProfileStatus.REJECTED, null);
+    return this.makeGetUsersApiCall(null, ProfileStatus.REJECTED);
   }
 
   /**
@@ -64,7 +64,7 @@ export class UsersService extends BasicService {
    * @param language filter users based on language
    */
   getRejectedUsersWithLanguage(language: Languages) {
-    return this.makeGetUsersApiCall(ProfileStatus.REJECTED, language);
+    return this.makeGetUsersApiCall(language, ProfileStatus.REJECTED);
   }
 
  /**
@@ -72,48 +72,54 @@ export class UsersService extends BasicService {
   * regardless of language and status
   */
   getUsers() {
-    return this.makeGetUsersApiCall(null, null);
+    return this.makeGetUsersApiCall();
   }
 
   /**
-   * Returns all vacation requests
+   * Returns all vacation requests specified by status, if status
+   * is not specified, returns all vacation requests
+   * @param status optional vacation request status
    */
-  getVacationRequests() {
-    return this.makeGetVacationRequestsApiCall(null);
+  getVacationRequests(status?: string) {
+    return this.makeGetVacationRequestsApiCall( null, status);
   }
 
   /**
    * Returns vacations filtered by language
    * @param language filter by passed language
+   * @param status optionalvacation request status
    */
-  getVacationRequestsWithLanguage(language: Languages) {
-    return this.makeGetVacationRequestsApiCall(language);
+  getVacationRequestsWithLanguage(language: Languages, status?: string) {
+    return this.makeGetVacationRequestsApiCall(language, status);
   }
 
 
   /**
    * Returns all authorization requests
+   * @param status optional authorization request status
    */
-  getAuthorizationRequests() {
-    return this.makeGetAuthorizationRequestsApiCall(null);
+  getAuthorizationRequests(status?: string) {
+    return this.makeGetAuthorizationRequestsApiCall(null, status);
   }
 
 
   /**
    * Returns authorization requests filtered by language
    * @param language filter by passed language
+   * @param status optional authorization request status
    */
-  getAuthorizationRequestsWithLanguage(language: Languages) {
-    return this.makeGetAuthorizationRequestsApiCall(language);
+  getAuthorizationRequestsWithLanguage(language: Languages, status?: string) {
+    return this.makeGetAuthorizationRequestsApiCall(language, status);
   }
 
   /**
    * Získání žádostí o autorizaci všech uživatelů s možností filtrace pomocí úrovně schválení.
    * GET /users/requests/authorization?[lang=<CZ,EN>]&[status=<ACCEPTED, PENDING, REJECTED>
    * @param language filter by language
+   * @param status optional authorization request status
    */
-  private makeGetAuthorizationRequestsApiCall(language: string) {
-    const httpParams: HttpParams = this.createParams({lang: language});
+  private makeGetAuthorizationRequestsApiCall(language?: string, statusReq?: string) {
+    const httpParams: HttpParams = this.createParams({lang: language, status: statusReq});
     const options = {params: httpParams};
 
     return this.http.get<AuthorizationRequest[]>(this._usersUrl + '/requests/authorization', options)
@@ -126,9 +132,10 @@ export class UsersService extends BasicService {
    * Získání žádostí o dovolené a sick days všech uživatelů s možností filtrace pomocí úrovně schválení.
    * GET /users/requests/vacation? [lang=<CZ,EN>]&[status=<ACCEPTED, PENDING, REJECTED>]
    * @param language filter by language
+   * @param status vacation request status
    */
-  private makeGetVacationRequestsApiCall(language: string) {
-    const httpParams: HttpParams = this.createParams({lang: language});
+  private makeGetVacationRequestsApiCall(language?: string, statusReq?: string) {
+    const httpParams: HttpParams = this.createParams({lang: language, status: statusReq});
     const options = {params: httpParams};
 
     return this.http.get<VacationRequest[]>(this._usersUrl + '/requests/vacation', options)
@@ -143,7 +150,7 @@ export class UsersService extends BasicService {
    * @param status filter by status
    * @param language filter by language
    */
-  private makeGetUsersApiCall(status: string, language: string): Observable<UserBasicInformation[]> {
+  private makeGetUsersApiCall(language?: string, status?: string): Observable<UserBasicInformation[]> {
     const httpParams: HttpParams = this.createParams({lang: language, status});
     const options = {params: httpParams};
 

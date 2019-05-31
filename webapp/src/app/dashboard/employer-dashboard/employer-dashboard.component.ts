@@ -107,12 +107,12 @@ export class EmployerDashboardComponent implements OnInit {
   }
 
   private loadAuthorizationRequests() {
-    this.usersService.getAuthorizationRequestsWithLanguage(this.localizationService.getCurrentLanguage())
+    this.usersService.getAuthorizationRequestsWithLanguage(this.localizationService.getCurrentLanguage(), RequestStatus.PENDING)
       .subscribe((data: AuthorizationRequest[]) => this.authorizationRequests = data);
   }
 
   private loadVacationRequests() {
-    this.usersService.getVacationRequestsWithLanguage(this.localizationService.getCurrentLanguage())
+    this.usersService.getVacationRequestsWithLanguage(this.localizationService.getCurrentLanguage(), RequestStatus.PENDING)
       .subscribe((data: VacationRequest[]) => this.vacationRequests = data);
   }
 
