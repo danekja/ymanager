@@ -49,6 +49,23 @@ public class UserRepository {
         });
     }
 
+    public List<BasicProfileUser> getAllBasicUsers(Status status) {
+        if(status == null) throw new IllegalArgumentException();
+
+        return jdbc.query("SELECT u.id, u.first_name, u.last_name, u.photo" +
+                "FROM end_user u " +
+                "INNER JOIN approval_status s ON u.status_id = s.id " +
+                "WHERE s.name = ?",
+                new Object[]{status.name()}, (ResultSet rs, int rowNum) -> {
+            BasicProfileUser user = new BasicProfileUser();
+            user.setId(rs.getLong("u.id"));
+            user.setFirstName(rs.getString("u.first_name"));
+            user.setLastName(rs.getString("u.last_name"));
+            user.setPhoto(rs.getString("u.photo"));
+            return user;
+        });
+    }
+
     public FullUserProfile getFullUser(long id) {
         List<SqlParameter> paramList = new ArrayList<>();
         paramList.add(new SqlParameter("in_id", Types.BIGINT));
@@ -160,8 +177,12 @@ public class UserRepository {
         });
     }
 
+    public void updateNotification(UserSettings settings) {
+        jdbc.update("UPDATE end_user SET alert = ? WHERE id = ?", settings.getNotification(), settings.getId());
+    }
+
     public void updateUserSettings(UserSettings settings) {
-        jdbc.update("UPDATE end_user EU, role R SET EU.no_vacations=?, EU.no_sick_days=?, EU.role_id=R.id WHERE EU.id = ? AND R.name=?",
+        jdbc.update("UPDATE end_user u, role r SET u.no_vacations=?, u.no_sick_days=?, u.role_id=r.id WHERE u.id = ? AND r.name=?",
                 settings.getVacationCount(), settings.getSickdayCount(), settings.getId(), settings.getRole().name());
     }
 

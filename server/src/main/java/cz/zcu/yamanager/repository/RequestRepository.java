@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.security.InvalidParameterException;
 import java.sql.ResultSet;
+import java.sql.Time;
 import java.util.List;
 
 /**
@@ -42,18 +44,18 @@ public class RequestRepository {
     public List<AuthorizationRequest> getAllAuthorizations() {
         log.trace("Selecting all authorization requests from a database.");
 
-        return jdbc.query("SELECT EU.id, EU.first_name, EU.last_name, EU.creation_date, APS.name " +
-                "FROM end_user EU " +
-                "INNER JOIN approval_status APS ON EU.status_id = APS.id",
+        return jdbc.query("SELECT u.id, u.first_name, u.last_name, u.creation_date, s.name " +
+                "FROM end_user u " +
+                "INNER JOIN approval_status s ON u.status_id = s.id",
                 (ResultSet rs, int rowNum) -> {
-            AuthorizationRequest request = new AuthorizationRequest();
-            request.setId(rs.getLong("EU.id"));
-            request.setFirstName(rs.getString("EU.first_name"));
-            request.setLastName(rs.getString("EU.last_name"));
-            request.setStatus(Status.getStatus(rs.getString("APS.name")));
-            request.setTimestamp(rs.getTimestamp("EU.creation_date").toLocalDateTime());
-            return request;
-        });
+                    AuthorizationRequest request = new AuthorizationRequest();
+                    request.setId(rs.getLong("u.id"));
+                    request.setFirstName(rs.getString("u.first_name"));
+                    request.setLastName(rs.getString("u.last_name"));
+                    request.setStatus(Status.getStatus(rs.getString("s.name")));
+                    request.setTimestamp(rs.getTimestamp("u.creation_date").toLocalDateTime());
+                    return request;
+                });
     }
 
     /**
@@ -64,20 +66,21 @@ public class RequestRepository {
     public List<AuthorizationRequest> getAllAuthorizations(Status status) {
         log.debug("Selecting all authorization requests from a database with requested status: {}", status);
 
-        return jdbc.query("SELECT EU.id, EU.first_name, EU.last_name, EU.creation_date " +
-                "FROM end_user EU " +
-                "INNER JOIN approval_status APS ON EU.status_id = APS.id " +
-                "WHERE APS.name=?",
+        if(status == null) throw new InvalidParameterException();
+        return jdbc.query("SELECT u.id, u.first_name, u.last_name, u.creation_date, s.name " +
+                "FROM end_user u " +
+                "INNER JOIN approval_status s ON u.status_id = s.id " +
+                "WHERE s.name = ?",
                 new Object[]{status.name()},
                 (ResultSet rs, int rowNum) -> {
-            AuthorizationRequest request = new AuthorizationRequest();
-            request.setId(rs.getLong("EU.id"));
-            request.setFirstName(rs.getString("EU.first_name"));
-            request.setLastName(rs.getString("EU.last_name"));
-            request.setStatus(status);
-            request.setTimestamp(rs.getTimestamp("EU.creation_date").toLocalDateTime());
-            return request;
-        });
+                    AuthorizationRequest request = new AuthorizationRequest();
+                    request.setId(rs.getLong("u.id"));
+                    request.setFirstName(rs.getString("u.first_name"));
+                    request.setLastName(rs.getString("u.last_name"));
+                    request.setStatus(Status.getStatus(rs.getString("s.name")));
+                    request.setTimestamp(rs.getTimestamp("u.creation_date").toLocalDateTime());
+                    return request;
+                });
     }
 
     /**
@@ -114,23 +117,31 @@ public class RequestRepository {
     public List<VacationRequest> getAllVacationRequests() {
         log.trace("Selecting all vacation requests from a database.");
 
-        return jdbc.query("SELECT VD.id, VD.vacation_date, VD.time_from, VD.time_to, VD.creation_date, VT.name, APS.name, EU.first_name, EU.last_name " +
-                "FROM vacation_day VD " +
-                "INNER JOIN vacation_type VT on VD.type_id=VT.id " +
-                "INNER JOIN approval_status APS ON VD.status_id=APS.id" +
-                "INNER JOIN end_user EU ON VD.user_id=EU.id",
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, t.name, s.name, u.first_name, u.last_name " +
+                "FROM vacation_day v " +
+                "INNER JOIN vacation_type t on v.type_id = t.id " +
+                "INNER JOIN approval_status s ON v.status_id = s.id " +
+                "INNER JOIN end_user u ON v.user_id = u.id",
                 (ResultSet rs, int rowNum) -> {
-            VacationRequest request = new VacationRequest();
-            request.setId(rs.getLong("VD.id"));
-            request.setFirstName(rs.getString("EU.first_name"));
-            request.setLastName(rs.getString("EU.last_name"));
-            request.setDate(rs.getDate("VD.vacation_date").toLocalDate());
-            request.setFrom(rs.getTime("VD.time_from").toLocalTime());
-            request.setTo(rs.getTime("VD.time_to").toLocalTime());
-            request.setType(VacationType.getVacationType("VT.name"));
-            request.setStatus(Status.getStatus("APS.name"));
-            return request;
-        });
+                    VacationRequest request = new VacationRequest();
+                    request.setId(rs.getLong("v.id"));
+                    request.setFirstName(rs.getString("u.first_name"));
+                    request.setLastName(rs.getString("u.last_name"));
+                    request.setDate(rs.getDate("v.vacation_date").toLocalDate());
+                    Time timeFrom = rs.getTime("v.time_from");
+                    if(timeFrom != null) {
+                        request.setFrom(timeFrom.toLocalTime());
+                    }
+
+                    Time timeTo = rs.getTime("v.time_to");
+                    if(timeTo != null) {
+                        request.setTo(timeTo.toLocalTime());
+                    }
+                    request.setTimestamp(rs.getTimestamp("v.creation_date").toLocalDateTime());
+                    request.setType(VacationType.getVacationType(rs.getString("t.name")));
+                    request.setStatus(Status.getStatus(rs.getString("s.name")));
+                    return request;
+                });
     }
 
     /**
@@ -141,25 +152,35 @@ public class RequestRepository {
     public List<VacationRequest> getAllVacationRequests(Status status) {
         log.debug("Selecting all vacation requests from a database with requested status: {}", status);
 
-        return jdbc.query("SELECT VD.id, VD.vacation_date, VD.time_from, VD.time_to, VD.creation_date, VT.name, APS.name, EU.first_name, EU.last_name " +
-                "FROM vacation_day VD " +
-                "INNER JOIN vacation_type VT on VD.type_id=VT.id " +
-                "INNER JOIN approval_status APS ON VD.status_id=APS.id" +
-                "INNER JOIN end_user EU ON VD.user_id=EU.id" +
-                "WHERE APS.name=?",
+        if(status == null) throw new InvalidParameterException();
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, t.name, s.name, u.first_name, u.last_name " +
+                "FROM vacation_day v " +
+                "INNER JOIN vacation_type t on v.type_id = t.id " +
+                "INNER JOIN approval_status s ON v.status_id = s.id " +
+                "INNER JOIN end_user u ON v.user_id = u.id " +
+                "WHERE s.name=?",
                 new Object[]{status.name()},
                 (ResultSet rs, int rowNum) -> {
-            VacationRequest request = new VacationRequest();
-            request.setId(rs.getLong("VD.id"));
-            request.setFirstName(rs.getString("EU.first_name"));
-            request.setLastName(rs.getString("EU.last_name"));
-            request.setDate(rs.getDate("VD.vacation_date").toLocalDate());
-            request.setFrom(rs.getTime("VD.time_from").toLocalTime());
-            request.setTo(rs.getTime("VD.time_to").toLocalTime());
-            request.setType(VacationType.getVacationType("VT.name"));
-            request.setStatus(status);
-            return request;
-        });
+                    VacationRequest request = new VacationRequest();
+                    request.setId(rs.getLong("v.id"));
+                    request.setFirstName(rs.getString("u.first_name"));
+                    request.setLastName(rs.getString("u.last_name"));
+                    request.setDate(rs.getDate("v.vacation_date").toLocalDate());
+                    Time timeFrom = rs.getTime("v.time_from");
+                    if(timeFrom != null) {
+                        request.setFrom(timeFrom.toLocalTime());
+                    }
+
+                    Time timeTo = rs.getTime("v.time_to");
+                    if(timeTo != null) {
+                        request.setTo(timeTo.toLocalTime());
+                    }
+
+                    request.setTimestamp(rs.getTimestamp("v.creation_date").toLocalDateTime());
+                    request.setType(VacationType.getVacationType(rs.getString("t.name")));
+                    request.setStatus(Status.getStatus(rs.getString("s.name")));
+                    return request;
+                });
     }
 
     /**

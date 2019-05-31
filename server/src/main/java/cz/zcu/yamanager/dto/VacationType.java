@@ -1,7 +1,7 @@
 package cz.zcu.yamanager.dto;
 
 public enum VacationType {
-    VACATION, SICKDAY;
+    SICKDAY, VACATION;
 
     public static VacationType getVacationType(String type) {
         if (type == null || type.isEmpty()) return null;

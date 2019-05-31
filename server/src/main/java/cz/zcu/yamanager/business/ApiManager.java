@@ -6,6 +6,8 @@ import cz.zcu.yamanager.repository.UserRepository;
 import cz.zcu.yamanager.repository.VacationRepository;
 import cz.zcu.yamanager.ws.rest.RESTFullException;
 import org.apache.tomcat.jni.Local;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,11 @@ import java.util.List;
 
 @Component
 public class ApiManager implements Manager {
+
+    /**
+     * The logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
 
     private static final int DAYS_IN_WEEK = 7;
 
@@ -32,32 +39,56 @@ public class ApiManager implements Manager {
 
     @Override
     public List<BasicProfileUser> getUsers(Status status) throws RESTFullException {
-        List<BasicProfileUser> users = this.userRepository.getAllBasicUsers();
-        LocalDate today = LocalDate.now();
-        LocalDate weekBefore = today.minusDays(ApiManager.DAYS_IN_WEEK);
-        LocalDate weekAfter = today.plusDays(ApiManager.DAYS_IN_WEEK);
-        for (BasicProfileUser user : users) {
-            user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
+        List<BasicProfileUser> users;
+        if(status == null) {
+            users = this.userRepository.getAllBasicUsers();
+        } else {
+            users = this.userRepository.getAllBasicUsers(status);
         }
 
-        return users;
+        if(users == null) {
+            return Collections.emptyList();
+        } else {
+            LocalDate today = LocalDate.now();
+            LocalDate weekBefore = today.minusDays(ApiManager.DAYS_IN_WEEK);
+            LocalDate weekAfter = today.plusDays(ApiManager.DAYS_IN_WEEK);
+            for (BasicProfileUser user : users) {
+                user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
+            }
+
+            return users;
+        }
     }
 
     @Override
     public List<VacationRequest> getVacationRequests(Status status) throws RESTFullException {
-        List<VacationRequest> requests = this.requestRepository.getAllVacationRequests(status);
+        List<VacationRequest> requests;
+        if(status == null) {
+            requests = this.requestRepository.getAllVacationRequests();
+        } else {
+            requests = this.requestRepository.getAllVacationRequests(status);
+        }
+
         return requests == null ? Collections.emptyList() : requests;
     }
 
     @Override
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
-        List<AuthorizationRequest> requests = this.requestRepository.getAllAuthorizations(status);
+        List<AuthorizationRequest> requests;
+        if(status == null) {
+            requests = this.requestRepository.getAllAuthorizations();
+        } else {
+            requests = this.requestRepository.getAllAuthorizations(status);
+        }
+
         return requests == null ? Collections.emptyList() : requests;
     }
 
     @Override
     public FullUserProfile getUserProfile(Long userId) throws RESTFullException {
         FullUserProfile userProfile = this.userRepository.getFullUser(userId);
+        System.out.println("Notification: " + userProfile.getNotification());
+        System.out.println("Approval: " + userProfile.getStatus());
         return userProfile == null ? new FullUserProfile() : userProfile;
     }
 
@@ -69,7 +100,17 @@ public class ApiManager implements Manager {
 
     @Override
     public List<VacationDay> getUserCalendar(Long userId, LocalDate fromDate, LocalDate toDate, Status status) throws RESTFullException {
-        List<VacationDay> vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate, status);
+        List<VacationDay> vacations;
+        if(status == null && toDate == null) {
+            vacations = this.vacationRepository.getVacationDays(userId, fromDate);
+        } else if(status == null) {
+            vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate);
+        } else if(toDate != null) {
+            vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate, status);
+        } else {
+            vacations = this.vacationRepository.getVacationDays(userId, fromDate, status);
+        }
+
         return vacations == null ? Collections.emptyList() : vacations;
     }
 
@@ -85,7 +126,12 @@ public class ApiManager implements Manager {
 
     @Override
     public void changeSettings(Long userId, UserSettings settings) throws RESTFullException {
-        this.userRepository.updateUserSettings(settings);
+        settings.setId(userId);
+        if(settings.getRole() == null && settings.getSickdayCount() == null && settings.getVacationCount() == null) {
+            this.userRepository.updateNotification(settings);
+        } else {
+            this.userRepository.updateUserSettings(settings);
+        }
     }
 
     @Override
@@ -100,7 +146,6 @@ public class ApiManager implements Manager {
         } else {
             this.requestRepository.updateAuthorization(request);
         }
-
     }
 
     @Override

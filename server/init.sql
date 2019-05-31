@@ -121,12 +121,12 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT u.id, u.first_name, u.last_name, u.no_vacations, IFNULL(u.no_sick_days, sickDaysCount), u.taken_sick_days, IFNULL(u.alert, notification), u.email, u.photo, u.creation_date, r.name, s.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
-     FROM end_user EU
-     INNER JOIN role R ON EU.role_id=R.id
-     INNER JOIN approval_status APS ON EU.status_id=APS.id
-     WHERE EU.id=in_id;
+     FROM end_user u
+     INNER JOIN role r ON u.role_id=r.id
+     INNER JOIN approval_status s ON u.status_id=s.id
+     WHERE u.id=in_id;
 END $$
 
 DROP PROCEDURE IF EXISTS GetUserToken $$
@@ -149,12 +149,12 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT EU.id, EU.first_name, EU.last_name, EU.no_vacations, IFNULL(EU.no_sick_days, sickDaysCount), EU.taken_sick_days, IFNULL(EU.alert, notification), EU.email, EU.photo, EU.creation_date, R.name, APS.name
+  SELECT u.id, u.first_name, u.last_name, u.no_vacations, IFNULL(u.no_sick_days, sickDaysCount), u.taken_sick_days, IFNULL(u.alert, notification), u.email, u.photo, u.creation_date, r.name, s.name
      INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
-     FROM end_user EU
-     INNER JOIN role R ON EU.role_id=R.id
-     INNER JOIN approval_status APS ON EU.status_id=APS.id
-     WHERE EU.token=p_token;
+     FROM end_user u
+     INNER JOIN role r ON u.role_id=r.id
+     INNER JOIN approval_status s ON u.status_id=s.id
+     WHERE u.token=p_token;
 END $$
 
 DELIMITER ;
@@ -182,6 +182,7 @@ INSERT INTO vacation_type (name) VALUES ('vacation');
 -- Insert table end_user
 -- -----------------------------------------------------
 INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, role_id, status_id) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', '', 2, 1);
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, role_id, status_id) VALUES ('test', 'test', 0, NULL, 0, NULL, '', '', '', 1, 2);
 
 -- -----------------------------------------------------
 -- Insert table vacation_day

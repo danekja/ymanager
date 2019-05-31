@@ -121,6 +121,7 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) String status)
     {
+        System.out.println("/users");
         return handle(getLanguage(lang), () ->
                 manager.getUsers(getStatus(status))
         );
@@ -131,6 +132,8 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) String status)
     {
+        System.out.println("/users/requests/vacation");
+        System.out.println("Status" + status);
         return handle(getLanguage(lang), () ->
                 manager.getVacationRequests(getStatus(status))
         );
@@ -141,6 +144,7 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) String status)
     {
+        System.out.println("/users/requests/authorization");
         return handle(getLanguage(lang), () ->
                 manager.getAuthorizationRequests(getStatus(status))
          );
@@ -151,6 +155,7 @@ public class ApiController {
             @PathVariable("id") String id,
             @RequestParam(value = "lang", required = false) String lang)
     {
+        System.out.println("/user/{id}/profile");
         return handle(getLanguage(lang), () ->
                 manager.getUserProfile(getUserId(id))
         );
@@ -164,6 +169,7 @@ public class ApiController {
             @RequestParam(value = "to", required = false) String to,
             @RequestParam(value = "status", required = false) String status)
     {
+        System.out.println("user/id/calendar");
         return handle(getLanguage(lang), () -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             LocalDate fromDate = LocalDate.parse(from, formatter);
@@ -176,6 +182,7 @@ public class ApiController {
     public ResponseEntity settings(
             @RequestParam(value = "lang", required = false) String lang)
     {
+        System.out.println("/settings");
         return handle(getLanguage(lang), () ->
                 manager.getDefaultSettings()
         );
@@ -188,6 +195,7 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody DefaultSettings settings)
     {
+        System.out.println("POST /settings");
         return handle(getLanguage(lang), () ->
                 manager.createSettings(settings)
         );
@@ -198,6 +206,7 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody VacationDay vacationDay)
     {
+        System.out.println("/user/calendar/create");
         return handle(getLanguage(lang), () ->
                 manager.createVacation(getUserId("me"), vacationDay)
         );
@@ -211,6 +220,8 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody UserSettings settings)
     {
+        System.out.println("/user/settings");
+        System.out.println(settings.getNotification());
         return handle(getLanguage(lang), () ->
                 manager.changeSettings(getUserId(settings.getId()), settings)
         );
@@ -221,6 +232,7 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody VacationDay vacationDay)
     {
+        System.out.println("/user/calendar/edit");
         return handle(getLanguage(lang), () ->
                 manager.changeVacation(getUserId("me"), vacationDay)
         );
@@ -232,6 +244,7 @@ public class ApiController {
             @RequestParam(value = "type", required = true) String type,
             @RequestBody BasicRequest request)
     {
+        System.out.println("/user/requests");
         return handle(getLanguage(lang), () ->
                 manager.changeRequest(getType(type), request)
         );
@@ -244,6 +257,7 @@ public class ApiController {
             @PathVariable("id") String id,
             @RequestParam(value = "lang", required = false) String lang)
     {
+        System.out.println("/calendar/{id}/delete");
         return handle(getLanguage(lang), () ->
             manager.deleteVacation(getUserId("me"), StringUtils.isNumeric(id) ? Long.parseLong(id) : -1)
         );
