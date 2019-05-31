@@ -89,7 +89,7 @@ public class ApiManager implements Manager {
         FullUserProfile userProfile = this.userRepository.getFullUser(userId);
         System.out.println("Notification: " + userProfile.getNotification());
         System.out.println("Approval: " + userProfile.getStatus());
-        return userProfile == null ? new FullUserProfile() : userProfile;
+        return userProfile;
     }
 
     @Override

@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -30,6 +28,7 @@ public class UserRepository {
 
     /**
      * Creates a new instance of the class UserRepository which selects and updates users in a database.
+     *
      * @param jdbc A connection to the database.
      */
     @Autowired
@@ -50,20 +49,15 @@ public class UserRepository {
     }
 
     public List<BasicProfileUser> getAllBasicUsers(Status status) {
-        if(status == null) throw new IllegalArgumentException();
-
-        return jdbc.query("SELECT u.id, u.first_name, u.last_name, u.photo" +
-                "FROM end_user u " +
-                "INNER JOIN approval_status s ON u.status_id = s.id " +
-                "WHERE s.name = ?",
+        return jdbc.query("SELECT id, first_name, last_name, photo FROM end_user WHERE status = ?",
                 new Object[]{status.name()}, (ResultSet rs, int rowNum) -> {
-            BasicProfileUser user = new BasicProfileUser();
-            user.setId(rs.getLong("u.id"));
-            user.setFirstName(rs.getString("u.first_name"));
-            user.setLastName(rs.getString("u.last_name"));
-            user.setPhoto(rs.getString("u.photo"));
-            return user;
-        });
+                    BasicProfileUser user = new BasicProfileUser();
+                    user.setId(rs.getLong("id"));
+                    user.setFirstName(rs.getString("first_name"));
+                    user.setLastName(rs.getString("last_name"));
+                    user.setPhoto(rs.getString("photo"));
+                    return user;
+                });
     }
 
     public FullUserProfile getFullUser(long id) {
@@ -101,17 +95,22 @@ public class UserRepository {
         }, paramList);
 
         FullUserProfile user = new FullUserProfile();
-        user.setId((Long)resultMap.get("out_id"));
-        user.setFirstName((String)resultMap.get("out_first_name"));
-        user.setLastName((String)resultMap.get("out_last_name"));
-        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
-        user.setSickdayCount((Integer)resultMap.get("out_no_sick_days"));
-        user.setTakenSickdayCount((Integer)resultMap.get("out_taken_sick_days"));
-        user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
-        user.setEmail((String)resultMap.get(("out_email")));
-        user.setPhoto((String)resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
-        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
+        user.setId(id);
+        user.setFirstName((String) resultMap.get("out_first_name"));
+        user.setLastName((String) resultMap.get("out_last_name"));
+        user.setVacationCount(((Double) resultMap.get("out_no_vacations")).floatValue());
+        user.setSickdayCount((Integer) resultMap.get("out_no_sick_days"));
+        user.setTakenSickdayCount((Integer) resultMap.get("out_taken_sick_days"));
+
+        final Timestamp alertTimestamp = (Timestamp) resultMap.get(("out_alert"));
+        if (alertTimestamp != null) {
+            user.setNotification(alertTimestamp.toLocalDateTime());
+        }
+
+        user.setEmail((String) resultMap.get(("out_email")));
+        user.setPhoto((String) resultMap.get("out_photo"));
+        user.setRole(UserRole.getUserRole((String) resultMap.get("out_role")));
+        user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
         return user;
 
     }
@@ -151,30 +150,35 @@ public class UserRepository {
         }, paramList);
 
         FullUserProfile user = new FullUserProfile();
-        user.setId((Long)resultMap.get("out_id"));
-        user.setFirstName((String)resultMap.get("out_first_name"));
-        user.setLastName((String)resultMap.get("out_last_name"));
-        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
-        user.setSickdayCount((Integer)resultMap.get("out_no_sick_days"));
-        user.setTakenSickdayCount((Integer)resultMap.get("out_taken_sick_days"));
-        user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
-        user.setEmail((String)resultMap.get(("out_email")));
-        user.setPhoto((String)resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
-        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
+        user.setId((Long) resultMap.get("out_id"));
+        user.setFirstName((String) resultMap.get("out_first_name"));
+        user.setLastName((String) resultMap.get("out_last_name"));
+        user.setVacationCount(((Double) resultMap.get("out_no_vacations")).floatValue());
+        user.setSickdayCount((Integer) resultMap.get("out_no_sick_days"));
+        user.setTakenSickdayCount((Integer) resultMap.get("out_taken_sick_days"));
+
+        final Timestamp alertTimestamp = (Timestamp) resultMap.get(("out_alert"));
+        if (alertTimestamp != null) {
+            user.setNotification(alertTimestamp.toLocalDateTime());
+        }
+
+        user.setEmail((String) resultMap.get(("out_email")));
+        user.setPhoto((String) resultMap.get("out_photo"));
+        user.setRole(UserRole.getUserRole((String) resultMap.get("out_role")));
+        user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
         return user;
     }
 
     public UserSettings getUserSettings(long id) {
-        return jdbc.queryForObject("SELECT no_vacations, no_sick_days, role_id FROM end_user WHERE = id=?",
-                new Object[]{id}, (ResultSet rs, int rowNum)->{
-            UserSettings settings = new UserSettings();
-            settings.setId(id);
-            settings.setSickdayCount(rs.getInt("no_sick_day"));
-            settings.setVacationCount(rs.getFloat("no_vacations"));
-            settings.setRole(UserRole.values()[rs.getByte("role_id")]);
-            return settings;
-        });
+        return jdbc.queryForObject("SELECT no_vacations, no_sick_days, user_role FROM end_user WHERE = id=?",
+                new Object[]{id}, (ResultSet rs, int rowNum) -> {
+                    UserSettings settings = new UserSettings();
+                    settings.setId(id);
+                    settings.setSickdayCount(rs.getInt("no_sick_day"));
+                    settings.setVacationCount(rs.getFloat("no_vacations"));
+                    settings.setRole(UserRole.getUserRole(rs.getString("user_role")));
+                    return settings;
+                });
     }
 
     public void updateNotification(UserSettings settings) {
@@ -182,8 +186,8 @@ public class UserRepository {
     }
 
     public void updateUserSettings(UserSettings settings) {
-        jdbc.update("UPDATE end_user u, role r SET u.no_vacations=?, u.no_sick_days=?, u.role_id=r.id WHERE u.id = ? AND r.name=?",
-                settings.getVacationCount(), settings.getSickdayCount(), settings.getId(), settings.getRole().name());
+        jdbc.update("UPDATE end_user SET no_vacations=?, no_sick_days=?, user_role=? WHERE id = ?",
+                settings.getVacationCount(), settings.getSickdayCount(), settings.getRole().name(), settings.getId());
     }
 
     public DefaultSettings getLastDefaultSettings() {
