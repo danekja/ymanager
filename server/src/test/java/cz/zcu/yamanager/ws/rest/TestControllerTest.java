@@ -22,6 +22,6 @@ class TestControllerTest {
 
     @Test
     void hello_inEnglish_true() {
-        assertEquals("english language", testController.hello());
+        assertEquals("It works!!", testController.hello());
     }
 }
