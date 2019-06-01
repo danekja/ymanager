@@ -142,7 +142,7 @@ public class VacationRepository {
 
     public void insertVacationDay(final Long userId, final VacationDay day) {
         this.jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status, vacation_type, user_id) VALUES (?,?,?,?,?,?)",
-                day.getDate(), day.getFrom(), day.getTo(), "pending", day.getType().name(), userId);
+                day.getDate(), day.getFrom(), day.getTo(), day.getStatus().name(), day.getType().name(), userId);
     }
 
     public void updateVacationDay(final VacationDay item) {

@@ -109,11 +109,11 @@ public class ManagerMock implements Manager {
         if (userSettings.containsKey(id)) {
             UserSettings settings = userSettings.get(id);
             user.setVacationCount(settings.getVacationCount());
-            user.setSickdayCount(settings.getSickdayCount());
+            user.setSickDayCount(settings.getSickDayCount());
             user.setRole(settings.getRole());
         } else {
             user.setVacationCount(8.5F);
-            user.setSickdayCount(3);
+            user.setSickDayCount(3);
             user.setRole(UserRole.EMPLOYER);
         }
 
@@ -125,7 +125,7 @@ public class ManagerMock implements Manager {
     private DefaultSettings createDefaultSettings() {
         DefaultSettings settings = new DefaultSettings();
 
-        settings.setSickdayCount(3);
+        settings.setSickDayCount(3);
         settings.setNotification(LocalDateTime.now());
 
         return settings;

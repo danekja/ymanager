@@ -1,114 +1,129 @@
 package cz.zcu.yamanager.domain;
 
-import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
 
 /**
- * A domain class {@code DefaultSettings} represents a single record in the Default_settings table of a database.
- * It contains default settings of the application.
+ * The domain class {@code DefaultSettings} represents a single record in the 'default_settings' table of a database.
+ * It contains default settings of users' informations that are known to the application. Informations consist of a number of
+ * available sick days, date and time of an email notification. Default settings are mainly used when the user is added to
+ * the application which means he/she can't have his/her own values.
  */
 public class DefaultSettings {
+    /**
+     * The logger.
+     */
+    private static final Logger log = LoggerFactory.getLogger(DefaultSettings.class);
 
     /**
-     * ID of the default settings.
+     * The ID of default settings.
      */
-    private final int id;
+    private final long id;
 
     /**
-     * Default remaining vacation hours.
+     * The default number of available sick days.
      */
-    private int noVacations;
+    private int sickDayCount;
 
     /**
-     * Default remaining sick days.
+     * The default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
      */
-    private int noSickDays;
+    private LocalDateTime notification;
 
     /**
-     * Default date of an email warning about an incoming reset of the vacation hours and sick days.
+     * Creates an empty default settings for testing purposes only.
+     * It just sets id to zero.
      */
-    private LocalDate alertDate;
+    public DefaultSettings() {
+        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings.");
+        this.id = 0;
+    }
 
     /**
-     * Creates a new instance of the class {@code DefaultSettings}.
-     * @param id ID of the default settings.
-     * @param noVacations Default remaining vacation hours.
-     * @param noSickDays Default remaining sick days.
-     * @param alertDate Default date of an email warning about an incoming reset of the vacation hours and sick days.
+     * Creates a new default settings with the specified id, number of available sick days, date and time of a notification.
+     *
+     * @param id           the ID of default settings
+     * @param sickDayCount the default number of available sick days
+     * @param notification the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
+     * @throws IllegalArgumentException when the given sickDayCount value is negative
      */
-    public DefaultSettings(int id, int noVacations, int noSickDays, LocalDate alertDate) {
+    public DefaultSettings(final long id, final int sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
+        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings.");
+        DefaultSettings.log.debug("DefaultSettings: id={},\nsickDayCount={},\nnotification={}", id, sickDayCount, notification);
+
         this.id = id;
-        this.noVacations = noVacations;
-        this.noSickDays = noSickDays;
-        this.alertDate = alertDate;
+        this.setSickDayCount(sickDayCount);
+        this.notification = notification;
     }
 
     /**
-     * Gets an ID of the default settings.
-     * @return The ID of the default settings.
+     * Returns the ID of this default settings.
+     *
+     * @return the ID of this default settings
      */
-    public int getId() {
-        return id;
+    public long getId() {
+        return this.id;
     }
 
     /**
-     * Gets a default remaining vacation hours.
-     * @return The default remaining vacation hours.
+     * Returns the default number of available sick days in this default settings.
+     *
+     * @return the default number of available sick days
      */
-    public int getNoVacations() {
-        return noVacations;
+    public int getSickDayCount() {
+        return this.sickDayCount;
     }
 
     /**
-     * Sets a new default remaining vacation hours.
-     * @param noVacations The new default remaining vacation hours.
+     * Replaces the default number of available sick days in this default settings with the given one.
+     * If the given number is negative the method throws an exception.
+     *
+     * @param sickDayCount the new default number of available sick days
+     * @throws IllegalArgumentException when the given value is negative
      */
-    public void setNoVacations(int noVacations) {
-        this.noVacations = noVacations;
+    public void setSickDayCount(final int sickDayCount) throws IllegalArgumentException {
+        DefaultSettings.log.debug("Setting a new number of available sick days: {}.", sickDayCount);
+
+        if (sickDayCount < 0) {
+            DefaultSettings.log.warn("The number of available sick days was negative.");
+            throw new IllegalArgumentException("sick.day.count.error");
+        }
+
+        this.sickDayCount = sickDayCount;
     }
 
     /**
-     * Gets a default remaining sick days.
-     * @return The default remaining sick days.
+     * Returns the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
+     *
+     * @return the default date and time
      */
-    public int getNoSickDays() {
-        return noSickDays;
+    public LocalDateTime getNotification() {
+        return this.notification;
     }
 
     /**
-     * Sets a new default remaining sick days.
-     * @param noSickDays The new default remaining sick days.
+     * Replaces the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days with the specified one.
+     *
+     * @param notification the new default date and time
      */
-    public void setNoSickDays(int noSickDays) {
-        this.noSickDays = noSickDays;
+    public void setNotification(final LocalDateTime notification) {
+        DefaultSettings.log.debug("Setting a new default date and time of sending an email warning: {}.", notification);
+        this.notification = notification;
     }
 
     /**
-     * Gets a default date of an email warning about an incoming reset of the vacation hours and sick days.
-     * @return The default date of an email warning about an incoming reset of the vacation hours and sick days.
-     */
-    public LocalDate getAlertDate() {
-        return alertDate;
-    }
-
-    /**
-     * Sets a new default date of an email warning about an incoming reset of the vacation hours and sick days.
-     * @param alertDate The new default date of an email warning about an incoming reset of the vacation hours and sick days.
-     */
-    public void setAlertDate(LocalDate alertDate) {
-        this.alertDate = alertDate;
-    }
-
-    /**
-     * Gets a string representation of the class {@code DefaultSettings}.
-     * @return The string representation of the class.
+     * Returns a string representation of this default settings. The representation consists of the id, number of sick days and notification of the default settings.
+     *
+     * @return the string representation of this default settings
      */
     @Override
     public String toString() {
         return "DefaultSettings{" +
-                "id=" + id +
-                ", noVacations=" + noVacations +
-                ", noSickDays=" + noSickDays +
-                ", alertDate=" + alertDate +
+                "id=" + this.id +
+                ", sickDayCount=" + this.sickDayCount +
+                ", notification=" + this.notification +
                 '}';
     }
 }

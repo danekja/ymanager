@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.temporal.TemporalUnit;
 import java.util.Collections;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Component
 public class ApiManager implements Manager {
@@ -46,18 +50,15 @@ public class ApiManager implements Manager {
             users = this.userRepository.getAllBasicUsers(status);
         }
 
-        if(users == null) {
-            return Collections.emptyList();
-        } else {
-            LocalDate today = LocalDate.now();
-            LocalDate weekBefore = today.minusDays(ApiManager.DAYS_IN_WEEK);
-            LocalDate weekAfter = today.plusDays(ApiManager.DAYS_IN_WEEK);
-            for (BasicProfileUser user : users) {
-                user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
-            }
-
-            return users;
+        LocalDate today = LocalDate.now();
+        LocalDate weekBefore = today.minusDays(ApiManager.DAYS_IN_WEEK);
+        LocalDate weekAfter = today.plusDays(ApiManager.DAYS_IN_WEEK);
+        for (BasicProfileUser user : users) {
+            user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
         }
+
+        return users;
+
     }
 
     @Override
@@ -69,7 +70,7 @@ public class ApiManager implements Manager {
             requests = this.requestRepository.getAllVacationRequests(status);
         }
 
-        return requests == null ? Collections.emptyList() : requests;
+        return requests;
     }
 
     @Override
@@ -81,15 +82,12 @@ public class ApiManager implements Manager {
             requests = this.requestRepository.getAllAuthorizations(status);
         }
 
-        return requests == null ? Collections.emptyList() : requests;
+        return requests;
     }
 
     @Override
     public FullUserProfile getUserProfile(Long userId) throws RESTFullException {
-        FullUserProfile userProfile = this.userRepository.getFullUser(userId);
-        System.out.println("Notification: " + userProfile.getNotification());
-        System.out.println("Approval: " + userProfile.getStatus());
-        return userProfile;
+        return this.userRepository.getFullUser(userId);
     }
 
     @Override
@@ -111,7 +109,7 @@ public class ApiManager implements Manager {
             vacations = this.vacationRepository.getVacationDays(userId, fromDate, status);
         }
 
-        return vacations == null ? Collections.emptyList() : vacations;
+        return vacations;
     }
 
     @Override
@@ -121,13 +119,22 @@ public class ApiManager implements Manager {
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
+        UserRole role = this.userRepository.getUserRole(userId);
+        vacationDay.setStatus(role == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+
+        if(vacationDay.getType() == VacationType.VACATION) {
+            this.userRepository.decreaseVacationCount(userId, vacationDay.getFrom().until(vacationDay.getTo(), MINUTES) / 60f);
+        } else {
+            this.userRepository.increaseTakenSickdays(userId);
+        }
+
         this.vacationRepository.insertVacationDay(userId, vacationDay);
     }
 
     @Override
     public void changeSettings(Long userId, UserSettings settings) throws RESTFullException {
         settings.setId(userId);
-        if(settings.getRole() == null && settings.getSickdayCount() == null && settings.getVacationCount() == null) {
+        if(settings.getRole() == null && settings.getSickDayCount() == null && settings.getVacationCount() == null) {
             this.userRepository.updateNotification(settings);
         } else {
             this.userRepository.updateUserSettings(settings);
