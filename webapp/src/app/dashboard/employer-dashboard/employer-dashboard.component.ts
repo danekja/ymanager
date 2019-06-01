@@ -6,7 +6,7 @@ import {AuthorizationRequest, VacationRequest} from '../../models/requests.model
 import {UserService} from '../../services/api/user.service';
 import {UserProfile} from '../../models/user.model';
 import {LocalizationService} from '../../localization/localization.service';
-import {RequestStatus, RequestTypes} from '../../enums/common.enum';
+import {RequestStatus, RequestTypes, UserType} from '../../enums/common.enum';
 import {Calendar} from '../../models/calendar.model';
 import {DateToolsService} from '../../services/util/date-tools.service';
 
@@ -24,6 +24,7 @@ export class EmployerDashboardComponent implements OnInit {
   private oncomingVacation: Calendar[];
 
   private selectedMonth: Date;
+
   constructor(
     public dialog: MatDialog,
     private localizationService: LocalizationService,
@@ -35,21 +36,27 @@ export class EmployerDashboardComponent implements OnInit {
   ngOnInit() {
     this.selectedMonth = this.dateToolsService.toStartOfMonth(new Date());
 
-    this.loadProfile();
-    this.loadAuthorizationRequests();
-    this.loadVacationRequests();
+    this.userService.getLoggedUserProfile()
+      .subscribe((data: UserProfile) => {
+        this.profile = data;
+        if (this.isEmployer()) {
+          this.loadAuthorizationRequests();
+          this.loadVacationRequests();
+        }
+      });
+
     this.loadMonthVacation(this.selectedMonth);
     this.loadOncomingVacation();
   }
 
   userApproved(requestId: number, approved: boolean) {
     this.requestApproved(requestId, RequestTypes.AUTHORIZATION, approved)
-      .subscribe(e => this.loadAuthorizationRequests());
+      .subscribe(() => this.loadAuthorizationRequests());
   }
 
   vacationApproved(requestId: number, approved: boolean) {
     this.requestApproved(requestId, RequestTypes.VACATION, approved)
-      .subscribe(e => this.loadVacationRequests());
+      .subscribe(() => this.loadVacationRequests());
   }
 
   requestApproved(requestId: number, requestType: RequestTypes, approved: boolean) {
@@ -63,15 +70,11 @@ export class EmployerDashboardComponent implements OnInit {
 
   removeVacation(vac: Calendar) {
     this.userService.deleteCalendar(vac.id, this.localizationService.getCurrentLanguage())
-      .subscribe(e => this.loadOncomingVacation());
-  }
-
-  editVacation(vac: Calendar) {
-    // this.dialog.open(EditVacationDialogComponent, {
-    //   data: {
-    //     vacation: vac
-    //   }
-    // });
+      .subscribe(() => {
+        this.loadOncomingVacation();
+        this.loadMonthVacation(this.selectedMonth);
+        this.loadProfile();
+      });
   }
 
   onDateSelect( date: Date ) {
@@ -91,7 +94,11 @@ export class EmployerDashboardComponent implements OnInit {
               type: data.vacationType
             },
             this.localizationService.getCurrentLanguage()
-          ).subscribe(() => this.loadMonthVacation(this.selectedMonth));
+          ).subscribe(() => {
+            this.loadMonthVacation(this.selectedMonth);
+            this.loadOncomingVacation();
+            this.loadProfile();
+          });
         }
       });
   }
@@ -99,6 +106,14 @@ export class EmployerDashboardComponent implements OnInit {
   onSelectedMonthChange(monthStart: Date) {
     this.selectedMonth = monthStart;
     this.loadMonthVacation(monthStart);
+  }
+
+  isEmployer(): boolean {
+    if (this.profile) {
+      return this.profile.role === UserType.EMPLOYER;
+    } else {
+      return false;
+    }
   }
 
   private loadProfile() {

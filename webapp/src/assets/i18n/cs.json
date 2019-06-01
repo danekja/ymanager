@@ -2,8 +2,47 @@
   "daysOffInfo": {
     "remaining": "Zbývající dovolená"
   },
+  "userApproval": {
+    "headline": "Schvalování uživatelů",
+    "requestDate": "Datum žádosti"
+  },
+  "vacationApproval": {
+    "headline": "Schválení volna",
+    "requestDate": "Datum žádosti"
+  },
   "vacationType": {
     "vacation": "Extra dovolená",
     "sickday": "Sickday"
-  }
+  },
+  "oncomingVacation": {
+    "headline": "Mé nadcházející volno",
+    "status": "Status"
+  },
+  "basic": {
+    "name": "Jméno",
+    "employees": "Zaměstnanci",
+    "vacation": "Dovolená",
+    "requested": "Požádáno",
+    "date": "Datum",
+    "from": "Od",
+    "to": "Do",
+    "vacationType": "Typ volna"
+  },
+  "dayShortName": {
+    "mon": "po",
+    "tue": "ut",
+    "wed": "st",
+    "thu": "ct",
+    "fri": "pa",
+    "sat": "so",
+    "sun": "ne"
+  },
+  "button": {
+    "confirm": "Potvrdit",
+    "close": "Zavřít"
+  },
+  "EMPLOYER": "Zaměstnavatel",
+  "EMPLOYEE": "Zaměstnanec",
+  "VACATION": "Dovolená",
+  "SICKDAY": "Sickday"
 }

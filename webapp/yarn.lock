@@ -3098,6 +3098,11 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
+flag-icon-css@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/flag-icon-css/-/flag-icon-css-3.3.0.tgz#7772461e4480d3d86da5962f02120a2825688433"
+  integrity sha512-u5lCGVExrJJRykNGd//ZrBU5Bkt0LTZJFSuG+Az/pwcHgzDeFwomwFbsgVtI1aJd6ysyHsx+5UGrA+nhSGd4yw==
+
 flatpickr@^4.5.7:
   version "4.5.7"
   resolved "https://registry.yarnpkg.com/flatpickr/-/flatpickr-4.5.7.tgz#6efc0d93c65547aa77294205c67830ebabe3565c"

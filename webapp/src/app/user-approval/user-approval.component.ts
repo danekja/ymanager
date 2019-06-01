@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {AuthorizationRequest, Requests} from '../models/requests.model';
+import {AuthorizationRequest} from '../models/requests.model';
+import {LocalizationService} from '../localization/localization.service';
 
 @Component({
   selector: 'app-user-approval',
@@ -11,7 +12,7 @@ export class UserApprovalComponent {
   @Input() authorizationRequests: AuthorizationRequest[];
   @Output() userApprovalEvent = new EventEmitter<{requestId: number, approved: boolean}>();
 
-  constructor() { }
+  constructor(private localizationService: LocalizationService) { }
 
   private userApproved(reqId: number, isApproved: boolean) {
     this.userApprovalEvent.emit({requestId: reqId, approved: isApproved});

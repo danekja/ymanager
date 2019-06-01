@@ -3,34 +3,45 @@ import {UserService} from '../api/user.service';
 import {UserProfile} from '../../models/user.model';
 import {MenuItem} from '../../models/menu-item.model';
 import {UserType} from '../../enums/common.enum';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
+import {ProfileService} from './profile.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MenuService {
 
-  constructor(private userService: UserService) {
+  constructor(private profileService: ProfileService) {
   }
 
-  getMenuItems() {
-    const menuItems: MenuItem[] = [];
+  getMenuItems(cached?: boolean) {
+    if (cached) {
+      this.profileService.getLoggedUser(true)
+        .subscribe((profile: UserProfile) => {
+          return of(this.createAppropriateMenuForUser(profile));
+        });
+    }
 
     return new Observable((observer) => {
-      this.userService.getLoggedUserProfile()
+      this.profileService.getLoggedUser()
         .subscribe((profile: UserProfile) => {
-            menuItems.push({name: 'Dashboard', routePath: 'dashboard'});
-            if (profile.role === UserType.EMPLOYER) {
-              menuItems.push({name: 'Zaměstnanci', routePath: 'employees'});
-            }
-
-            observer.next(menuItems);
+            observer.next(this.createAppropriateMenuForUser(profile));
             observer.complete();
           },
           () => {
-            observer.next(menuItems);
+            observer.next([]);
             observer.complete();
           });
     });
+  }
+
+  private createAppropriateMenuForUser(profile: UserProfile): MenuItem[] {
+    const menuItems: MenuItem[] = [];
+    menuItems.push({name: 'Dashboard', routePath: 'dashboard'});
+    if (profile.role === UserType.EMPLOYER) {
+      menuItems.push({name: 'Zaměstnanci', routePath: 'employees'});
+    }
+
+    return menuItems;
   }
 }

@@ -20,20 +20,27 @@ export class MenuComponent implements OnInit {
     this.menuService.getMenuItems()
       .subscribe((data: MenuItem[]) => {
         this._menuItems = data;
-
         this._selectedMenuItem = this._menuItems[0];
         const path = this.location.path().split('/');
         const endOfPath = path[path.length - 1];
 
-        for (const item of this._menuItems) {
-          if (item.routePath === endOfPath) {
-            this._selectedMenuItem = item;
-          }
-        }
+        this.setCorrectItemMenu(endOfPath);
       });
   }
 
   onSelect(menuItem: MenuItem): void {
-    this._selectedMenuItem = menuItem;
+    this.menuService.getMenuItems(true)
+      .subscribe((menuItems: MenuItem[]) => {
+        this._menuItems = menuItems;
+        this.setCorrectItemMenu(menuItem.routePath);
+      });
+  }
+
+  private setCorrectItemMenu(routePath: string) {
+    for (const item of this._menuItems) {
+      if (item.routePath === routePath) {
+        this._selectedMenuItem = item;
+      }
+    }
   }
 }

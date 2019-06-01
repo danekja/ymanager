@@ -1,24 +1,24 @@
 <div class="oncoming-days-off-container">
 
   <div class="component-header">
-    Mé nadcházející volno
+    {{'oncomingVacation.headline' | translate}}
   </div>
 
   <table class="table text-center table-hover">
     <thead class="thead-light">
       <tr>
-        <th>Typ volna</th>
-        <th>Datum</th>
-        <th>Od</th>
-        <th>Do</th>
-        <th>Status</th>
+        <th>{{'basic.vacationType' | translate}}</th>
+        <th>{{'basic.date' | translate}}</th>
+        <th>{{'basic.from' | translate}}</th>
+        <th>{{'basic.to' | translate}}</th>
+        <th>{{'oncomingVacation.status' | translate}}</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let vac of oncomingVacation">
         <td style="width:15%">
-          {{vac.type}}
+          {{vac.type | translate}}
         </td>
 
         <td style="width:15%">

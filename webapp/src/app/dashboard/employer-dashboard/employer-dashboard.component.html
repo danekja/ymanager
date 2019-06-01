@@ -2,24 +2,26 @@
   <div class="row">
     <div class="col-lg-8 mid-panel">
 
-      <div class="employer-dashboard-user-approval" *ngIf="authorizationRequests && authorizationRequests.length > 0">
+      <div class="employer-dashboard-user-approval"
+           *ngIf="authorizationRequests && authorizationRequests.length > 0 && isEmployer()">
         <app-user-approval
           [authorizationRequests]="authorizationRequests"
           (userApprovalEvent)="userApproved($event.requestId, $event.approved)"
         ></app-user-approval>
       </div>
 
-      <div class="employer-dashboard-days-off-approval" *ngIf="vacationRequests && vacationRequests.length > 0">
+      <div class="employer-dashboard-vacation-approval"
+           *ngIf="vacationRequests && vacationRequests.length > 0 && isEmployer()">
         <app-days-off-approval
           [vacationRequests]="vacationRequests"
           (vacationApprovalEvent)="vacationApproved($event.requestId, $event.approved)"
         ></app-days-off-approval>
       </div>
 
-      <div class="employer-dashboard-coming-days-off" *ngIf="oncomingVacation && oncomingVacation.length > 0">
+      <div class="employer-dashboard-oncoming-vacation"
+           *ngIf="oncomingVacation && oncomingVacation.length > 0">
         <app-coming-days-off
           [oncomingVacation]="oncomingVacation"
-          (vacationEdit)="editVacation($event)"
           (vacationRemove)="removeVacation($event)"
         ></app-coming-days-off>
       </div>

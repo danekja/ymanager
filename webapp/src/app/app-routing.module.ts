@@ -7,14 +7,14 @@ import {EmployeeComponentGuard} from './auth/employee-component.guard';
 import {DashboardComponentGuard} from './auth/dashboard-component.guard';
 
 const routes: Routes = [
-  { path: 'employees', component: EmployeesListComponent, canActivate: [EmployeeComponentGuard] },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [DashboardComponentGuard] },
+  { path: 'employees', component: EmployeesListComponent, canActivate: [EmployeeComponentGuard], runGuardsAndResolvers: 'always'},
+  { path: 'dashboard', component: DashboardComponent, canActivate: [DashboardComponentGuard], runGuardsAndResolvers: 'always'},
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
