@@ -62,14 +62,33 @@ class VacationDayTest {
     }
 
     /**
-     * Tests the method {@code setTime} with a sick day.
+     * Tests the method {@code setTime} with null {@code from} input.
      */
     @Test
-    void testSetTimeSickDay() {
-        this.vacationDay.setType(VacationType.SICKDAY);
-        LocalTime from = LocalTime.of(10,0);
-        LocalTime to = LocalTime.of(20,0);
-        this.vacationDay.setTime(from, to);
+    void testSetTimeNullFrom() {
+        LocalTime to = LocalTime.of(10,0);
+        this.vacationDay.setTime(null, to);
+        assertNull(this.vacationDay.getFrom());
+        assertEquals(to, this.vacationDay.getTo());
+    }
+
+    /**
+     * Tests the method {@code setTime} with null {@code to} input.
+     */
+    @Test
+    void testSetTimeNullTo() {
+        LocalTime from = LocalTime.of(20,0);
+        this.vacationDay.setTime(from, null);
+        assertNull(this.vacationDay.getTo());
+        assertEquals(from, this.vacationDay.getFrom());
+    }
+
+    /**
+     * Tests the method {@code setTime} with null input.
+     */
+    @Test
+    void setSetTimeNull() {
+        this.vacationDay.setTime(null, null);
         assertNull(this.vacationDay.getFrom());
         assertNull(this.vacationDay.getTo());
     }
@@ -119,13 +138,11 @@ class VacationDayTest {
     }
 
     /**
-     * Tests the method {@code setFrom} with a sick day.
+     * Tests the method {@code setFrom} with a null input.
      */
     @Test
-    void testSetFromSickDay() {
-        this.vacationDay.setType(VacationType.SICKDAY);
-        LocalTime from = LocalTime.of(10,0);
-        this.vacationDay.setFrom(from);
+    void testSetFromNullInput() {
+        this.vacationDay.setFrom(null);
         assertNull(this.vacationDay.getFrom());
     }
 
@@ -174,13 +191,11 @@ class VacationDayTest {
     }
 
     /**
-     * Tests the method {@code setTo} with a sick day.
+     * Tests the method {@code setTo} with a null input.
      */
     @Test
-    void testSetToSickDay() {
-        this.vacationDay.setType(VacationType.SICKDAY);
-        LocalTime to = LocalTime.of(10,0);
-        this.vacationDay.setTo(to);
+    void testSetToNullInput() {
+        this.vacationDay.setTo(null);
         assertNull(this.vacationDay.getTo());
     }
 
@@ -190,7 +205,7 @@ class VacationDayTest {
     @Test
     void testToStringVacation() {
         VacationDay vacationDay = new VacationDay(5, LocalDate.of(2010,1,9), LocalTime.of(12,15), LocalTime.of(22,30), LocalDateTime.of(2008,10,30,20,0), Status.ACCEPTED);
-        assertEquals("User{id=5, date=2010-1-9, from=12:15, to=22:30, notification=2008-10-30T20:00, status=ACCEPTED, type=VACATION}", vacationDay.toString());
+        assertEquals("VacationDay{id=5, date=2010-01-09, from=12:15, to=22:30, creationDate=2008-10-30T20:00, status=ACCEPTED, type=VACATION}", vacationDay.toString());
     }
 
     /**
@@ -199,6 +214,6 @@ class VacationDayTest {
     @Test
     void testToStringSickDay() {
         VacationDay vacationDay = new VacationDay(5, LocalDate.of(2010,1,9), LocalDateTime.of(2008,10,30,20,0), Status.ACCEPTED);
-        assertEquals("User{id=5, date=2010-1-9, from=null, to=null, notification=2008-10-30T20:00, status=ACCEPTED, type=SICKDAY}", vacationDay.toString());
+        assertEquals("VacationDay{id=5, date=2010-01-09, from=null, to=null, creationDate=2008-10-30T20:00, status=ACCEPTED, type=SICKDAY}", vacationDay.toString());
     }
 }

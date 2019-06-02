@@ -262,7 +262,7 @@ class UserTest {
      */
     @Test
     void testToString() {
-        User user = new User(5, "Jan", "Novák", 0, 10, 5, LocalDateTime.of(2008,10,30,20,0), "tokenContent", "novak@email.com", "url", LocalDateTime.of(2010,6,31,12,5), UserRole.EMPLOYER, Status.ACCEPTED);
-        assertEquals("User{id=5, firstName=Jan, lastName=Novák, vacationsCount=0, totalSickDaysCount=10, takenSickDaysCount=5, notification=2008-10-30T20:00, token=tokenContent, email=novak@email.com, photo=url, creationDate=2010-6-31T12:05 , role=EMPLOYER, status=ACCEPTED}", user.toString());
+        User user = new User(5, "Jan", "Nov\u00E1k", 0, 10, 5, LocalDateTime.of(2008,10,30,20,0), "tokenContent", "novak@email.com", "url", LocalDateTime.of(2010,7,31,12,5), UserRole.EMPLOYER, Status.ACCEPTED);
+        assertEquals("User{id=5, firstName='Jan', lastName='Nov\u00E1k', vacationCount=0.0, totalSickDayCount=10, takenSickDayCount=5, notification=2008-10-30T20:00, token='tokenContent', email='novak@email.com', photo='url', creationDate=2010-07-31T12:05, role=EMPLOYER, status=ACCEPTED}", user.toString());
     }
 }

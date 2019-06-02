@@ -67,6 +67,6 @@ class DefaultSettingsTest {
     @Test
     void testToString() {
         DefaultSettings defaultSettings = new DefaultSettings(5, 1, LocalDateTime.of(2008,10,30,20,0));
-        assertEquals("DefaultSettings{id=5, sickDaysCount=1, notification=2008-10-30T20:00}", defaultSettings.toString());
+        assertEquals("DefaultSettings{id=5, sickDayCount=1, notification=2008-10-30T20:00}", defaultSettings.toString());
     }
 }

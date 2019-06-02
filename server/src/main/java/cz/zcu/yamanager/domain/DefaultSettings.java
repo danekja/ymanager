@@ -51,7 +51,7 @@ public class DefaultSettings {
      */
     public DefaultSettings(final long id, final int sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
         DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings.");
-        DefaultSettings.log.debug("DefaultSettings: id={},\nsickDayCount={},\nnotification={}", id, sickDayCount, notification);
+        DefaultSettings.log.debug("DefaultSettings: id={}, sickDayCount={}, notification={}", id, sickDayCount, notification);
 
         this.id = id;
         this.setSickDayCount(sickDayCount);

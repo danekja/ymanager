@@ -122,7 +122,7 @@ public class User {
      */
     public User(final long id, final String firstName, final String lastName, final float vacationCount, final int totalSickDayCount, final int takenSickDayCount, final LocalDateTime notification, final String token, final String email, final String photo, final LocalDateTime creationDate, final UserRole role, final Status status) throws IllegalArgumentException {
         User.log.trace("Creating a new instance of the class User.");
-        User.log.debug("User: id={},\nfirstName={},\nlastName={},\nvacationCount={},\ntotalSickDayCount={},\ntakenSickDayCount={},\nnotification={},\ntoken={},\nemail={},\nphoto={},\ncreationDate={},\nrole={},\nstatus={}", id, firstName, lastName, vacationCount, totalSickDayCount, takenSickDayCount, notification, token, email, photo, creationDate, role, status);
+        User.log.debug("User: id={}, firstName={}, lastName={}, vacationCount={}, totalSickDayCount={}, takenSickDayCount={}, notification={}, token={}, email={}, photo={}, creationDate={}, role={}, status={}", id, firstName, lastName, vacationCount, totalSickDayCount, takenSickDayCount, notification, token, email, photo, creationDate, role, status);
 
         this.id = id;
         this.setFirstName(firstName);

@@ -104,7 +104,7 @@ public class VacationDay {
      */
     private VacationDay(final int id, final LocalDate date, final LocalTime from, final LocalTime to, final LocalDateTime creationDate, final Status status, final VacationType type) {
         VacationDay.log.trace("Creating a new instance of the class VacationDay.");
-        VacationDay.log.debug("VacationDay: id={},\ndate={},\nfrom={},\nto={},\ncreationDate={},\nstatus={},\ntype={}", id, date, from, to, creationDate, status, type);
+        VacationDay.log.debug("VacationDay: id={}, date={}, from={}, to={}, creationDate={}, status={}, type={}", id, date, from, to, creationDate, status, type);
 
         this.id = id;
         this.date = date;
@@ -161,12 +161,7 @@ public class VacationDay {
     public void setFrom(final LocalTime from) throws IllegalArgumentException {
         VacationDay.log.debug("Settings a new value of the starting time of this vacation: {}", from);
 
-        if(this.type == VacationType.SICKDAY) {
-            VacationDay.log.info("The sick day must not have a starting time.");
-            this.from = null;
-        }
-
-        if (this.to != null && from.compareTo(this.to) >= 0) {
+        if (from != null && this.to != null && from.compareTo(this.to) >= 0) {
             VacationDay.log.warn("The vacation must not start after it ends. from={}, to={}", from, this.to);
             throw new IllegalArgumentException("time.order.error");
         }
@@ -193,12 +188,7 @@ public class VacationDay {
     public void setTo(final LocalTime to) throws IllegalArgumentException {
         VacationDay.log.debug("Settings a new value of the ending time of this vacation: {}", to);
 
-        if(this.type == VacationType.SICKDAY) {
-            VacationDay.log.info("The sick day must not have an ending time.");
-            this.to = null;
-        }
-
-        if (this.from != null && to.compareTo(this.from) <= 0) {
+        if (to != null && this.from != null && to.compareTo(this.from) <= 0) {
             VacationDay.log.warn("The vacation must not end after it starts. from={}, to={}", this.from, to);
             throw new IllegalArgumentException("time.order.error");
         }
@@ -217,13 +207,7 @@ public class VacationDay {
     public void setTime(final LocalTime from, final LocalTime to) throws IllegalArgumentException {
         VacationDay.log.debug("Settings a new value of the starting {} and the ending {} time of this vacation.", from, to);
 
-        if(this.type == VacationType.SICKDAY) {
-            VacationDay.log.info("The sick day must not have a starting and an ending time.");
-            this.from = null;
-            this.to = null;
-        }
-
-        if (from.compareTo(to) >= 0) {
+        if (from != null && to != null && from.compareTo(to) >= 0) {
             VacationDay.log.warn("The vacation must not start after it ends. from={}, to={}", from, to);
             throw new IllegalArgumentException("time.order.error");
         }
@@ -277,13 +261,6 @@ public class VacationDay {
      */
     public void setType(final VacationType type) {
         VacationDay.log.debug("Setting a new type of this vacation: {}", type);
-
-        if(type == VacationType.SICKDAY) {
-            VacationDay.log.info("The sick day must not have a starting and an ending time.");
-            this.from = null;
-            this.to = null;
-        }
-
         this.type = type;
     }
 
@@ -297,8 +274,8 @@ public class VacationDay {
         return "VacationDay{" +
                 "id=" + this.id +
                 ", date=" + this.date +
-                ", from=" + this.from +
-                ", to=" + this.to +
+                ", from=" + String.valueOf(this.from) +
+                ", to=" + String.valueOf(this.to) +
                 ", creationDate=" + this.creationDate +
                 ", status=" + this.status +
                 ", type=" + this.type +
