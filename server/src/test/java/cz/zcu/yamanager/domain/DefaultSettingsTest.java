@@ -62,6 +62,14 @@ class DefaultSettingsTest {
     }
 
     /**
+     * Tests the method {@code setSickDayCount} with null value.
+     */
+    @Test
+    void testSetSickDaysCountObjectNull() {
+        assertThrows(IllegalArgumentException.class, () -> this.defaultSettings.setSickDayCount(null));
+    }
+
+    /**
      * Tests the method {@code toString}.
      */
     @Test

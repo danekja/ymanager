@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -62,9 +63,12 @@ public class ApiController {
         } catch (RESTFullException e) {
             log.error(e.getMessage());
             return sendError(400, e.getLocalizedMessage(), language);
+        } catch (DataAccessException e) {
+            log.error(e.getMessage());
+            return sendError(500, "database.error", language);
         } catch (Exception e) {
             log.error(e.getMessage());
-            return sendError(401, "rest.exception.generic", language);
+            return sendError(401, e.getMessage(), language);
         }
     }
 

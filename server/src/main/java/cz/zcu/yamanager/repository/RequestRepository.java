@@ -113,15 +113,6 @@ public class RequestRepository {
     }
 
     /**
-     * Updates the status of an authorization request from the given AuthorizationRequest object.
-     *
-     * @param request the AuthorizationRequest object with new values of the authorization request
-     */
-    public void updateAuthorization(final AuthorizationRequest request) {
-        this.updateAuthorization(request.getId(), request.getStatus());
-    }
-
-    /**
      * Gets all vacation requests from a database. Method returns all vacation requests despite
      * its authorization status. It returns accepted, pending even rejected vacations.
      * Every line of output is converted to a VacationRequest object filled with data from the database.
@@ -230,14 +221,5 @@ public class RequestRepository {
      */
     public void updateVacationRequest(final BasicRequest request) {
         this.updateVacationRequest(request.getId(), request.getStatus());
-    }
-
-    /**
-     * Updates a status of a vacation request from a VacationRequest object.
-     *
-     * @param request the VacationRequest object with new values of the vacation request
-     */
-    public void updateVacationRequest(final VacationRequest request) {
-        this.updateAuthorization(request.getId(), request.getStatus());
     }
 }

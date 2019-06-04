@@ -65,6 +65,7 @@ CREATE PROCEDURE GetUserId(
   OUT out_no_sick_days INT,
   OUT out_taken_sick_days INT,
   OUT out_alert DATETIME,
+  OUT out_token TEXT,
   OUT out_email VARCHAR(100),
   OUT out_photo TEXT,
   OUT out_creation_date DATETIME,
@@ -75,8 +76,8 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT id, first_name, last_name, no_vacations, IFNULL(no_sick_days, sickDaysCount), taken_sick_days, IFNULL(alert, notification), email, photo, creation_date, user_role, status
-     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
+  SELECT id, first_name, last_name, no_vacations, IFNULL(no_sick_days, sickDaysCount), taken_sick_days, IFNULL(alert, notification), token, email, photo, creation_date, user_role, status
+     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_token, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user
      WHERE id=in_id;
 END $$
@@ -91,6 +92,7 @@ CREATE PROCEDURE GetUserToken(
   OUT out_no_sick_days INT,
   OUT out_taken_sick_days INT,
   OUT out_alert DATETIME,
+  OUT out_token TEXT,
   OUT out_email VARCHAR(100),
   OUT out_photo TEXT,
   OUT out_creation_date DATETIME,
@@ -101,8 +103,8 @@ BEGIN
   DECLARE notification DATETIME;
 
   SELECT no_sick_days, alert INTO sickDaysCount, notification FROM default_settings ORDER BY id DESC LIMIT 1;
-  SELECT id, first_name, last_name, no_vacations, IFNULL(no_sick_days, sickDaysCount), taken_sick_days, IFNULL(alert, notification), email, photo, creation_date, user_role, status
-     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_email, out_photo, out_creation_date, out_role, out_status
+  SELECT id, first_name, last_name, no_vacations, IFNULL(no_sick_days, sickDaysCount), taken_sick_days, IFNULL(alert, notification), token, email, photo, creation_date, user_role, status
+     INTO out_id, out_first_name, out_last_name, out_no_vacations, out_no_sick_days, out_taken_sick_days, out_alert, out_token, out_email, out_photo, out_creation_date, out_role, out_status
      FROM end_user
      WHERE token=in_token;
 END $$
@@ -112,9 +114,9 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- Insert table end_user
 -- -----------------------------------------------------
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', '', 'employer', 'accepted');
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Jan', 'Novák', 0, 10, 0, '2019-12-6 16:30:00.000', '', '', '', 'employee', 'pending');
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Josef', 'Svoboda', 2, NULL, 3, NULL, '', '', '', 'employee', 'rejected');
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', '', 'EMPLOYER', 'ACCEPTED');
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Jan', 'Novák', 0, 10, 0, '2019-12-6 16:30:00.000', '', '', '', 'EMPLOYEE', 'PENDING');
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Josef', 'Svoboda', 2, NULL, 3, NULL, '', '', '', 'EMPLOYEE', 'REJECTED');
 
 -- -----------------------------------------------------
 -- Insert table vacation_day

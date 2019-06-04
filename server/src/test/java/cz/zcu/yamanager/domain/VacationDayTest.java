@@ -1,7 +1,6 @@
 package cz.zcu.yamanager.domain;
 
 import cz.zcu.yamanager.dto.Status;
-import cz.zcu.yamanager.dto.VacationType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -214,6 +213,6 @@ class VacationDayTest {
     @Test
     void testToStringSickDay() {
         VacationDay vacationDay = new VacationDay(5, LocalDate.of(2010,1,9), LocalDateTime.of(2008,10,30,20,0), Status.ACCEPTED);
-        assertEquals("VacationDay{id=5, date=2010-01-09, from=null, to=null, creationDate=2008-10-30T20:00, status=ACCEPTED, type=SICKDAY}", vacationDay.toString());
+        assertEquals("VacationDay{id=5, date=2010-01-09, from=null, to=null, creationDate=2008-10-30T20:00, status=ACCEPTED, type=SICK_DAY}", vacationDay.toString());
     }
 }

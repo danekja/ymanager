@@ -1,5 +1,6 @@
 package cz.zcu.yamanager.repository;
 
+import cz.zcu.yamanager.domain.User;
 import cz.zcu.yamanager.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,82 @@ public class UserRepository {
         UserRepository.log.trace("Creating a new instance of the class UserRepository");
         this.jdbc = jdbc;
     }
+
+    private Map<String, Object> getUserColumns(final long id) {
+        final List<SqlParameter> paramList = new ArrayList<>();
+        paramList.add(new SqlParameter("in_id", Types.BIGINT));
+        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
+        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
+        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
+        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
+        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
+        paramList.add(new SqlOutParameter("out_token", Types.LONGVARCHAR));
+        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
+        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
+        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
+
+        return jdbc.call(con -> {
+            final CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            callableStatement.setLong(1, id);
+            callableStatement.registerOutParameter(2, Types.BIGINT);
+            callableStatement.registerOutParameter(3, Types.VARCHAR);
+            callableStatement.registerOutParameter(4, Types.VARCHAR);
+            callableStatement.registerOutParameter(5, Types.FLOAT);
+            callableStatement.registerOutParameter(6, Types.INTEGER);
+            callableStatement.registerOutParameter(7, Types.INTEGER);
+            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
+            callableStatement.registerOutParameter(9, Types.LONGVARCHAR);
+            callableStatement.registerOutParameter(10, Types.VARCHAR);
+            callableStatement.registerOutParameter(11, Types.LONGVARCHAR);
+            callableStatement.registerOutParameter(12, Types.TIMESTAMP);
+            callableStatement.registerOutParameter(13, Types.VARCHAR);
+            callableStatement.registerOutParameter(14, Types.VARCHAR);
+            return callableStatement;
+        }, paramList);
+    }
+
+    private Map<String, Object> getUserColumns(final String token) {
+        final List<SqlParameter> paramList = new ArrayList<>();
+        paramList.add(new SqlParameter(Types.LONGVARCHAR));
+        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
+        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
+        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
+        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
+        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
+        paramList.add(new SqlOutParameter("out_token", Types.LONGVARCHAR));
+        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
+        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
+        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
+        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
+
+        return jdbc.call(con -> {
+            final CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
+            callableStatement.setString(1, token);
+            callableStatement.registerOutParameter(2, Types.BIGINT);
+            callableStatement.registerOutParameter(3, Types.VARCHAR);
+            callableStatement.registerOutParameter(4, Types.VARCHAR);
+            callableStatement.registerOutParameter(5, Types.FLOAT);
+            callableStatement.registerOutParameter(6, Types.INTEGER);
+            callableStatement.registerOutParameter(7, Types.INTEGER);
+            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
+            callableStatement.registerOutParameter(9, Types.LONGVARCHAR);
+            callableStatement.registerOutParameter(10, Types.VARCHAR);
+            callableStatement.registerOutParameter(11, Types.LONGVARCHAR);
+            callableStatement.registerOutParameter(12, Types.TIMESTAMP);
+            callableStatement.registerOutParameter(13, Types.VARCHAR);
+            callableStatement.registerOutParameter(14, Types.VARCHAR);
+            return callableStatement;
+        }, paramList);
+    }
+
+    //---------------------------------- DTO -----------------------------------
 
     /**
      * Gets basic profile of each user from a database. The basic profile contains default, the most important
@@ -90,41 +167,9 @@ public class UserRepository {
      * @return
      */
     public FullUserProfile getFullUser(final long id) {
-        UserRepository.log.trace("Selecting full profiles of a user with a specified id from a database ");
-        UserRepository.log.debug("Id: {}", id);
+        UserRepository.log.debug("Selecting full profile of a user with the specified id from a database: {}", id);
 
-        final List<SqlParameter> paramList = new ArrayList<>();
-        paramList.add(new SqlParameter("in_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
-        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
-
-        final Map<String, Object> resultMap = jdbc.call(con -> {
-            final CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-            callableStatement.setLong(1, id);
-            callableStatement.registerOutParameter(2, Types.BIGINT);
-            callableStatement.registerOutParameter(3, Types.VARCHAR);
-            callableStatement.registerOutParameter(4, Types.VARCHAR);
-            callableStatement.registerOutParameter(5, Types.FLOAT);
-            callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(9, Types.VARCHAR);
-            callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(11, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(12, Types.VARCHAR);
-            callableStatement.registerOutParameter(13, Types.VARCHAR);
-            return callableStatement;
-        }, paramList);
+        final Map<String, Object> resultMap = this.getUserColumns(id);
 
         final FullUserProfile user = new FullUserProfile();
         user.setId(id);
@@ -134,7 +179,7 @@ public class UserRepository {
         user.setSickDayCount((Integer) resultMap.get("out_no_sick_days"));
         user.setTakenSickDayCount((Integer) resultMap.get("out_taken_sick_days"));
         user.setNotification(((Timestamp) resultMap.get("out_alert")).toLocalDateTime());
-        user.setEmail((String) resultMap.get(("out_email")));
+        user.setEmail((String) resultMap.get("out_email"));
         user.setPhoto((String) resultMap.get("out_photo"));
         user.setRole(UserRole.getUserRole((String) resultMap.get("out_role")));
         user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
@@ -142,47 +187,10 @@ public class UserRepository {
 
     }
 
-    public UserRole getUserRole(final long id) {
-        return this.jdbc.queryForObject("SELECT user_role FROM end_user WHERE id = ?", new Object[]{id}, (ResultSet rs, int rowNum) -> UserRole.getUserRole(rs.getString("status")));
-    }
-
-    public Status getUserStatus(final long id) {
-        return this.jdbc.queryForObject("SELECT status FROM end_user WHERE id = ?", new Object[]{id}, (ResultSet rs, int rowNum) -> Status.getStatus(rs.getString("status")));
-    }
-
     public FullUserProfile getFullUser(final String token) {
-        final List<SqlParameter> paramList = new ArrayList<>();
-        paramList.add(new SqlParameter(Types.LONGNVARCHAR));
-        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
-        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
+        UserRepository.log.trace("Selecting full profile of a user with the specified token from a database: {}", token);
 
-        final Map<String, Object> resultMap = jdbc.call(con -> {
-            final CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-            callableStatement.setString(1, token);
-            callableStatement.registerOutParameter(2, Types.BIGINT);
-            callableStatement.registerOutParameter(3, Types.VARCHAR);
-            callableStatement.registerOutParameter(4, Types.VARCHAR);
-            callableStatement.registerOutParameter(5, Types.FLOAT);
-            callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(9, Types.VARCHAR);
-            callableStatement.registerOutParameter(10, Types.LONGNVARCHAR);
-            callableStatement.registerOutParameter(11, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(12, Types.VARCHAR);
-            callableStatement.registerOutParameter(13, Types.VARCHAR);
-            return callableStatement;
-        }, paramList);
+        final Map<String, Object> resultMap = this.getUserColumns(token);
 
         final FullUserProfile user = new FullUserProfile();
         user.setId((Long) resultMap.get("out_id"));
@@ -199,35 +207,6 @@ public class UserRepository {
         return user;
     }
 
-    public UserSettings getUserSettings(final long id) {
-        return this.jdbc.queryForObject("SELECT no_vacations, no_sick_days, user_role FROM end_user WHERE id=?",
-                new Object[]{id}, (ResultSet rs, int rowNum) -> {
-                    final UserSettings settings = new UserSettings();
-                    settings.setId(id);
-                    settings.setSickDayCount(rs.getInt("no_sick_day"));
-                    settings.setVacationCount(rs.getFloat("no_vacations"));
-                    settings.setRole(UserRole.getUserRole(rs.getString("user_role")));
-                    return settings;
-                });
-    }
-
-    public void decreaseVacationCount(final long id, final float value) {
-        this.jdbc.update("UPDATE end_user SET no_vacations = no_vacations - ? WHERE id = ?", value, id);
-    }
-
-    public void increaseTakenSickdays(final long id) {
-        this.jdbc.update("UPDATE end_user SET taken_sick_days = taken_sick_days + 1 WHERE id = ?", id);
-    }
-
-    public void updateNotification(final UserSettings settings) {
-        this.jdbc.update("UPDATE end_user SET alert = ? WHERE id = ?", settings.getNotification(), settings.getId());
-    }
-
-    public void updateUserSettings(final UserSettings settings) {
-        this.jdbc.update("UPDATE end_user SET no_vacations=?, no_sick_days=?, user_role=? WHERE id = ?",
-                settings.getVacationCount(), settings.getSickDayCount(), settings.getRole().name(), settings.getId());
-    }
-
     public DefaultSettings getLastDefaultSettings() {
         return this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", (ResultSet rs, int rowNum) -> {
             final DefaultSettings settings = new DefaultSettings();
@@ -237,7 +216,38 @@ public class UserRepository {
         });
     }
 
-    public void insertSettings(final DefaultSettings settings) {
+    //---------------------------------- DOMAIN -----------------------------------
+
+    public User getUser(final long id) {
+        final Map<String, Object> resultMap = this.getUserColumns(id);
+        return new User(
+                id,
+                (String) resultMap.get("out_first_name"),
+                (String) resultMap.get("out_last_name"),
+                ((Double) resultMap.get("out_no_vacations")).floatValue(),
+                (Integer) resultMap.get("out_no_sick_days"),
+                (Integer) resultMap.get("out_taken_sick_days"),
+                ((Timestamp) resultMap.get("out_alert")).toLocalDateTime(),
+                (String) resultMap.get("out_token"),
+                (String) resultMap.get("out_email"),
+                (String) resultMap.get("out_photo"),
+                ((Timestamp) resultMap.get("out_creation_date")).toLocalDateTime(),
+                UserRole.getUserRole((String) resultMap.get("out_role")),
+                Status.getStatus((String) resultMap.get("out_status"))
+        );
+    }
+
+    public void updateUser(final cz.zcu.yamanager.domain.User user) {
+        this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, no_sick_days = ?, taken_sick_days = ?, alert = ?, token = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
+                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
+    }
+
+    public void insertUser(final User user) {
+        this.jdbc.update("INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name());
+    }
+
+    public void insertSettings(final cz.zcu.yamanager.domain.DefaultSettings settings) {
         this.jdbc.update("INSERT INTO default_settings (no_sick_days, alert) VALUES (?, ?)", settings.getSickDayCount(), settings.getNotification());
     }
 }

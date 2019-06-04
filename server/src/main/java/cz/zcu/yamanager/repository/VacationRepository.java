@@ -140,12 +140,28 @@ public class VacationRepository {
                 });
     }
 
-    public void insertVacationDay(final Long userId, final VacationDay day) {
+    public cz.zcu.yamanager.domain.VacationDay getVacationDay(final long id) {
+        return this.jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type" +
+                        "FROM vacation_day " +
+                        "WHERE id = ?", new Object[]{id},
+                (ResultSet rs, int rowNum) ->
+                    new cz.zcu.yamanager.domain.VacationDay(
+                            rs.getLong("id"),
+                            rs.getDate("vacation_date").toLocalDate(),
+                            rs.getTime("time_from").toLocalTime(),
+                            rs.getTime("time_to").toLocalTime(),
+                            rs.getTimestamp("creation_date").toLocalDateTime(),
+                            Status.getStatus(rs.getString("status")),
+                            VacationType.getVacationType(rs.getString("v.vacation_type")))
+                );
+    }
+
+    public void insertVacationDay(final Long userId, final cz.zcu.yamanager.domain.VacationDay day) {
         this.jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status, vacation_type, user_id) VALUES (?,?,?,?,?,?)",
                 day.getDate(), day.getFrom(), day.getTo(), day.getStatus().name(), day.getType().name(), userId);
     }
 
-    public void updateVacationDay(final VacationDay item) {
+    public void updateVacationDay(final cz.zcu.yamanager.domain.VacationDay item) {
         this.jdbc.update("UPDATE vacation_day SET vacation_date=?, time_from=?, time_to=?, status=?, vacation_type=? WHERE id=?",
                 item.getDate(), item.getFrom(), item.getTo(), item.getStatus().name(), item.getType().name(), item.getId());
     }

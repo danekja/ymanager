@@ -7,7 +7,7 @@ public enum VacationType {
     /**
      * The vacation represents a sick day.
      */
-    SICKDAY,
+    SICK_DAY,
 
     /**
      * The vacation represents an overtime.

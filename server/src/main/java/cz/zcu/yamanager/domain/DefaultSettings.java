@@ -42,6 +42,17 @@ public class DefaultSettings {
     }
 
     /**
+     * Creates a new default settings with the specified number of available sick days, date and time of a notification.
+     *
+     * @param sickDayCount the default number of available sick days
+     * @param notification the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
+     * @throws IllegalArgumentException when the given sickDayCount value is negative
+     */
+    public DefaultSettings(final Integer sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
+        this(0, sickDayCount, notification);
+    }
+
+    /**
      * Creates a new default settings with the specified id, number of available sick days, date and time of a notification.
      *
      * @param id           the ID of default settings
@@ -49,13 +60,13 @@ public class DefaultSettings {
      * @param notification the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
      * @throws IllegalArgumentException when the given sickDayCount value is negative
      */
-    public DefaultSettings(final long id, final int sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
-        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings.");
+    public DefaultSettings(final long id, final Integer sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
+        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings");
         DefaultSettings.log.debug("DefaultSettings: id={}, sickDayCount={}, notification={}", id, sickDayCount, notification);
 
         this.id = id;
         this.setSickDayCount(sickDayCount);
-        this.notification = notification;
+        this.setNotification(notification);
     }
 
     /**
@@ -78,16 +89,19 @@ public class DefaultSettings {
 
     /**
      * Replaces the default number of available sick days in this default settings with the given one.
-     * If the given number is negative the method throws an exception.
+     * If the given number is negative or null the method throws an exception.
      *
      * @param sickDayCount the new default number of available sick days
-     * @throws IllegalArgumentException when the given value is negative
+     * @throws IllegalArgumentException when the given value is negative or null
      */
-    public void setSickDayCount(final int sickDayCount) throws IllegalArgumentException {
-        DefaultSettings.log.debug("Setting a new number of available sick days: {}.", sickDayCount);
+    public void setSickDayCount(final Integer sickDayCount) {
+        DefaultSettings.log.debug("Setting a new number of available sick days: {}", sickDayCount);
 
-        if (sickDayCount < 0) {
-            DefaultSettings.log.warn("The number of available sick days was negative.");
+        if (sickDayCount == null) {
+            DefaultSettings.log.warn("The given number of available sick days must not be null");
+            throw new IllegalArgumentException("sick.day.null.error");
+        } else if (sickDayCount < 0) {
+            DefaultSettings.log.warn("The number of available sick days was negative");
             throw new IllegalArgumentException("sick.day.count.error");
         }
 
@@ -105,11 +119,19 @@ public class DefaultSettings {
 
     /**
      * Replaces the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days with the specified one.
+     * If the given notification is null the method throws an exception.
      *
      * @param notification the new default date and time
+     * @throws IllegalArgumentException when the given notification is null
      */
-    public void setNotification(final LocalDateTime notification) {
-        DefaultSettings.log.debug("Setting a new default date and time of sending an email warning: {}.", notification);
+    public void setNotification(final LocalDateTime notification) throws IllegalArgumentException {
+        DefaultSettings.log.debug("Setting a new default date and time of sending an email warning: {}", notification);
+
+        if (notification == null) {
+            DefaultSettings.log.warn("The notification must not be null");
+            throw new IllegalArgumentException("notification.null.error");
+        }
+
         this.notification = notification;
     }
 

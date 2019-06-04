@@ -1,5 +1,6 @@
 package cz.zcu.yamanager.business;
 
+import cz.zcu.yamanager.domain.User;
 import cz.zcu.yamanager.dto.*;
 import cz.zcu.yamanager.repository.RequestRepository;
 import cz.zcu.yamanager.repository.UserRepository;
@@ -28,7 +29,7 @@ public class ApiManager implements Manager {
      */
     private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
 
-    private static final int DAYS_IN_WEEK = 7;
+    private static final int WEEK_LENGTH = 7;
 
     private RequestRepository requestRepository;
     private UserRepository userRepository;
@@ -51,14 +52,13 @@ public class ApiManager implements Manager {
         }
 
         LocalDate today = LocalDate.now();
-        LocalDate weekBefore = today.minusDays(ApiManager.DAYS_IN_WEEK);
-        LocalDate weekAfter = today.plusDays(ApiManager.DAYS_IN_WEEK);
+        LocalDate weekBefore = today.minusDays(ApiManager.WEEK_LENGTH);
+        LocalDate weekAfter = today.plusDays(ApiManager.WEEK_LENGTH);
         for (BasicProfileUser user : users) {
             user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
         }
 
         return users;
-
     }
 
     @Override
@@ -114,36 +114,49 @@ public class ApiManager implements Manager {
 
     @Override
     public void createSettings(DefaultSettings settings) throws RESTFullException {
-        this.userRepository.insertSettings(settings);
+        this.userRepository.insertSettings(new cz.zcu.yamanager.domain.DefaultSettings(settings.getSickDayCount(), settings.getNotification()));
     }
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-        UserRole role = this.userRepository.getUserRole(userId);
-        vacationDay.setStatus(role == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+        cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay(vacationDay.getDate(), vacationDay.getFrom(), vacationDay.getTo(), vacationDay.getStatus(), vacationDay.getType());
 
-        if(vacationDay.getType() == VacationType.VACATION) {
-            this.userRepository.decreaseVacationCount(userId, vacationDay.getFrom().until(vacationDay.getTo(), MINUTES) / 60f);
+        User user = this.userRepository.getUser(userId);
+        vacation.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+
+        if(vacation.getType() == VacationType.VACATION) {
+            user.takeVacation(vacation.getFrom(), vacation.getTo());
         } else {
-            this.userRepository.increaseTakenSickdays(userId);
+            user.takeSickDay();
         }
 
-        this.vacationRepository.insertVacationDay(userId, vacationDay);
+        this.vacationRepository.insertVacationDay(userId, vacation);
+        this.userRepository.updateUser(user);
     }
 
     @Override
     public void changeSettings(Long userId, UserSettings settings) throws RESTFullException {
-        settings.setId(userId);
+        User user = this.userRepository.getUser(userId);
+
         if(settings.getRole() == null && settings.getSickDayCount() == null && settings.getVacationCount() == null) {
-            this.userRepository.updateNotification(settings);
+            user.setNotification(settings.getNotification());
         } else {
-            this.userRepository.updateUserSettings(settings);
+            user.setVacationCount(settings.getVacationCount());
+            user.setTotalSickDayCount(settings.getSickDayCount());
+            user.setRole(settings.getRole());
         }
+
+        this.userRepository.updateUser(user);
     }
 
     @Override
     public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-        this.vacationRepository.updateVacationDay(vacationDay);
+        cz.zcu.yamanager.domain.VacationDay vacation = this.vacationRepository.getVacationDay(vacationDay.getId());
+        vacation.setDate(vacationDay.getDate());
+        vacation.setStatus(vacationDay.getStatus());
+        vacation.setType(vacationDay.getType());
+        vacation.setTime(vacationDay.getFrom(), vacationDay.getTo());
+        this.vacationRepository.updateVacationDay(vacation);
     }
 
     @Override

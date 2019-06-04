@@ -47,7 +47,7 @@ public class ManagerMock implements Manager {
         vacationDay.setStatus(status);
 
         switch (vacationType) {
-            case SICKDAY: {
+            case SICK_DAY: {
                 vacationDay.setFrom(null);
                 vacationDay.setTo(null);
             } break;
@@ -72,7 +72,7 @@ public class ManagerMock implements Manager {
         request.setTimestamp(LocalDateTime.now());
 
         switch (vacationType) {
-            case SICKDAY: {
+            case SICK_DAY: {
                 request.setFrom(null);
                 request.setTo(null);
             } break;
