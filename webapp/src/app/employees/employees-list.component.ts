@@ -123,7 +123,7 @@ export class EmployeesListComponent implements OnInit {
           const parsedSettings = {
             notificationDate: new Date(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate()),
             notificationTime: parsedDate.getHours() + ':' + parsedDate.getMinutes(),
-            sickdaysCount: settingsData.sickdayCount
+            sickdaysCount: settingsData.sickDayCount
           };
 
           this.dialog.open(DefaultSettingsDialogComponent, {
@@ -142,7 +142,7 @@ export class EmployeesListComponent implements OnInit {
 
   private toSettings(data): Settings {
     return {
-      sickdayCount: data.sickdayCount,
+      sickDayCount: data.sickDayCount,
       notification: this.dateFormatterService.formatDatetime(data.notificationDatetime)
     };
   }

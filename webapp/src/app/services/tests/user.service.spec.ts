@@ -28,7 +28,7 @@ describe('UsersService', () => {
       lastName: 'Novak',
       photo: 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
       vacationCount: 8.5,
-      sickdayCount: 3,
+      sickDayCount: 3,
       status: 'ACCEPTED',
       role: 'EMPLOYER',
       notification: '2000/12/01 09:00:00'
@@ -38,7 +38,7 @@ describe('UsersService', () => {
     service.getLoggedUserProfile().subscribe((data: any) => {
       expect(data.id).toBe(1);
       expect(data.vacationCount).toBe(8.5);
-      expect(data.sickdayCount).toBe(3);
+      expect(data.sickDayCount).toBe(3);
       expect(data.status).toBe(RequestStatus.ACCEPTED);
       expect(data.role).toBe(UserType.EMPLOYER);
       expect(data.notification).toBeDefined();
@@ -56,7 +56,7 @@ describe('UsersService', () => {
       lastName: 'Novak',
       photo: 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
       vacationCount: 8.5,
-      sickdayCount: 3,
+      sickDayCount: 3,
       status: 'ACCEPTED',
       role: 'EMPLOYER',
       notification: '2000/12/01 09:00:00'
@@ -66,7 +66,7 @@ describe('UsersService', () => {
     service.getLoggedUserProfileWithLanguage(Languages.ENGLISH).subscribe((data: any) => {
       expect(data.id).toBe(1);
       expect(data.vacationCount).toBe(8.5);
-      expect(data.sickdayCount).toBe(3);
+      expect(data.sickDayCount).toBe(3);
       expect(data.status).toBe(RequestStatus.ACCEPTED);
       expect(data.role).toBe(UserType.EMPLOYER);
       expect(data.notification).toBeDefined();

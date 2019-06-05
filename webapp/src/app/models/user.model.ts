@@ -23,7 +23,7 @@ export interface UserProfile {
   lastName: string;
   photo: string;
   vacationCount: number;
-  sickdayCount: number;
+  sickDayCount: number;
   status: RequestStatus;
   role: UserType;
   notification: Date;

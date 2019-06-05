@@ -1,14 +1,14 @@
 import {UserType} from '../enums/common.enum';
 
 export interface Settings {
-  sickdayCount: number;
+  sickDayCount: number;
   notification: string;
 }
 
 export interface UserSettings {
   id: number;
   vacationCount: number;
-  sickdayCount: number;
+  sickDayCount: number;
   role: UserType;
 }
 

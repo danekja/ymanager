@@ -21,7 +21,7 @@ export class EditEmployeeDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<EditEmployeeDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: UserProfile,
               private snackBar: MatSnackBar) {
-    this._sickDaysCount = data.sickdayCount;
+    this._sickDaysCount = data.sickDayCount;
     this._vacationDaysCount = data.vacationCount;
     this._userType = data.role;
     this._userId = data.id;
@@ -37,7 +37,7 @@ export class EditEmployeeDialogComponent implements OnInit {
       this.postUserSettings.emit({
         id: this._userId,
         role: this._userType,
-        sickdayCount: this._sickDaysCount,
+        sickDayCount: this._sickDaysCount,
         vacationCount: this._vacationDaysCount
       });
 

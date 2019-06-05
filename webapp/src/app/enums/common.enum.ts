@@ -17,7 +17,7 @@ export enum ProfileStatus {
 
 export enum VacationType {
   VACATION = 'VACATION',
-  SICKDAY = 'SICKDAY',
+  SICKDAY = 'SICK_DAY',
   NONE = 'NONE',
 }
 

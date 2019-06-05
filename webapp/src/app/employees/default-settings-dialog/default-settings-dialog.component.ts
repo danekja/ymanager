@@ -19,7 +19,7 @@ export class DefaultSettingsDialogComponent {
     this.dialogRef.close({
       isConfirmed: true,
       notificationDatetime: this.toNotificationDatetime(),
-      sickdayCount: this.data.sickdaysCount
+      sickDayCount: this.data.sickDayCount
     });
   }
 
@@ -46,5 +46,5 @@ export class DefaultSettingsDialogComponent {
 export class DefaultSettingsDialogData {
   notificationDate: Date;
   notificationTime: string;
-  sickdaysCount: number;
+  sickDayCount: number;
 }

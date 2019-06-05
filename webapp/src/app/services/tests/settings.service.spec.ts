@@ -23,13 +23,13 @@ describe('SettingsService', () => {
 
   it('getDefaultSettings', () => {
     const dummyData = {
-      sickdayCount: 3,
+      sickDayCount: 3,
       notification: '2019/05/25 14:41:31'
     };
 
     service.getDefaultSettings().subscribe((data: any) => {
-      expect(data.sickdayCount).toBeDefined();
-      expect(data.sickdayCount).toBe(3);
+      expect(data.sickDayCount).toBeDefined();
+      expect(data.sickDayCount).toBe(3);
       expect(data.notification).toBeDefined();
     });
 
@@ -40,13 +40,13 @@ describe('SettingsService', () => {
 
   it('getDefaultSettingsWithLanguage', () => {
     const dummyData = {
-      sickdayCount: 3,
+      sickDayCount: 3,
       notification: '2019/05/25 14:41:31'
     };
 
     service.getDefaultSettingsWithLanguage(Languages.ENGLISH).subscribe((data: any) => {
-      expect(data.sickdayCount).toBeDefined();
-      expect(data.sickdayCount).toBe(3);
+      expect(data.sickDayCount).toBeDefined();
+      expect(data.sickDayCount).toBe(3);
       expect(data.notification).toBeDefined();
     });
 
@@ -61,7 +61,7 @@ describe('SettingsService', () => {
       answer: 'ok',
     };
 
-    service.postDefaultSettings({sickdayCount: 3, notification: '2019/04/25 18:23:36'})
+    service.postDefaultSettings({sickDayCount: 3, notification: '2019/04/25 18:23:36'})
       .subscribe((data: any) => expect(data.answer).toBe('ok'));
 
     const req = httpMock.expectOne(baseUrl + '/api/settings');
@@ -74,7 +74,7 @@ describe('SettingsService', () => {
       answer: 'ok',
     };
 
-    service.postDefaultSettingsWithLanguage({sickdayCount: 3, notification: '2019/04/25 18:23:36'}, Languages.ENGLISH)
+    service.postDefaultSettingsWithLanguage({sickDayCount: 3, notification: '2019/04/25 18:23:36'}, Languages.ENGLISH)
       .subscribe((data: any) => expect(data.answer).toBe('ok'));
 
     const req = httpMock.expectOne(baseUrl + '/api/settings?lang=EN');
