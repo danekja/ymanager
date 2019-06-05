@@ -7,7 +7,7 @@
   <div class="sickday-count">
     <label for="sickdays-count-input" class="dialog-label">{{ 'defaultSettings.sickdayCount' | translate }}</label>
     <mat-form-field>
-      <input id="sickdays-count-input" type="number" matInput [(ngModel)]="data.sickDayCount">
+      <input id="sickdays-count-input" type="number" min="0" matInput [(ngModel)]="data.sickDayCount">
     </mat-form-field>
   </div>
 </div>

@@ -49,7 +49,7 @@ export class DefaultSettingsDialogComponent {
   }
 
   private everythingFilled(): boolean {
-    return this.data.notificationDate && this.data.notificationTime && this.data.sickDayCount;
+    return Boolean(this.data.notificationDate && this.data.notificationTime && this.data.sickDayCount);
   }
 
 }
