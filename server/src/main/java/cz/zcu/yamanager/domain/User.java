@@ -211,6 +211,27 @@ public class User {
     }
 
     /**
+     * Adds the given amount to the number of user's available vacations. If the given parameter is null
+     * or a result of the addition is negative the method throws an exception.
+     *
+     * @param value the given amount that is going to be added
+     * @throws IllegalArgumentException when he given parameter is null or a result of the addition is negative
+     */
+    public void addVacationCount(final Float value) {
+        User.log.debug("Adding the given number of hours {} to the vacation", value);
+
+        if(value == null) {
+            User.log.warn("The given value must not be null");
+            throw new IllegalArgumentException("vacation.null.error");
+        } else if (this.vacationCount + value < 0) {
+            User.log.warn("The number of remaining overtime must not be negative");
+            throw new IllegalArgumentException("negative.vacation.error");
+        }
+
+        this.vacationCount += value;
+    }
+
+    /**
      * Adds a difference of the given starting and the ending time of a vacation
      * to the number of user's available vacations. If some of the given parameters are null
      * or the times are not in order the method throws an exception.
@@ -432,11 +453,6 @@ public class User {
      */
     public void setCreationDate(final LocalDateTime creationDate) {
         User.log.debug("Setting a new user's creation date: {}", creationDate);
-
-        if (creationDate == null) {
-            User.log.warn("The given creation date must not be null");
-            throw new IllegalArgumentException("creation.null.error");
-        }
 
         this.creationDate = creationDate;
     }
