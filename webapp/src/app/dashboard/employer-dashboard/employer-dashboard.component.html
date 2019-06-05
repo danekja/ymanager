@@ -39,7 +39,7 @@
 
       <div class="days-off-info" *ngIf="profile">
         <app-vacation-info
-          [sickDaysRemaining]="profile.sickDayCount"
+          [sickDaysRemaining]="profile.sickDayCount - profile.takenSickDayCount"
           [extraVacationRemaining]="profile.vacationCount"
         ></app-vacation-info>
       </div>

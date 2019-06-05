@@ -24,6 +24,7 @@ export interface UserProfile {
   photo: string;
   vacationCount: number;
   sickDayCount: number;
+  takenSickDayCount: number;
   status: RequestStatus;
   role: UserType;
   notification: Date;
