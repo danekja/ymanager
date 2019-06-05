@@ -23,7 +23,7 @@ public class VacationDay {
     /**
      * The ID of this vacation.
      */
-    private final long id;
+    private Long id;
 
     /**
      * The date of this vacation.
@@ -43,7 +43,7 @@ public class VacationDay {
     /**
      * The date and time of a creation of this vacation.
      */
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
     /**
      * The approval status of this vacation.
@@ -56,84 +56,23 @@ public class VacationDay {
     private VacationType type;
 
     /**
-     * Creates an empty vacation for testing purposes only.
-     * It just sets id to zero and creation date to nowte.
-     */
-    public VacationDay() {
-        VacationDay.log.trace("Creating a new instance of the class VacationDay.");
-        this.id = 0;
-        this.creationDate = LocalDateTime.now();
-    }
-
-    /**
-     * Creates a new sick day with the specified id, date, date when a sick day request was created and its approval status.
-     *
-     * @param id           the ID of the sick day
-     * @param date         the date of the sick day
-     * @param creationDate the date and time of the creation of the sick day
-     * @param status       the approval status of the sick day
-     */
-    public VacationDay(final long id, final LocalDate date, final LocalDateTime creationDate, final Status status) {
-        this(id, date, null, null, creationDate, status, VacationType.SICK_DAY);
-    }
-
-    /**
-     * Creates a new overtime with the specified id, date, starting time, ending time, date when an overtime request was created and its approval status.
-     *
-     * @param id           the ID of the overtime
-     * @param date         the date of the overtime
-     * @param from         the starting time of the overtime
-     * @param to           the ending time of the overtime
-     * @param creationDate the date and time of the creation of the overtime
-     * @param status       the approval status of the overtime
-     */
-    public VacationDay(final long id, final LocalDate date, final LocalTime from, final LocalTime to, final LocalDateTime creationDate, final Status status) {
-        this(id, date, from, to, creationDate, status, VacationType.VACATION);
-    }
-
-    /**
-     * Creates a new overtime or sick day with attributes known during insertion.
-     *
-     * @param date         the date of a vacation
-     * @param from         the starting time of a vacation
-     * @param to           the ending time of a vacation
-     * @param status       the approval status of a vacation
-     * @param type         the type of a vacation
-     */
-    public VacationDay(final LocalDate date, final LocalTime from, final LocalTime to, final Status status, final VacationType type) {
-        this(0, date, from, to, null, status, type);
-    }
-
-    /**
-     * Creates a new overtime or sick day with all attributes.
-     *
-     * @param id           the ID of a vacation
-     * @param date         the date of a vacation
-     * @param from         the starting time of a vacation
-     * @param to           the ending time of a vacation
-     * @param creationDate the date and time of a creation of a vacation
-     * @param status       the approval status of a vacation
-     * @param type         the type of a vacation
-     */
-    public VacationDay(final long id, final LocalDate date, final LocalTime from, final LocalTime to, final LocalDateTime creationDate, final Status status, final VacationType type) {
-        VacationDay.log.trace("Creating a new instance of the class VacationDay.");
-        VacationDay.log.debug("VacationDay: id={}, date={}, from={}, to={}, creationDate={}, status={}, type={}", id, date, from, to, creationDate, status, type);
-
-        this.id = id;
-        this.setDate(date);
-        this.setType(type);
-        this.setTime(from, to);
-        this.creationDate = creationDate;
-        this.setStatus(status);
-    }
-
-    /**
      * Returns the ID of this vacation.
      *
      * @return the ID of this vacation
      */
     public long getId() {
         return this.id;
+    }
+
+    /**
+     * Replaces the ID of this vacation with the given one.
+     *
+     * @param id the given ID
+     */
+    public void setId(final Long id) {
+        VacationDay.log.debug("Setting a new id: {}", id);
+
+        this.id = id;
     }
 
     /**
@@ -265,6 +204,17 @@ public class VacationDay {
     }
 
     /**
+     * Replaces the creation date of this vacation with the given date and time.
+     *
+     * @param creationDate the new creation date
+     */
+    public void setCreationDate(final LocalDateTime creationDate) {
+        VacationDay.log.debug("Setting a new creation date of this vacation: {}", creationDate);
+
+        this.creationDate = creationDate;
+    }
+
+    /**
      * Returns the approval status of this vacation.
      *
      * @return the approval status of this vacation
@@ -332,8 +282,8 @@ public class VacationDay {
         return "VacationDay{" +
                 "id=" + this.id +
                 ", date=" + this.date +
-                ", from=" + String.valueOf(this.from) +
-                ", to=" + String.valueOf(this.to) +
+                ", from=" + this.from +
+                ", to=" + this.to +
                 ", creationDate=" + this.creationDate +
                 ", status=" + this.status +
                 ", type=" + this.type +
