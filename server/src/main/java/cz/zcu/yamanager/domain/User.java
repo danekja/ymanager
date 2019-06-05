@@ -26,6 +26,11 @@ public class User {
     private static final int EMAIL_ADDRESS_LENGTH = 100;
 
     /**
+     * The url of a generic photo.
+     */
+    private static final String DEFAULT_PHOTO = "https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg";
+
+    /**
      * The logger.
      */
     private static final Logger log = LoggerFactory.getLogger(User.class);
@@ -33,7 +38,7 @@ public class User {
     /**
      * The user's ID.
      */
-    private final long id;
+    private Long id;
 
     /**
      * The user's first name.
@@ -48,17 +53,17 @@ public class User {
     /**
      * The number of user's remaining hours of an overtime.
      */
-    private float vacationCount;
+    private Float vacationCount;
 
     /**
      * The number of user's sick days available during a year.
      */
-    private int totalSickDayCount;
+    private Integer totalSickDayCount;
 
     /**
      * The number of user's taken sick days.
      */
-    private int takenSickDayCount;
+    private Integer takenSickDayCount;
 
     /**
      * The date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
@@ -83,7 +88,7 @@ public class User {
     /**
      * The date and time of a user's creation.
      */
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
     /**
      * The user's role.
@@ -96,79 +101,23 @@ public class User {
     private Status status;
 
     /**
-     * Creates an empty user for testing purposes only.
-     * It just sets id to zero and creation date to now.
-     */
-    public User() {
-        User.log.trace("Creating a new instance of the class User.");
-        this.id = 0;
-        this.creationDate = null;
-    }
-
-    /**
-     * Creates a new user and sets attributes known during an insertion.
-     *
-     * @param firstName         the user's first name
-     * @param lastName          the user's last name.
-     * @param vacationCount     the number of user's remaining hours of an overtime
-     * @param totalSickDayCount the number of user's sick days available during a year
-     * @param takenSickDayCount the number of user's taken sick days
-     * @param notification      the date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
-     * @param token             the token for the Google oAuth
-     * @param email             the user's email address
-     * @param photo             the URL of a user's photo
-     * @param role              the user's role
-     * @param status            the user's authorization status
-     * @throws IllegalArgumentException when the vacationCount, totalSickDayCount or takenSickDayCount are negative or first name, last name or email exceed the maximal permitted number of characters
-     */
-    public User(final String firstName, final String lastName, final Float vacationCount, final Integer totalSickDayCount, final Integer takenSickDayCount, final LocalDateTime notification, final String token, final String email, final String photo, final UserRole role, final Status status) throws IllegalArgumentException {
-        this(0, firstName, lastName, vacationCount, totalSickDayCount, takenSickDayCount, notification, token, email, photo, null, role, status);
-    }
-
-    /**
-     * Creates a new user and sets all his/hers attributes.
-     *
-     * @param id                the user's ID
-     * @param firstName         the user's first name
-     * @param lastName          the user's last name.
-     * @param vacationCount     the number of user's remaining hours of an overtime
-     * @param totalSickDayCount the number of user's sick days available during a year
-     * @param takenSickDayCount the number of user's taken sick days
-     * @param notification      the date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
-     * @param token             the token for the Google oAuth
-     * @param email             the user's email address
-     * @param photo             the URL of a user's photo
-     * @param creationDate      the date and time of a user's creation
-     * @param role              the user's role
-     * @param status            the user's authorization status
-     * @throws IllegalArgumentException when the vacationCount, totalSickDayCount or takenSickDayCount are negative or first name, last name or email exceed the maximal permitted number of characters
-     */
-    public User(final long id, final String firstName, final String lastName, final Float vacationCount, final Integer totalSickDayCount, final Integer takenSickDayCount, final LocalDateTime notification, final String token, final String email, final String photo, final LocalDateTime creationDate, final UserRole role, final Status status) throws IllegalArgumentException {
-        User.log.trace("Creating a new instance of the class User.");
-        User.log.debug("User: id={}, firstName={}, lastName={}, vacationCount={}, totalSickDayCount={}, takenSickDayCount={}, notification={}, token={}, email={}, photo={}, creationDate={}, role={}, status={}", id, firstName, lastName, vacationCount, totalSickDayCount, takenSickDayCount, notification, token, email, photo, creationDate, role, status);
-
-        this.id = id;
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setVacationCount(vacationCount);
-        this.setTotalSickDayCount(totalSickDayCount);
-        this.setTakenSickDayCount(takenSickDayCount);
-        this.setNotification(notification);
-        this.token = token;
-        this.setEmail(email);
-        this.photo = photo;
-        this.creationDate = creationDate;
-        this.setRole(role);
-        this.setStatus(status);
-    }
-
-    /**
      * Returns the user's ID.
      *
      * @return the user's ID
      */
-    public long getId() {
+    public Long getId() {
         return this.id;
+    }
+
+    /**
+     * Replaces the user's ID with the given one.
+     *
+     * @param id the given ID
+     */
+    public void setId(final Long id) {
+        User.log.debug("Setting a new id: {}", id);
+
+        this.id = id;
     }
 
     /**
@@ -190,7 +139,10 @@ public class User {
     public void setFirstName(final String firstName) throws IllegalArgumentException {
         User.log.debug("Setting a new first name: {}", firstName);
 
-        if (firstName.length() > User.NAME_LENGTH) {
+        if (firstName == null) {
+            User.log.warn("The given first name must not be null");
+            throw new IllegalArgumentException("first.name.null.error");
+        } else if (firstName.length() > User.NAME_LENGTH) {
             User.log.warn("The length of the given first name exceeded a limit");
             throw new IllegalArgumentException("name.length.error");
         }
@@ -217,7 +169,10 @@ public class User {
     public void setLastName(final String lastName) throws IllegalArgumentException {
         User.log.debug("Setting a new last name: {}", lastName);
 
-        if (lastName.length() > User.NAME_LENGTH) {
+        if(lastName == null) {
+            User.log.warn("The given last name must not be null");
+            throw new IllegalArgumentException("last.name.null.error");
+        } else if (lastName.length() > User.NAME_LENGTH) {
             User.log.warn("The length of the given last name exceeded a limit");
             throw new IllegalArgumentException("name.length.error");
         }
@@ -230,7 +185,7 @@ public class User {
      *
      * @return the number of user's remaining hours of the overtime
      */
-    public float getVacationCount() {
+    public Float getVacationCount() {
         return this.vacationCount;
     }
 
@@ -256,11 +211,36 @@ public class User {
     }
 
     /**
+     * Adds a difference of the given starting and the ending time of a vacation
+     * to the number of user's available vacations. If some of the given parameters are null
+     * or the times are not in order the method throws an exception.
+     *
+     * @param from the starting time of a vacation
+     * @param to the ending time of a vacation
+     * @throws IllegalArgumentException when some of the given parameters are null
+     *          or the times are not in order
+     */
+    public void addVacationCount(final LocalTime from, final LocalTime to) {
+        User.log.debug("Adding a vacation from {} to {}", from, to);
+
+        if(from == null || to == null) {
+            User.log.warn("A vacation has to have a starting and an ending time");
+            throw new IllegalArgumentException("time.vacation.error");
+        } else if (from.compareTo(to) >= 0) {
+            User.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
+            throw new IllegalArgumentException("time.order.error");
+        }
+
+        final float difference = from.until(to, MINUTES) / 60f;
+        this.vacationCount += difference;
+    }
+
+    /**
      * Returns the number of user's sick days available during a year.
      *
      * @return the number of user's sick days available during the year
      */
-    public int getTotalSickDayCount() {
+    public Integer getTotalSickDayCount() {
         return this.totalSickDayCount;
     }
 
@@ -274,10 +254,7 @@ public class User {
     public void setTotalSickDayCount(final Integer totalSickDayCount) throws IllegalArgumentException {
         User.log.debug("Setting a new number of user's sick days available during a year: {}", totalSickDayCount);
 
-        if (totalSickDayCount == null) {
-            User.log.warn("The number of user's available sick days must not be null");
-            throw new IllegalArgumentException("sick.day.null.error");
-        } else if (totalSickDayCount < 0) {
+        if (totalSickDayCount != null && totalSickDayCount < 0) {
             User.log.warn("The number of user's available sick days must not be negative");
             throw new IllegalArgumentException("negative.sick.day.error");
         }
@@ -290,7 +267,7 @@ public class User {
      *
      * @return the number of user's taken sick days
      */
-    public int getTakenSickDayCount() {
+    public Integer getTakenSickDayCount() {
         return this.takenSickDayCount;
     }
 
@@ -319,6 +296,30 @@ public class User {
     }
 
     /**
+     * Adds the given amount to the number of user's remaining hours of an overtime.
+     * If the given number is null or a result of the addition is negative the method throws an exception.
+     *
+     * @param value the given amount that is going to be added
+     * @throws IllegalArgumentException when the given number is null or a result of the addition is negative
+     */
+    public void addTakenSickDayCount(final Integer value) throws IllegalArgumentException {
+        User.log.debug("Increasing the number of remaining overtime by {}", value);
+
+        if (value == null) {
+            User.log.warn("The given value must not be null");
+            throw new IllegalArgumentException("vacation.null.error");
+        } else if (this.takenSickDayCount + value < 0) {
+            User.log.warn("The number number of user's taken sick days must not be negative");
+            throw new IllegalArgumentException("negative.sick.day.error");
+        } else if (this.takenSickDayCount + value > this.totalSickDayCount) {
+            User.log.warn("The number number of user's taken sick days must not greater than his/her available sick days");
+            throw new IllegalArgumentException("taken.sick.day.count.error");
+        }
+
+        this.takenSickDayCount += value;
+    }
+
+    /**
      * Returns the date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
      *
      * @return the date and time
@@ -336,11 +337,6 @@ public class User {
      */
     public void setNotification(final LocalDateTime notification) throws IllegalArgumentException {
         User.log.debug("Setting a new date and time of sending an email warning: {}", notification);
-
-        if(notification == null) {
-            User.log.warn("The given notification must not be null");
-            throw new IllegalArgumentException("notification.null.error");
-        }
 
         this.notification = notification;
     }
@@ -361,6 +357,12 @@ public class User {
      */
     public void setToken(final String token) {
         User.log.debug("Setting a new token: {}", token);
+
+        if (token == null) {
+            User.log.warn("The given token must not be null");
+            throw new IllegalArgumentException("token.null.error");
+        }
+
         this.token = token;
     }
 
@@ -383,7 +385,10 @@ public class User {
     public void setEmail(final String email) throws IllegalArgumentException {
         User.log.debug("Setting a new email address: {}", email);
 
-        if (email.length() > User.EMAIL_ADDRESS_LENGTH) {
+        if (email == null) {
+            User.log.warn("The given email must not be null");
+            throw new IllegalArgumentException("email.null.error");
+        }else if (email.length() > User.EMAIL_ADDRESS_LENGTH) {
             User.log.warn("The length of the email address exceeded a limit");
             throw new IllegalArgumentException("email.length.error");
         }
@@ -407,7 +412,8 @@ public class User {
      */
     public void setPhoto(final String photo) {
         User.log.debug("Setting a new url of a photo: {}", photo);
-        this.photo = photo;
+
+        this.photo = photo == null ? User.DEFAULT_PHOTO : photo;
     }
 
     /**
@@ -417,6 +423,22 @@ public class User {
      */
     public LocalDateTime getCreationDate() {
         return this.creationDate;
+    }
+
+    /**
+     * Replaces the user's creation date with the given date and time.
+     *
+     * @param creationDate the new creation date
+     */
+    public void setCreationDate(final LocalDateTime creationDate) {
+        User.log.debug("Setting a new user's creation date: {}", creationDate);
+
+        if (creationDate == null) {
+            User.log.warn("The given creation date must not be null");
+            throw new IllegalArgumentException("creation.null.error");
+        }
+
+        this.creationDate = creationDate;
     }
 
     /**

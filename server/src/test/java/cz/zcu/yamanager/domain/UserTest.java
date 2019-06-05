@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests methods of the {@code User} class.
@@ -28,13 +27,16 @@ class UserTest {
     @BeforeEach
     void setUp() {
         this.user = new User();
+        this.user.setVacationCount(0f);
+        this.user.setTotalSickDayCount(0);
+        this.user.setTakenSickDayCount(0);
     }
 
     /**
      * Tests the method {@code setFirstName} with common values where no problem should occur.
      */
     @Test
-    void testSetFirstName() {
+    void setFirstName_valid() {
         this.user.setFirstName("aaaaaa");
         assertEquals("aaaaaa", this.user.getFirstName());
     }
@@ -43,7 +45,7 @@ class UserTest {
      * Tests the method {@code setFirstName} with the maximal length of a name.
      */
     @Test
-    void testSetFirstNameMax() {
+    void setFirstName_maxLength_valid() {
         this.user.setFirstName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.user.getFirstName());
     }
@@ -52,15 +54,23 @@ class UserTest {
      * Tests the method {@code setFirstName} with name that exceeds maximal length which should throw an exception.
      */
     @Test
-    void testSetFirstNameException() {
+    void setFirstName_tooLong() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setFirstName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+    }
+
+    /**
+     * Tests the method {@code setFirstName} with null input which should throw an exception.
+     */
+    @Test
+    void setFirstName_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.setFirstName(null));
     }
 
     /**
      * Tests the method {@code setLastName} with common values where no problem should occur.
      */
     @Test
-    void testSetLastName() {
+    void setLastName_valid() {
         this.user.setLastName("aaaaaa");
         assertEquals("aaaaaa", this.user.getLastName());
     }
@@ -69,7 +79,7 @@ class UserTest {
      * Tests the method {@code setLastName} with the maximal length of a name.
      */
     @Test
-    void testSetLastNameMax() {
+    void setLastName_maxLength_valid() {
         this.user.setLastName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.user.getLastName());
     }
@@ -78,33 +88,41 @@ class UserTest {
      * Tests the method {@code setLastName} with name that exceeds maximal length which should throw an exception.
      */
     @Test
-    void testSetLastNameException() {
+    void setLastName_tooLong() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setLastName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+    }
+
+    /**
+     * Tests the method {@code setLastName} with null input which should throw an exception.
+     */
+    @Test
+    void setLastName_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.setLastName(null));
     }
 
     /**
      * Tests the method {@code setVacationCount} with common values where no problem should occur.
      */
     @Test
-    void testSetVacationCount() {
+    void setVacationCount_valid() {
         this.user.setVacationCount(10f);
-        assertEquals(10, this.user.getVacationCount());
+        assertEquals(10f, this.user.getVacationCount().floatValue());
     }
 
     /**
      * Tests the method {@code setVacationCount} with zero which is a threshold value.
      */
     @Test
-    void testSetVacationCountZero() {
+    void setVacationCount_zeroInput_valid() {
         this.user.setVacationCount(0f);
-        assertEquals(0, this.user.getVacationCount());
+        assertEquals(0f, this.user.getVacationCount().floatValue());
     }
 
     /**
      * Tests the method {@code setVacationCount} with negative one which is a threshold value.
      */
     @Test
-    void testSetVacationCountNegativeOne() {
+    void setVacationCount_negativeOneInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setVacationCount(-1f));
     }
 
@@ -112,41 +130,133 @@ class UserTest {
      * Tests the method {@code setVacationCount} with negative value.
      */
     @Test
-    void testSetVacationCountNegative() {
+    void setVacationCount_negativeInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setVacationCount(-10f));
     }
 
     /**
-     * Tests the method {@code setVacationCount} with null value.
+     * Tests the method {@code setVacationCount} with null value which should throw an exception.
      */
     @Test
-    void testSetVacationCountObjectNull() {
+    void setVacationCount_nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setVacationCount(null));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with common values where no problem should occur.
+     */
+    @Test
+    void addVacationCount_floatInput_valid() {
+        this.user.addVacationCount(10f);
+        assertEquals(10f, this.user.getVacationCount().floatValue());
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with common values where no problem should occur.
+     */
+    @Test
+    void addVacationCount_addFloatInput_valid() {
+        this.user.setVacationCount(2f);
+        this.user.addVacationCount(10f);
+        assertEquals(12f, this.user.getVacationCount().floatValue());
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with common values where no problem should occur.
+     */
+    @Test
+    void addVacationCount_subtractFloatInput_valid() {
+        this.user.setVacationCount(20f);
+        this.user.addVacationCount(-10f);
+        assertEquals(10f, this.user.getVacationCount().floatValue());
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with negative result of the operation which should throw an exception.
+     */
+    @Test
+    void addVacationCount_floatInput_negativeResult() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(-10f));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with null value which should throw an exception.
+     */
+    @Test
+    void addVacationCount_nullFloatInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(null));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with common values where no problem should occur.
+     */
+    @Test
+    void addVacationCount_timeInput_valid() {
+        LocalTime from = LocalTime.of(10,0);
+        LocalTime to = LocalTime.of(20,0);
+        this.user.addVacationCount(from, to);
+        assertEquals(10f, this.user.getVacationCount().floatValue());
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with wrong order of parameters which should throw an exception.
+     */
+    @Test
+    void addVacationCount_timeInput_order() {
+        LocalTime from = LocalTime.of(10,0);
+        LocalTime to = LocalTime.of(20,0);
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(to, from));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with null from parameter which should throw an exception.
+     */
+    @Test
+    void addVacationCount_timeInput_nullFrom() {
+        LocalTime to = LocalTime.of(20,0);
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(null, to));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with null to parameter which should throw an exception.
+     */
+    @Test
+    void addVacationCount_timeInput_nullTo() {
+        LocalTime from = LocalTime.of(20,0);
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(from, null));
+    }
+
+    /**
+     * Tests the method {@code addVacationCount} with null parameters which should throw an exception.
+     */
+    @Test
+    void addVacationCount_timeNullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.addVacationCount(null, null));
     }
 
     /**
      * Tests the method {@code setTotalSickDayCount} with common values where no problem should occur.
      */
     @Test
-    void testSetTotalSickDayCount() {
+    void setTotalSickDayCount_valid() {
         this.user.setTotalSickDayCount(10);
-        assertEquals(10, this.user.getTotalSickDayCount());
+        assertEquals(10, this.user.getTotalSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code setTotalSickDayCount} with zero which is a threshold value.
      */
     @Test
-    void testSetTotalSickDayCountZero() {
+    void setTotalSickDayCount_zeroInput_valid() {
         this.user.setTotalSickDayCount(0);
-        assertEquals(0, this.user.getTotalSickDayCount());
+        assertEquals(0, this.user.getTotalSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code setTotalSickDayCount} with negative one which is a threshold value.
      */
     @Test
-    void testSetTotalSickDayCountNegativeOne() {
+    void setTotalSickDayCount_negativeOneInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setTotalSickDayCount(-1));
     }
 
@@ -154,7 +264,7 @@ class UserTest {
      * Tests the method {@code setTotalSickDayCount} with negative value.
      */
     @Test
-    void testSetTotalSickDayCountNegative() {
+    void setTotalSickDayCount_negativeInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setTotalSickDayCount(-10));
     }
 
@@ -162,36 +272,35 @@ class UserTest {
      * Tests the method {@code setTotalSickDayCount} with null value.
      */
     @Test
-    void testSetTotalSickDayCountObjectNull() {
-        assertThrows(IllegalArgumentException.class, () -> this.user.setTotalSickDayCount(null));
+    void setTotalSickDayCount_nullInput_valid() {
+        this.user.setTotalSickDayCount(null);
+        assertNull(this.user.getTotalSickDayCount());
     }
 
     /**
      * Tests the method {@code setTakenSickDayCount} with common values where no problem should occur.
      */
     @Test
-    void testSetTakenSickDayCount() {
-        this.user.setTotalSickDayCount(50);
+    void setTakenSickDayCount_valid() {
+        this.user.setTotalSickDayCount(20);
         this.user.setTakenSickDayCount(10);
-        assertEquals(10, this.user.getTakenSickDayCount());
+        assertEquals(10, this.user.getTakenSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code setTakenSickDayCount} with zero which is a threshold value.
      */
     @Test
-    void testSetTakenSickDayCountZero() {
-        this.user.setTotalSickDayCount(50);
+    void setTakenSickDayCount_zeroInput_valid() {
         this.user.setTakenSickDayCount(0);
-        assertEquals(0, this.user.getTakenSickDayCount());
+        assertEquals(0, this.user.getTakenSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code setTakenSickDayCount} with negative one which is a threshold value.
      */
     @Test
-    void testSetTakenSickDayCountNegativeOne() {
-        this.user.setTotalSickDayCount(10);
+    void setTakenSickDayCount_negativeOneInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setTakenSickDayCount(-1));
     }
 
@@ -199,7 +308,7 @@ class UserTest {
      * Tests the method {@code setTakenSickDayCount} with negative value.
      */
     @Test
-    void testSetTakenSickDayCountNegative() {
+    void setTakenSickDayCount_negativeInput() {
         this.user.setTotalSickDayCount(10);
         assertThrows(IllegalArgumentException.class, () -> this.user.setTakenSickDayCount(-10));
     }
@@ -208,7 +317,7 @@ class UserTest {
      * Tests the method {@code setTakenSickDayCount} with a value that is greater than total sick days.
      */
     @Test
-    void testSetTakenSickDayCountOver() {
+    void setTakenSickDayCount_over() {
         this.user.setTotalSickDayCount(10);
         assertThrows(IllegalArgumentException.class, () -> this.user.setTakenSickDayCount(20));
     }
@@ -217,25 +326,93 @@ class UserTest {
      * Tests the method {@code setTakenSickDayCount} with a value that is equals the total sick days.
      */
     @Test
-    void testSetTakenSickDayCountSame() {
+    void setTakenSickDayCount_same() {
         this.user.setTotalSickDayCount(10);
         this.user.setTakenSickDayCount(10);
-        assertEquals(10, this.user.getTakenSickDayCount());
+        assertEquals(10, this.user.getTakenSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code setTakenSickDayCount} with null value.
      */
     @Test
-    void testSetTakenSickDayCountObjectNull() {
+    void setTakenSickDayCount_nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setTakenSickDayCount(null));
     }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with common values where no problem should occur.
+     */
+    @Test
+    void addTakenSickDayCount_valid() {
+        this.user.setTotalSickDayCount(50);
+        this.user.addTakenSickDayCount(10);
+        assertEquals(10, this.user.getTakenSickDayCount().intValue());
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with common values where no problem should occur.
+     */
+    @Test
+    void addTakenSickDayCount_add_valid() {
+        this.user.setTotalSickDayCount(50);
+        this.user.setTakenSickDayCount(2);
+        this.user.addTakenSickDayCount(10);
+        assertEquals(12f, this.user.getTakenSickDayCount().intValue());
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with common values where no problem should occur.
+     */
+    @Test
+    void addTakenSickDayCount_subtract_valid() {
+        this.user.setTotalSickDayCount(50);
+        this.user.setTakenSickDayCount(20);
+        this.user.addTakenSickDayCount(-10);
+        assertEquals(10f, this.user.getTakenSickDayCount().intValue());
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with negative result of the operation which should throw an exception.
+     */
+    @Test
+    void addTakenSickDayCount_negativeResult() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.addTakenSickDayCount(-10));
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with null value which should throw an exception.
+     */
+    @Test
+    void addTakenSickDayCount_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.addTakenSickDayCount(null));
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with a value that is greater than total sick days.
+     */
+    @Test
+    void addTakenSickDayCount_over() {
+        this.user.setTotalSickDayCount(10);
+        assertThrows(IllegalArgumentException.class, () -> this.user.addTakenSickDayCount(20));
+    }
+
+    /**
+     * Tests the method {@code addTakenSickDayCount} with a value that is equals the total sick days.
+     */
+    @Test
+    void addTakenSickDayCount_same() {
+        this.user.setTotalSickDayCount(10);
+        this.user.addTakenSickDayCount(10);
+        assertEquals(10, this.user.getTakenSickDayCount().intValue());
+    }
+
 
     /**
      * Tests the method {@code setNotification} with common values where no problem should occur.
      */
     @Test
-    void testSetNotification() {
+    void setNotification_valid() {
         this.user.setNotification(LocalDateTime.of(2010,5,1,20,0));
         assertEquals(LocalDateTime.of(2010,5,1,20,0), this.user.getNotification());
     }
@@ -244,15 +421,33 @@ class UserTest {
      * Tests the method {@code setNotification} with null value.
      */
     @Test
-    void testSetNotificationNull() {
-        assertThrows(IllegalArgumentException.class, () -> this.user.setNotification(null));
+    void setNotification_nullInput_valid() {
+        this.user.setNotification(null);
+        assertNull(this.user.getNotification());
+    }
+
+    /**
+     * Tests the method {@code setToken} with common values where no problem should occur.
+     */
+    @Test
+    void setToken_valid() {
+        this.user.setToken("aaaaa");
+        assertEquals("aaaaa", this.user.getToken());
+    }
+
+    /**
+     * Tests the method {@code setToken} with null value.
+     */
+    @Test
+    void setToken_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.setToken(null));
     }
 
     /**
      * Tests the method {@code setEmail} with common values where no problem should occur.
      */
     @Test
-    void testSetEmail() {
+    void setEmail_valid() {
         this.user.setEmail("aaaaaa");
         assertEquals("aaaaaa", this.user.getEmail());
     }
@@ -261,7 +456,7 @@ class UserTest {
      * Tests the method {@code setEmail} with the maximal length of an email address.
      */
     @Test
-    void testSetEmailMax() {
+    void setEmail_maxLength() {
         this.user.setEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.user.getEmail());
     }
@@ -270,15 +465,41 @@ class UserTest {
      * Tests the method {@code setEmail} with email address that exceeds maximal length which should throw an exception.
      */
     @Test
-    void testSetEmailException() {
+    void setEmail_tooLong() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+    }
+
+    /**
+     * Tests the method {@code setEmail} with null value.
+     */
+    @Test
+    void setEmail_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.user.setEmail(null));
+    }
+
+    /**
+     * Tests the method {@code setPhoto} with common values where no problem should occur.
+     */
+    @Test
+    void setPhoto_valid() {
+        this.user.setPhoto("aaaaa");
+        assertEquals("aaaaa", this.user.getPhoto());
+    }
+
+    /**
+     * Tests the method {@code setPhoto} with null value.
+     */
+    @Test
+    void setPhoto_nullInput_valid() {
+        this.user.setPhoto(null);
+        assertEquals("https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg", this.user.getPhoto());
     }
 
     /**
      * Tests the method {@code setRole} with common values where no problem should occur.
      */
     @Test
-    void testSetRole() {
+    void setRole_valid() {
         this.user.setRole(UserRole.EMPLOYER);
         assertEquals(UserRole.EMPLOYER, this.user.getRole());
     }
@@ -287,7 +508,7 @@ class UserTest {
      * Tests the method {@code setRole} with null value.
      */
     @Test
-    void testSetRoleNull() {
+    void setRole_nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setRole(null));
     }
 
@@ -295,7 +516,7 @@ class UserTest {
      * Tests the method {@code setStatus} with common values where no problem should occur.
      */
     @Test
-    void testSetStatus() {
+    void setStatus_valid() {
         this.user.setStatus(Status.ACCEPTED);
         assertEquals(Status.ACCEPTED, this.user.getStatus());
     }
@@ -304,7 +525,7 @@ class UserTest {
      * Tests the method {@code setStatus} with null value.
      */
     @Test
-    void testSetStatusNull() {
+    void setStatus_nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.user.setStatus(null));
     }
 
@@ -312,17 +533,17 @@ class UserTest {
      * Tests the method {@code takeVacation} with common values where no problem should occur.
      */
     @Test
-    void testTakeVacation() {
+    void takeVacation_valid() {
         this.user.setVacationCount(10f);
         this.user.takeVacation(LocalTime.of(15,0), LocalTime.of(20, 0));
-        assertEquals(5, this.user.getVacationCount());
+        assertEquals(5, this.user.getVacationCount().intValue());
     }
 
     /**
      * Tests the method {@code takeVacation} when there is not enough vacations.
      */
     @Test
-    void testTakeVacationException() {
+    void takeVacation_notEnough() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeVacation(LocalTime.of(15,0), LocalTime.of(20, 0)));
     }
 
@@ -330,7 +551,7 @@ class UserTest {
      * Tests the method {@code takeVacation} with switched from and to parameters.
      */
     @Test
-    void testTakeVacationOrder() {
+    void takeVacation_order() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeVacation( LocalTime.of(20,0), LocalTime.of(10,0)));
     }
 
@@ -338,7 +559,7 @@ class UserTest {
      * Tests the method {@code takeVacation} with from argument null.
      */
     @Test
-    void testTakeVacationNullFrom() {
+    void takeVacation_nullFrom() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeVacation(null, LocalTime.of(15,0)));
     }
 
@@ -346,7 +567,7 @@ class UserTest {
      * Tests the method {@code takeVacation} with to argument null.
      */
     @Test
-    void testTakeVacationNullTo() {
+    void takeVacation_nullTo() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeVacation(LocalTime.of(15,0), null));
     }
 
@@ -354,7 +575,7 @@ class UserTest {
      * Tests the method {@code takeVacation } with both arguments null.
      */
     @Test
-    void testTakeVacationNullBoth() {
+    void takeVacation_nullBoth() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeVacation(null, null));
     }
 
@@ -362,17 +583,17 @@ class UserTest {
      * Tests the method {@code takeVacation} with common values where no problem should occur.
      */
     @Test
-    void testTakeSickDay() {
+    void takeSickDay_valid() {
         this.user.setTotalSickDayCount(5);
         this.user.takeSickDay();
-        assertEquals(1, this.user.getTakenSickDayCount());
+        assertEquals(1, this.user.getTakenSickDayCount().intValue());
     }
 
     /**
      * Tests the method {@code takeVacation} when there is not enough available sick days.
      */
     @Test
-    void testTakeSickDayException() {
+    void takeSickDay_notEnough() {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeSickDay());
     }
 
@@ -381,7 +602,20 @@ class UserTest {
      */
     @Test
     void testToString() {
-        User user = new User(5, "Jan", "Nov\u00E1k",0f, 10, 5, LocalDateTime.of(2008,10,30,20,0), "tokenContent", "novak@email.com", "url", LocalDateTime.of(2010,7,31,12,5), UserRole.EMPLOYER, Status.ACCEPTED);
+        User user = new User();
+        user.setId(5L);
+        user.setFirstName("Jan");
+        user.setLastName("Nov\u00E1k");
+        user.setVacationCount(0f);
+        user.setTotalSickDayCount(10);
+        user.setTakenSickDayCount(5);
+        user.setNotification(LocalDateTime.of(2008,10,30,20,0));
+        user.setToken("tokenContent");
+        user.setEmail("novak@email.com");
+        user.setPhoto("url");
+        user.setCreationDate(LocalDateTime.of(2010,7,31,12,5));
+        user.setRole(UserRole.EMPLOYER);
+        user.setStatus(Status.ACCEPTED);
         assertEquals("User{id=5, firstName='Jan', lastName='Nov\u00E1k', vacationCount=0.0, totalSickDayCount=10, takenSickDayCount=5, notification=2008-10-30T20:00, token='tokenContent', email='novak@email.com', photo='url', creationDate=2010-07-31T12:05, role=EMPLOYER, status=ACCEPTED}", user.toString());
     }
 }
