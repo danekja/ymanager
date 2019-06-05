@@ -39,7 +39,7 @@ export class MenuService {
     const menuItems: MenuItem[] = [];
     menuItems.push({name: 'menuItem.dashboard', routePath: 'dashboard'});
     if (profile.role === UserType.EMPLOYER) {
-      menuItems.push({name: 'menuItem.employers', routePath: 'employees'});
+      menuItems.push({name: 'menuItem.employees', routePath: 'employees'});
     }
 
     return menuItems;

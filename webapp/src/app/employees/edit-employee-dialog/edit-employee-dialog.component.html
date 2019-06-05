@@ -27,7 +27,7 @@
       <input
         matInput
         type="number"
-        placeholder="Sickdays"
+        placeholder="{{'editEmployee.setSickdays' | translate}}"
         min="0"
         step="0.5"
         [(ngModel)]="_sickDaysCount"
@@ -41,10 +41,10 @@
     <input
       matInput
       type="number"
-      placeholder="{{'basic.vacation' | translate}}"
+      placeholder="{{'editEmployee.addVacation' | translate}}"
       min="0"
       step="0.5"
-      [(ngModel)]="_vacationDaysCount"
+      [(ngModel)]="_addVacationHoursCount"
     >
   </mat-form-field>
 </div>

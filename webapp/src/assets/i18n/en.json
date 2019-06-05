@@ -27,7 +27,11 @@
   },
   "menuItem": {
     "dashboard": "Dashboard",
-    "employers": "Employers"
+    "employees": "Employees"
+  },
+  "editEmployee": {
+    "setSickdays": "Set number of sickdays (days)",
+    "addVacation": "Add vacation (hours)"
   },
   "basic": {
     "name": "Name",

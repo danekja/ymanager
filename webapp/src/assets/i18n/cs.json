@@ -27,7 +27,11 @@
   },
   "menuItem": {
     "dashboard": "Dashboard",
-    "employers": "Zaměstnanci"
+    "employees": "Zaměstnanci"
+  },
+  "editEmployee": {
+    "setSickdays": "Nastavení počtu sickdays (dny)",
+    "addVacation": "Přidání dovolené (hodiny)"
   },
   "basic": {
     "name": "Jméno",
