@@ -24,6 +24,11 @@
     "headline": "Nastavení",
     "notification": "Notifikace o vypršení dovolené"
   },
+  "defaultSettings": {
+    "headline": "Výchozí nastavení",
+    "notification": "Notifikace o vypršení dovolené",
+    "sickdayCount": "Počet sickday"
+  },
   "addVacation": {
     "headline": "Výběr volna"
   },

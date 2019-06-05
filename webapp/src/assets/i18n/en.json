@@ -24,6 +24,11 @@
     "headline": "Settings",
     "notification": "Vacation expiration notification"
   },
+  "defaultSettings": {
+    "headline": "Default settings",
+    "notification": "Vacation expiration notification",
+    "sickdayCount": "Number of sickdays"
+  },
   "addVacation": {
     "headline": "Pick vacation"
   },

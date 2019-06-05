@@ -1,11 +1,11 @@
-<h1 mat-dialog-title>Výchozí nastavení</h1>
+<h1 mat-dialog-title>{{ 'defaultSettings.headline' | translate }} </h1>
 
 <div mat-dialog-content>
-  <span class="dialog-label">Notifikace o vypršení dovolené: </span>
+  <span class="dialog-label">{{ 'defaultSettings.notification' | translate }}</span>
   <app-datetime [(date)]="data.notificationDate" [(time)]="data.notificationTime" [minuteStep]="MINUTE_STEP"></app-datetime>
 
   <div class="sickday-count">
-    <label for="sickdays-count-input" class="dialog-label">Počet sickdays:</label>
+    <label for="sickdays-count-input" class="dialog-label">{{ 'defaultSettings.sickdayCount' | translate }}</label>
     <mat-form-field>
       <input id="sickdays-count-input" type="number" matInput [(ngModel)]="data.sickDayCount">
     </mat-form-field>
@@ -13,6 +13,6 @@
 </div>
 
 <div mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" (click)="onConfirmClick()">Potvrdit</button>
-  <button mat-raised-button color="basic" (click)="onCloseClick()">Zavřít</button>
+  <button mat-raised-button color="primary" (click)="onConfirmClick()">{{ 'button.confirm' | translate }}</button>
+  <button mat-raised-button color="basic" (click)="onCloseClick()">{{ 'button.close' | translate }}</button>
 </div>

@@ -16,11 +16,20 @@ export class DefaultSettingsDialogComponent {
   }
 
   onConfirmClick(): void {
-    this.dialogRef.close({
-      isConfirmed: true,
-      notificationDatetime: this.toNotificationDatetime(),
-      sickDayCount: this.data.sickDayCount
-    });
+    let data;
+    if (this.data.notificationDate && sickDayCount) {
+      data = {
+        isConfirmed: true,
+        notificationDatetime: this.toNotificationDatetime(),
+        sickDayCount: this.data.sickDayCount
+      };
+    } else {
+      data = {
+        isConfirmed: false
+      };
+    }
+
+    this.dialogRef.close(data);
   }
 
   onCloseClick(): void {
