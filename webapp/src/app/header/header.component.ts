@@ -37,7 +37,7 @@ export class HeaderComponent {
             notification: this.profile.notification
           }
         }).afterClosed().subscribe(dialogData => {
-          if (!dialogData.isConfirmed) {
+          if (!dialogData || !dialogData.isConfirmed) {
             return;
           }
 

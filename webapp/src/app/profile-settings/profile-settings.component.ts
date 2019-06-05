@@ -9,8 +9,8 @@ import {DateFormatterService} from "../services/util/date-formatter.service";
   styleUrls: ['./profile-settings.component.sass']
 })
 export class ProfileSettingsComponent {
-  private date: Date;
-  private time: string;
+  readonly date: Date;
+  readonly time: string;
 
   constructor(
     private dateToolsService: DateToolsService,

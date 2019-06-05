@@ -71,7 +71,7 @@ export class DateToolsService {
     const parsedDate = parsedDatetime[0].split('/');
     const parsedTime = parsedDatetime[1].split(':');
 
-    const date = new Date(Number(parsedDate[0]), Number(parsedDate[1]), Number(parsedDate[2]));
+    const date = new Date(Number(parsedDate[0]), Number(parsedDate[1]) - 1, Number(parsedDate[2]));
     const time = parsedTime[0] + ':' + parsedTime[1];
 
     return {
