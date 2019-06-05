@@ -6,20 +6,13 @@ import cz.zcu.yamanager.repository.RequestRepository;
 import cz.zcu.yamanager.repository.UserRepository;
 import cz.zcu.yamanager.repository.VacationRepository;
 import cz.zcu.yamanager.ws.rest.RESTFullException;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.temporal.TemporalUnit;
-import java.util.Collections;
 import java.util.List;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
 
 @Component
 public class ApiManager implements Manager {
@@ -119,10 +112,12 @@ public class ApiManager implements Manager {
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-        cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay(vacationDay.getDate(), vacationDay.getFrom(), vacationDay.getTo(), vacationDay.getStatus(), vacationDay.getType());
 
         User user = this.userRepository.getUser(userId);
-        vacation.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+        vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+
+        cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay(
+                vacationDay.getDate(), vacationDay.getFrom(), vacationDay.getTo(), vacationDay.getStatus(), vacationDay.getType());
 
         if(vacation.getType() == VacationType.VACATION) {
             user.takeVacation(vacation.getFrom(), vacation.getTo());
