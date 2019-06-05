@@ -20,12 +20,12 @@ public class DefaultSettings {
     /**
      * The ID of default settings.
      */
-    private final long id;
+    private Long id;
 
     /**
      * The default number of available sick days.
      */
-    private int sickDayCount;
+    private Integer sickDayCount;
 
     /**
      * The default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
@@ -33,49 +33,23 @@ public class DefaultSettings {
     private LocalDateTime notification;
 
     /**
-     * Creates an empty default settings for testing purposes only.
-     * It just sets id to zero.
-     */
-    public DefaultSettings() {
-        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings.");
-        this.id = 0;
-    }
-
-    /**
-     * Creates a new default settings with the specified number of available sick days, date and time of a notification.
-     *
-     * @param sickDayCount the default number of available sick days
-     * @param notification the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
-     * @throws IllegalArgumentException when the given sickDayCount value is negative
-     */
-    public DefaultSettings(final Integer sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
-        this(0, sickDayCount, notification);
-    }
-
-    /**
-     * Creates a new default settings with the specified id, number of available sick days, date and time of a notification.
-     *
-     * @param id           the ID of default settings
-     * @param sickDayCount the default number of available sick days
-     * @param notification the default date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
-     * @throws IllegalArgumentException when the given sickDayCount value is negative
-     */
-    public DefaultSettings(final long id, final Integer sickDayCount, final LocalDateTime notification) throws IllegalArgumentException {
-        DefaultSettings.log.trace("Creating a new instance of the class DefaultSettings");
-        DefaultSettings.log.debug("DefaultSettings: id={}, sickDayCount={}, notification={}", id, sickDayCount, notification);
-
-        this.id = id;
-        this.setSickDayCount(sickDayCount);
-        this.setNotification(notification);
-    }
-
-    /**
      * Returns the ID of this default settings.
      *
      * @return the ID of this default settings
      */
-    public long getId() {
+    public Long getId() {
         return this.id;
+    }
+
+    /**
+     * Replaces the ID of this default settings with the given one.
+     *
+     * @param id the given ID
+     */
+    public void setId(final Long id) {
+        DefaultSettings.log.debug("Setting a new id: {}", id);
+
+        this.id = id;
     }
 
     /**

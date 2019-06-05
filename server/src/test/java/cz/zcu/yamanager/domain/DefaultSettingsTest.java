@@ -31,7 +31,7 @@ class DefaultSettingsTest {
      * Tests the method {@code setSickDayCount} with common values where no problem should occur.
      */
     @Test
-    void testSetSickDaysCount() {
+    void setSickDaysCount_valid() {
         this.defaultSettings.setSickDayCount(10);
         assertEquals(10, this.defaultSettings.getSickDayCount());
     }
@@ -40,7 +40,7 @@ class DefaultSettingsTest {
      * Tests the method {@code setSickDayCount} with zero which is a threshold value.
      */
     @Test
-    void testSetSickDaysCountZero() {
+    void setSickDaysCount_zeroInput() {
         this.defaultSettings.setSickDayCount(0);
         assertEquals(0, this.defaultSettings.getSickDayCount());
     }
@@ -49,7 +49,7 @@ class DefaultSettingsTest {
      * Tests the method {@code setSickDayCount} with negative one which is a threshold value.
      */
     @Test
-    void testSetSickDaysCountNegativeOne() {
+    void setSickDaysCount_negativeOneInput() {
         assertThrows(IllegalArgumentException.class, () -> this.defaultSettings.setSickDayCount(-1));
     }
 
@@ -57,7 +57,7 @@ class DefaultSettingsTest {
      * Tests the method {@code setSickDayCount} with negative value.
      */
     @Test
-    void testSetSickDaysCountNegative() {
+    void setSickDaysCount_negativeInput() {
         assertThrows(IllegalArgumentException.class, () -> this.defaultSettings.setSickDayCount(-10));
     }
 
@@ -65,8 +65,25 @@ class DefaultSettingsTest {
      * Tests the method {@code setSickDayCount} with null value.
      */
     @Test
-    void testSetSickDaysCountObjectNull() {
+    void setSickDaysCount_nullInput() {
         assertThrows(IllegalArgumentException.class, () -> this.defaultSettings.setSickDayCount(null));
+    }
+
+    /**
+     * Tests the method {@code setNotification} with common values where no problem should occur.
+     */
+    @Test
+    void setNotification_valid() {
+        this.defaultSettings.setNotification(LocalDateTime.of(2010,5,1,20,0));
+        assertEquals(LocalDateTime.of(2010,5,1,20,0), this.defaultSettings.getNotification());
+    }
+
+    /**
+     * Tests the method {@code setNotification} with null value.
+     */
+    @Test
+    void setNotification_nullInput() {
+        assertThrows(IllegalArgumentException.class, () -> this.defaultSettings.setNotification(null));
     }
 
     /**
@@ -74,7 +91,10 @@ class DefaultSettingsTest {
      */
     @Test
     void testToString() {
-        DefaultSettings defaultSettings = new DefaultSettings(5, 1, LocalDateTime.of(2008,10,30,20,0));
+        DefaultSettings defaultSettings = new DefaultSettings();
+        defaultSettings.setId(5L);
+        defaultSettings.setSickDayCount(1);
+        defaultSettings.setNotification(LocalDateTime.of(2008,10,30,20,0));
         assertEquals("DefaultSettings{id=5, sickDayCount=1, notification=2008-10-30T20:00}", defaultSettings.toString());
     }
 }
