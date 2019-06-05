@@ -1,6 +1,8 @@
 {
-  "daysOffInfo": {
-    "remaining": "Vacation remaining"
+  "vacationInfo": {
+    "header": "Vacation remaining",
+    "days": "days",
+    "hours": "hours"
   },
   "userApproval": {
     "headline": "User approval",

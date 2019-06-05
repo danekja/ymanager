@@ -1,6 +1,8 @@
 {
-  "daysOffInfo": {
-    "remaining": "Zbývající dovolená"
+  "vacationInfo": {
+    "header": "Zbývající dovolená",
+    "days": "dní",
+    "hours": "hodin"
   },
   "userApproval": {
     "headline": "Schvalování uživatelů",
