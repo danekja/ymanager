@@ -1,11 +1,11 @@
-<h1 mat-dialog-title>Nastavení</h1>
+<h1 mat-dialog-title>{{ 'profileSettings.headline' | translate }}</h1>
 
 <div mat-dialog-content>
-  <span class="notification-label">Notifikace o vypršení dovolené: </span>
+  <span class="notification-label">{{ 'profileSettings.notification' | translate }}</span>
   <app-datetime [(date)]="date" [(time)]="time" [minuteStep]="15"></app-datetime>
 </div>
 
 <div mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" (click)="onConfirmClick()">Potvrdit</button>
-  <button mat-raised-button color="basic" (click)="onCloseClick()">Zavřít</button>
+  <button mat-raised-button color="primary" (click)="onConfirmClick()">{{ 'button.confirm' | translate }}</button>
+  <button mat-raised-button color="basic" (click)="onCloseClick()">{{ 'button.close' | translate }}</button>
 </div>

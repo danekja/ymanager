@@ -11,6 +11,7 @@ import {
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../shared/shared.module';
+import {TranslateModule} from '@ngx-translate/core';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {SharedModule} from '../shared/shared.module';
     MatFormFieldModule,
     MatInputModule,
     NgbModule,
-    SharedModule
+    SharedModule,
+    TranslateModule
   ],
   entryComponents: [
     ProfileSettingsComponent

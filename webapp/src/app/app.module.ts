@@ -13,6 +13,7 @@ import {EmployeesModule} from './employees/employees.module';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
     MatDialogModule,
     ProfileSettingsModule,
     EmployeesModule,
-    MatMenuModule
+    MatMenuModule,
+    CommonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -18,6 +18,17 @@
     "headline": "Mé nadcházející volno",
     "status": "Status"
   },
+  "profileSettings": {
+    "headline": "Nastavení",
+    "notification": "Notifikace o vypršení dovolené"
+  },
+  "addVacation": {
+    "headline": "Výběr volna"
+  },
+  "menuItem": {
+    "dashboard": "Dashboard",
+    "employers": "Zaměstnanci"
+  },
   "basic": {
     "name": "Jméno",
     "employees": "Zaměstnanci",
@@ -44,5 +55,5 @@
   "EMPLOYER": "Zaměstnavatel",
   "EMPLOYEE": "Zaměstnanec",
   "VACATION": "Dovolená",
-  "SICKDAY": "Sickday"
+  "SICK_DAY": "Sickday"
 }

@@ -18,6 +18,17 @@
     "headline": "My oncoming vacation",
     "status": "Status"
   },
+  "profileSettings": {
+    "headline": "Settings",
+    "notification": "Vacation expiration notification"
+  },
+  "addVacation": {
+    "headline": "Pick vacation"
+  },
+  "menuItem": {
+    "dashboard": "Dashboard",
+    "employers": "Employers"
+  },
   "basic": {
     "name": "Name",
     "employees": "Employees",
