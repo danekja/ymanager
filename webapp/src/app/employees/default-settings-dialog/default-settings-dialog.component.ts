@@ -1,5 +1,5 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-default-settings',
@@ -11,25 +11,23 @@ export class DefaultSettingsDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<DefaultSettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DefaultSettingsDialogData
+    @Inject(MAT_DIALOG_DATA) public data: DefaultSettingsDialogData,
+    private snackBar: MatSnackBar,
   ) {
   }
 
   onConfirmClick(): void {
-    let data;
-    if (this.data.notificationDate && sickDayCount) {
-      data = {
-        isConfirmed: true,
-        notificationDatetime: this.toNotificationDatetime(),
-        sickDayCount: this.data.sickDayCount
-      };
+    if (this.everythingFilled()) {
+      this.dialogRef.close(
+        {
+          isConfirmed: true,
+          notificationDatetime: this.toNotificationDatetime(),
+          sickDayCount: this.data.sickDayCount
+        }
+      );
     } else {
-      data = {
-        isConfirmed: false
-      };
+      this.snackBar.open('Nevyplněny všechny potřebné položky');
     }
-
-    this.dialogRef.close(data);
   }
 
   onCloseClick(): void {
@@ -48,6 +46,10 @@ export class DefaultSettingsDialogComponent {
       Number(splittedTime[0]),
       Number(splittedTime[1])
     );
+  }
+
+  private everythingFilled(): boolean {
+    return this.data.notificationDate && this.data.notificationTime && this.data.sickDayCount;
   }
 
 }
