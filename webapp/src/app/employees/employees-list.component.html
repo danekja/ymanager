@@ -48,8 +48,8 @@
       <td *ngFor="let date of user.dates">
 
         <div
-          [class.sickday]="date.type === 'SICKDAY'"
-          [class.vacation]="date.type === 'VACATION'"
+          [class.sickday]="date.type === vacationType.SICKDAY"
+          [class.vacation]="date.type === vacationType.VACATION"
         >
           {{date.date.getDate()}}
         </div>

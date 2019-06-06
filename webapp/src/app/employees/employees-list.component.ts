@@ -31,6 +31,8 @@ const daysOfWeek: string[] = [
   styleUrls: ['./employees-list.component.sass']
 })
 export class EmployeesListComponent implements OnInit {
+  private vacationType = VacationType;
+
   days: string[];
   private _users: User[];
   private _dates: Date[];
