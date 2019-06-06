@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class ApiController {
         } catch (RESTFullException e) {
             log.error(e.getMessage());
             return sendError(400, e.getLocalizedMessage(), language);
-        } catch (DataAccessException e) {
+        } catch (DataAccessException | SQLException e) {
             log.error(e.getMessage());
             return sendError(500, "database.error", language);
         } catch (Exception e) {

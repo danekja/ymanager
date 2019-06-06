@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ApiManager implements Manager {
@@ -37,12 +38,7 @@ public class ApiManager implements Manager {
 
     @Override
     public List<BasicProfileUser> getUsers(Status status) throws RESTFullException {
-        List<BasicProfileUser> users;
-        if(status == null) {
-            users = this.userRepository.getAllBasicUsers();
-        } else {
-            users = this.userRepository.getAllBasicUsers(status);
-        }
+        List<BasicProfileUser> users = status == null ? this.userRepository.getAllBasicUsers() : this.userRepository.getAllBasicUsers(status);
 
         LocalDate today = LocalDate.now();
         LocalDate weekBefore = today.minusDays(ApiManager.WEEK_LENGTH);
@@ -56,26 +52,12 @@ public class ApiManager implements Manager {
 
     @Override
     public List<VacationRequest> getVacationRequests(Status status) throws RESTFullException {
-        List<VacationRequest> requests;
-        if(status == null) {
-            requests = this.requestRepository.getAllVacationRequests();
-        } else {
-            requests = this.requestRepository.getAllVacationRequests(status);
-        }
-
-        return requests;
+        return status == null ? this.requestRepository.getAllVacationRequests() : this.requestRepository.getAllVacationRequests(status);
     }
 
     @Override
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
-        List<AuthorizationRequest> requests;
-        if(status == null) {
-            requests = this.requestRepository.getAllAuthorizations();
-        } else {
-            requests = this.requestRepository.getAllAuthorizations(status);
-        }
-
-        return requests;
+        return status == null ? this.requestRepository.getAllAuthorizations() : this.requestRepository.getAllAuthorizations(status);
     }
 
     @Override
@@ -85,8 +67,7 @@ public class ApiManager implements Manager {
 
     @Override
     public DefaultSettings getDefaultSettings() throws RESTFullException {
-        DefaultSettings settings = this.userRepository.getLastDefaultSettings();
-        return settings == null ? new DefaultSettings() : settings;
+        return this.userRepository.getLastDefaultSettings().orElse(new DefaultSettings());
     }
 
     @Override
@@ -107,17 +88,23 @@ public class ApiManager implements Manager {
 
     @Override
     public void createSettings(DefaultSettings settings) throws RESTFullException {
-        this.userRepository.insertSettings(new cz.zcu.yamanager.domain.DefaultSettings(settings.getSickDayCount(), settings.getNotification()));
+        cz.zcu.yamanager.domain.DefaultSettings defaultSettings = new cz.zcu.yamanager.domain.DefaultSettings();
+        defaultSettings.setSickDayCount(settings.getSickDayCount());
+        defaultSettings.setNotification(settings.getNotification());
+        this.userRepository.insertSettings(defaultSettings);
     }
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-
         User user = this.userRepository.getUser(userId);
         vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
 
-        cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay(
-                vacationDay.getDate(), vacationDay.getFrom(), vacationDay.getTo(), vacationDay.getStatus(), vacationDay.getType());
+        cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay();
+        vacation.setDate(vacationDay.getDate());
+        vacation.setFrom(vacationDay.getFrom());
+        vacation.setTo(vacationDay.getTo());
+        vacation.setStatus(vacationDay.getStatus());
+        vacation.setType(vacationDay.getType());
 
         if(vacation.getType() == VacationType.VACATION) {
             user.takeVacation(vacation.getFrom(), vacation.getTo());
@@ -136,27 +123,41 @@ public class ApiManager implements Manager {
         if(settings.getRole() == null && settings.getSickDayCount() == null && settings.getVacationCount() == null) {
             user.setNotification(settings.getNotification());
         } else {
-            user.setVacationCount(settings.getVacationCount());
+            user.addVacationCount(settings.getVacationCount());
             user.setTotalSickDayCount(settings.getSickDayCount());
             user.setRole(settings.getRole());
         }
 
-        this.userRepository.updateUser(user);
+        this.userRepository.updateUserSettings(user);
     }
 
     @Override
     public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
-        cz.zcu.yamanager.domain.VacationDay vacation = this.vacationRepository.getVacationDay(vacationDay.getId());
-        vacation.setDate(vacationDay.getDate());
-        vacation.setStatus(vacationDay.getStatus());
-        vacation.setType(vacationDay.getType());
-        vacation.setTime(vacationDay.getFrom(), vacationDay.getTo());
-        this.vacationRepository.updateVacationDay(vacation);
+        Optional<cz.zcu.yamanager.domain.VacationDay> vacation = this.vacationRepository.getVacationDay(vacationDay.getId());
+        if(vacation.isPresent()) {
+            vacation.get().setDate(vacationDay.getDate());
+            vacation.get().setStatus(vacationDay.getStatus());
+            vacation.get().setType(vacationDay.getType());
+            vacation.get().setTime(vacationDay.getFrom(), vacationDay.getTo());
+            this.vacationRepository.updateVacationDay(vacation.get());
+        } else {
+
+        }
     }
 
     @Override
     public void changeRequest(RequestType type, BasicRequest request) throws RESTFullException {
         if(RequestType.VACATION == type) {
+            Optional<User> user = this.vacationRepository.findUserByVacationID(request.getId());
+            Optional<cz.zcu.yamanager.domain.VacationDay> vacationDay = this.vacationRepository.getVacationDay(request.getId());
+            if(user.isPresent() && request.getStatus() == Status.REJECTED) {
+                if(vacationDay.get().getType() == VacationType.SICK_DAY) {
+                    user.get().addTakenSickDayCount(-1);
+                } else {
+                    user.get().addVacationCount(vacationDay.get().getFrom(), vacationDay.get().getTo());
+                }
+            }
+
             this.requestRepository.updateVacationRequest(request);
         } else {
             this.requestRepository.updateAuthorization(request);
@@ -165,6 +166,17 @@ public class ApiManager implements Manager {
 
     @Override
     public void deleteVacation(Long userId, Long vacationId) throws RESTFullException {
+        User user = this.userRepository.getUser(userId);
+        Optional<cz.zcu.yamanager.domain.VacationDay> vacation = this.vacationRepository.getVacationDay(vacationId);
+        if (vacation.isPresent()){
+            if(vacation.get().getType() == VacationType.SICK_DAY) {
+                user.addTakenSickDayCount(-1);
+            } else {
+                user.addVacationCount(vacation.get().getFrom(), vacation.get().getTo());
+            }
+        }
+
+        this.userRepository.updateUser(user);
         this.vacationRepository.deleteVacationDay(vacationId);
     }
 }
