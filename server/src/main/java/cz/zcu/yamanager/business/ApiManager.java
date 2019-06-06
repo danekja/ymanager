@@ -141,6 +141,11 @@ public class ApiManager implements Manager {
         }
 
         try {
+
+            if (vacationRepository.isExistVacationForUser(userId, vacationDay.getDate())) {
+                throw new RESTFullException("Cannot take a double vacation for the same day.", "vacation.double.error");
+            }
+
             User user = userRepository.getUser(userId);
             vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
 
@@ -159,6 +164,7 @@ public class ApiManager implements Manager {
 
             vacationRepository.insertVacationDay(userId, vacation);
             userRepository.updateUser(user);
+
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");

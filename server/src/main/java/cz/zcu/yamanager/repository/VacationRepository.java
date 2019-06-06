@@ -186,4 +186,9 @@ public class VacationRepository {
             return user;
         }));
     }
+
+    public boolean isExistVacationForUser(Long userId, LocalDate date) {
+        return jdbc.queryForObject("SELECT count(id) AS exist FROM vacation_day WHERE vacation_date = ? AND user_id = ?",
+                new Object[]{date, userId}, (rs, rowNum) -> rs.getBoolean("exist"));
+    }
 }
