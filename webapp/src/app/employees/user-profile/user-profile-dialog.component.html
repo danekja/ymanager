@@ -12,7 +12,7 @@
         <span class="user-name">{{profile.firstName}} {{profile.lastName}}</span>
       </div>
       <app-vacation-info
-        [sickDaysRemaining]="profile.sickDayCount"
+        [sickDaysRemaining]="profile.sickDayCount - profile.takenSickDayCount"
         [extraVacationRemaining]="profile.vacationCount"
       ></app-vacation-info>
     </div>
