@@ -12,21 +12,21 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * This class tests methods of the {@code VacationDay} class.
- * @see VacationDay
+ * This class tests methods of the {@code Vacation} class.
+ * @see Vacation
  */
-class VacationDayTest {
+class VacationTest {
     /**
-     * The empty instance of the {@code VacationDay}.
+     * The empty instance of the {@code Vacation}.
      */
-    private VacationDay vacationDay;
+    private Vacation vacation;
 
     /**
-     * Prepares the instance of the {@code VacationDay}.
+     * Prepares the instance of the {@code Vacation}.
      */
     @BeforeEach
     void setUp() {
-        this.vacationDay = new VacationDay();
+        this.vacation = new Vacation();
     }
 
     /**
@@ -35,8 +35,8 @@ class VacationDayTest {
     @Test
     void setDate_valid() {
         LocalDate date = LocalDate.of(2000,10,12);
-        this.vacationDay.setDate(date);
-        assertEquals(date, this.vacationDay.getDate());
+        this.vacation.setDate(date);
+        assertEquals(date, this.vacation.getDate());
     }
 
     /**
@@ -44,7 +44,7 @@ class VacationDayTest {
      */
     @Test
     void setDate_nullInput() {
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setDate(null));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setDate(null));
     }
 
     /**
@@ -52,8 +52,8 @@ class VacationDayTest {
      */
     @Test
     void setFrom_nullFrom_nullTo_nullType_valid() {
-        this.vacationDay.setFrom(null);
-        assertNull(this.vacationDay.getFrom());
+        this.vacation.setFrom(null);
+        assertNull(this.vacation.getFrom());
     }
 
     /**
@@ -61,9 +61,9 @@ class VacationDayTest {
      */
     @Test
     void setFrom_nullFrom_to_nullType_valid() {
-        this.vacationDay.setTo(LocalTime.of(20, 0));
-        this.vacationDay.setFrom(null);
-        assertNull(this.vacationDay.getFrom());
+        this.vacation.setTo(LocalTime.of(20, 0));
+        this.vacation.setFrom(null);
+        assertNull(this.vacation.getFrom());
     }
 
     /**
@@ -72,8 +72,8 @@ class VacationDayTest {
     @Test
     void setFrom_from_nullTo_nullType_valid() {
         LocalTime from = LocalTime.of(10,0);
-        this.vacationDay.setFrom(from);
-        assertEquals(from, this.vacationDay.getFrom());
+        this.vacation.setFrom(from);
+        assertEquals(from, this.vacation.getFrom());
     }
 
     /**
@@ -82,10 +82,10 @@ class VacationDayTest {
     @Test
     void setFrom_from_to_nullType_valid() {
         LocalTime to = LocalTime.of(20, 0);
-        this.vacationDay.setTo(to);
+        this.vacation.setTo(to);
         LocalTime from = LocalTime.of(10,0);
-        this.vacationDay.setFrom(from);
-        assertEquals(from, this.vacationDay.getFrom());
+        this.vacation.setFrom(from);
+        assertEquals(from, this.vacation.getFrom());
     }
 
     /**
@@ -94,8 +94,8 @@ class VacationDayTest {
     @Test
     void setFrom_from_to_nullType_same() {
         LocalTime to = LocalTime.of(10, 0);
-        this.vacationDay.setTo(to);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setFrom(to));
+        this.vacation.setTo(to);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setFrom(to));
     }
 
     /**
@@ -104,8 +104,8 @@ class VacationDayTest {
     @Test
     void setFrom_from_to_nullType_wrongOrder() {
         LocalTime to = LocalTime.of(10, 0);
-        this.vacationDay.setTo(to);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setFrom(LocalTime.of(20,0)));
+        this.vacation.setTo(to);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setFrom(LocalTime.of(20,0)));
     }
 
     /**
@@ -113,9 +113,9 @@ class VacationDayTest {
      */
     @Test
     void setFrom_nullFrom_nullTo_sickDay_valid() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        this.vacationDay.setFrom(null);
-        assertNull(this.vacationDay.getFrom());
+        this.vacation.setType(VacationType.SICK_DAY);
+        this.vacation.setFrom(null);
+        assertNull(this.vacation.getFrom());
     }
 
     /**
@@ -123,8 +123,8 @@ class VacationDayTest {
      */
     @Test
     void setFrom_from_sickDay() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setFrom(LocalTime.of(20,0)));
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setFrom(LocalTime.of(20,0)));
     }
 
     /**
@@ -132,8 +132,8 @@ class VacationDayTest {
      */
     @Test
     void setFrom_nullFrom_vacation_valid() {
-        this.vacationDay.setFrom(null);
-        assertNull(this.vacationDay.getFrom());
+        this.vacation.setFrom(null);
+        assertNull(this.vacation.getFrom());
     }
 
     /**
@@ -141,10 +141,10 @@ class VacationDayTest {
      */
     @Test
     void setFrom_from_nullTo_vacation_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(10,0);
-        this.vacationDay.setFrom(from);
-        assertEquals(from, this.vacationDay.getFrom());
+        this.vacation.setFrom(from);
+        assertEquals(from, this.vacation.getFrom());
     }
 
     /**
@@ -152,12 +152,12 @@ class VacationDayTest {
      */
     @Test
     void setFrom_from_to_vacation_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime to = LocalTime.of(20, 0);
-        this.vacationDay.setTo(to);
+        this.vacation.setTo(to);
         LocalTime from = LocalTime.of(10,0);
-        this.vacationDay.setFrom(from);
-        assertEquals(from, this.vacationDay.getFrom());
+        this.vacation.setFrom(from);
+        assertEquals(from, this.vacation.getFrom());
     }
 
     /**
@@ -165,10 +165,10 @@ class VacationDayTest {
      */
     @Test
     void setFrom_from_to_vacation_same() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime to = LocalTime.of(10, 0);
-        this.vacationDay.setTo(to);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setFrom(LocalTime.of(10,0)));
+        this.vacation.setTo(to);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setFrom(LocalTime.of(10,0)));
     }
 
     /**
@@ -176,10 +176,10 @@ class VacationDayTest {
      */
     @Test
     void setFrom_from_to_vacation_wrongOrder() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime to = LocalTime.of(10, 0);
-        this.vacationDay.setTo(to);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setFrom(LocalTime.of(20,0)));
+        this.vacation.setTo(to);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setFrom(LocalTime.of(20,0)));
     }
 
     /**
@@ -187,8 +187,8 @@ class VacationDayTest {
      */
     @Test
     void setTo_nullTo_nullFrom_nullType_valid() {
-        this.vacationDay.setTo(null);
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setTo(null);
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -196,9 +196,9 @@ class VacationDayTest {
      */
     @Test
     void setTo_nullTo_from_nullType_valid() {
-        this.vacationDay.setFrom(LocalTime.of(20, 0));
-        this.vacationDay.setTo(null);
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setFrom(LocalTime.of(20, 0));
+        this.vacation.setTo(null);
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -207,8 +207,8 @@ class VacationDayTest {
     @Test
     void setTo_to_nullFrom_nullType_valid() {
         LocalTime to = LocalTime.of(10,0);
-        this.vacationDay.setTo(to);
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTo(to);
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -217,10 +217,10 @@ class VacationDayTest {
     @Test
     void setTo_to_from_nullType_valid() {
         LocalTime from = LocalTime.of(10, 0);
-        this.vacationDay.setFrom(from);
+        this.vacation.setFrom(from);
         LocalTime to = LocalTime.of(20,0);
-        this.vacationDay.setTo(to);
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTo(to);
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -229,8 +229,8 @@ class VacationDayTest {
     @Test
     void setTo_to_from_nullType_same() {
         LocalTime from = LocalTime.of(10, 0);
-        this.vacationDay.setFrom(from);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTo(LocalTime.of(10,0)));
+        this.vacation.setFrom(from);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTo(LocalTime.of(10,0)));
     }
 
     /**
@@ -239,8 +239,8 @@ class VacationDayTest {
     @Test
     void setTo_to_from_nullType_wrongOrder() {
         LocalTime from = LocalTime.of(20, 0);
-        this.vacationDay.setFrom(from);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTo(LocalTime.of(10,0)));
+        this.vacation.setFrom(from);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTo(LocalTime.of(10,0)));
     }
 
     /**
@@ -248,9 +248,9 @@ class VacationDayTest {
      */
     @Test
     void setTo_nullTo_nullFrom_sickDay_valid() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        this.vacationDay.setTo(null);
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setType(VacationType.SICK_DAY);
+        this.vacation.setTo(null);
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -258,8 +258,8 @@ class VacationDayTest {
      */
     @Test
     void setTo_to_sickDay() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTo(LocalTime.of(20,0)));
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTo(LocalTime.of(20,0)));
     }
 
     /**
@@ -267,8 +267,8 @@ class VacationDayTest {
      */
     @Test
     void setTo_nullTo_vacation_valid() {
-        this.vacationDay.setTo(null);
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setTo(null);
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -276,10 +276,10 @@ class VacationDayTest {
      */
     @Test
     void setTo_to_nullFrom_vacation_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime to = LocalTime.of(10,0);
-        this.vacationDay.setTo(to);
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTo(to);
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -287,12 +287,12 @@ class VacationDayTest {
      */
     @Test
     void setTo_to_from_vacation_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(10, 0);
-        this.vacationDay.setFrom(from);
+        this.vacation.setFrom(from);
         LocalTime to = LocalTime.of(20,0);
-        this.vacationDay.setTo(to);
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTo(to);
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -300,10 +300,10 @@ class VacationDayTest {
      */
     @Test
     void setTo_to_from_vacation_same() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(10, 0);
-        this.vacationDay.setFrom(from);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTo(from));
+        this.vacation.setFrom(from);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTo(from));
     }
 
     /**
@@ -311,10 +311,10 @@ class VacationDayTest {
      */
     @Test
     void setTo_to_from_vacation_wrongOrder() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(20, 0);
-        this.vacationDay.setFrom(from);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTo(LocalTime.of(10,0)));
+        this.vacation.setFrom(from);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTo(LocalTime.of(10,0)));
     }
 
     /**
@@ -324,9 +324,9 @@ class VacationDayTest {
     void setTime_nullType_valid() {
         LocalTime from = LocalTime.of(10,0);
         LocalTime to = LocalTime.of(20,0);
-        this.vacationDay.setTime(from, to);
-        assertEquals(from, this.vacationDay.getFrom());
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTime(from, to);
+        assertEquals(from, this.vacation.getFrom());
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -336,7 +336,7 @@ class VacationDayTest {
     void setTime_nullType_same() {
         LocalTime from = LocalTime.of(10,0);
         LocalTime to = LocalTime.of(10,0);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(from, to));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(from, to));
     }
 
     /**
@@ -346,7 +346,7 @@ class VacationDayTest {
     void setTime_nullType_wrongOrder() {
         LocalTime from = LocalTime.of(20,0);
         LocalTime to = LocalTime.of(10,0);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(from, to));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(from, to));
     }
 
     /**
@@ -355,9 +355,9 @@ class VacationDayTest {
     @Test
     void setTime_nullFrom_nullType_valid() {
         LocalTime to = LocalTime.of(10,0);
-        this.vacationDay.setTime(null, to);
-        assertNull(this.vacationDay.getFrom());
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTime(null, to);
+        assertNull(this.vacation.getFrom());
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -366,9 +366,9 @@ class VacationDayTest {
     @Test
     void setTime_nullTo_nullType_valid() {
         LocalTime from = LocalTime.of(20,0);
-        this.vacationDay.setTime(from, null);
-        assertNull(this.vacationDay.getTo());
-        assertEquals(from, this.vacationDay.getFrom());
+        this.vacation.setTime(from, null);
+        assertNull(this.vacation.getTo());
+        assertEquals(from, this.vacation.getFrom());
     }
 
     /**
@@ -376,9 +376,9 @@ class VacationDayTest {
      */
     @Test
     void setTime_nullFrom_nullTo_nullType_valid() {
-        this.vacationDay.setTime(null, null);
-        assertNull(this.vacationDay.getFrom());
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setTime(null, null);
+        assertNull(this.vacation.getFrom());
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -386,10 +386,10 @@ class VacationDayTest {
      */
     @Test
     void setTime_nullFrom_nullTo_sickDay_valid() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        this.vacationDay.setTime(null, null);
-        assertNull(this.vacationDay.getFrom());
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setType(VacationType.SICK_DAY);
+        this.vacation.setTime(null, null);
+        assertNull(this.vacation.getFrom());
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -397,8 +397,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_nullTo_sickDay() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(LocalTime.of(10,0), null));
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(LocalTime.of(10,0), null));
     }
 
     /**
@@ -406,8 +406,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_nullFrom_to_sickDay() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(null, LocalTime.of(10,0)));
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(null, LocalTime.of(10,0)));
     }
 
     /**
@@ -415,8 +415,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_to_sickDay() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(LocalTime.of(10,0), LocalTime.of(20,0)));
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(LocalTime.of(10,0), LocalTime.of(20,0)));
     }
 
     /**
@@ -424,8 +424,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_nullFrom_nullTo_vacation() {
-        this.vacationDay.setType(VacationType.VACATION);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(null, null));
+        this.vacation.setType(VacationType.VACATION);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(null, null));
     }
 
     /**
@@ -433,8 +433,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_nullTo_vacation() {
-        this.vacationDay.setType(VacationType.VACATION);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(LocalTime.of(10,0), null));
+        this.vacation.setType(VacationType.VACATION);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(LocalTime.of(10,0), null));
     }
 
     /**
@@ -442,8 +442,8 @@ class VacationDayTest {
      */
     @Test
     void setTime_nullFrom_to_vacation() {
-        this.vacationDay.setType(VacationType.VACATION);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(null, LocalTime.of(10,0)));
+        this.vacation.setType(VacationType.VACATION);
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(null, LocalTime.of(10,0)));
     }
 
     /**
@@ -451,12 +451,12 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_to_vacation_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(10,0);
         LocalTime to = LocalTime.of(20,0);
-        this.vacationDay.setTime(from, to);
-        assertEquals(from, this.vacationDay.getFrom());
-        assertEquals(to, this.vacationDay.getTo());
+        this.vacation.setTime(from, to);
+        assertEquals(from, this.vacation.getFrom());
+        assertEquals(to, this.vacation.getTo());
     }
 
     /**
@@ -464,10 +464,10 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_to_vacation_same() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(10,0);
         LocalTime to = LocalTime.of(10,0);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(from, to));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(from, to));
     }
 
     /**
@@ -475,10 +475,10 @@ class VacationDayTest {
      */
     @Test
     void setTime_from_to_vacation_wrongOrder() {
-        this.vacationDay.setType(VacationType.VACATION);
+        this.vacation.setType(VacationType.VACATION);
         LocalTime from = LocalTime.of(20,0);
         LocalTime to = LocalTime.of(10,0);
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setTime(from, to));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setTime(from, to));
     }
 
     /**
@@ -486,8 +486,8 @@ class VacationDayTest {
      */
     @Test
     void setStatus_valid() {
-        this.vacationDay.setStatus(Status.ACCEPTED);
-        assertEquals(Status.ACCEPTED, this.vacationDay.getStatus());
+        this.vacation.setStatus(Status.ACCEPTED);
+        assertEquals(Status.ACCEPTED, this.vacation.getStatus());
     }
 
     /**
@@ -495,7 +495,7 @@ class VacationDayTest {
      */
     @Test
     void setStatus_nullInput() {
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setStatus(null));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setStatus(null));
     }
 
     /**
@@ -503,8 +503,8 @@ class VacationDayTest {
      */
     @Test
     void setType_valid() {
-        this.vacationDay.setType(VacationType.VACATION);
-        assertEquals(VacationType.VACATION, this.vacationDay.getType());
+        this.vacation.setType(VacationType.VACATION);
+        assertEquals(VacationType.VACATION, this.vacation.getType());
     }
 
     /**
@@ -512,10 +512,10 @@ class VacationDayTest {
      */
     @Test
     void setType_sickDay_valid() {
-        this.vacationDay.setType(VacationType.SICK_DAY);
-        assertEquals(VacationType.SICK_DAY, this.vacationDay.getType());
-        assertNull(this.vacationDay.getFrom());
-        assertNull(this.vacationDay.getTo());
+        this.vacation.setType(VacationType.SICK_DAY);
+        assertEquals(VacationType.SICK_DAY, this.vacation.getType());
+        assertNull(this.vacation.getFrom());
+        assertNull(this.vacation.getTo());
     }
 
     /**
@@ -523,7 +523,7 @@ class VacationDayTest {
      */
     @Test
     void setType_nullInput() {
-        assertThrows(IllegalArgumentException.class, () -> this.vacationDay.setType(null));
+        assertThrows(IllegalArgumentException.class, () -> this.vacation.setType(null));
     }
 
     /**
@@ -531,15 +531,15 @@ class VacationDayTest {
      */
     @Test
     void toString_valid() {
-        VacationDay vacationDay = new VacationDay();
-        vacationDay.setId(5L);
-        vacationDay.setDate(LocalDate.of(2010,1,9));
-        vacationDay.setFrom(LocalTime.of(12,15));
-        vacationDay.setTo(LocalTime.of(22,30));
-        vacationDay.setCreationDate(LocalDateTime.of(2008,10,30,20,0));
-        vacationDay.setStatus(Status.ACCEPTED);
-        vacationDay.setType(VacationType.VACATION);
-        assertEquals("VacationDay{id=5, date=2010-01-09, from=12:15, to=22:30, creationDate=2008-10-30T20:00, status=ACCEPTED, type=VACATION}", vacationDay.toString());
+        Vacation vacation = new Vacation();
+        vacation.setId(5L);
+        vacation.setDate(LocalDate.of(2010,1,9));
+        vacation.setFrom(LocalTime.of(12,15));
+        vacation.setTo(LocalTime.of(22,30));
+        vacation.setCreationDate(LocalDateTime.of(2008,10,30,20,0));
+        vacation.setStatus(Status.ACCEPTED);
+        vacation.setType(VacationType.VACATION);
+        assertEquals("Vacation{id=5, date=2010-01-09, from=12:15, to=22:30, creationDate=2008-10-30T20:00, status=ACCEPTED, type=VACATION}", vacation.toString());
     }
 
     /**
@@ -547,7 +547,7 @@ class VacationDayTest {
      */
     @Test
     void toString_null() {
-        VacationDay vacationDay = new VacationDay();
-        assertEquals("VacationDay{id=null, date=null, from=null, to=null, creationDate=null, status=null, type=null}", vacationDay.toString());
+        Vacation vacation = new Vacation();
+        assertEquals("Vacation{id=null, date=null, from=null, to=null, creationDate=null, status=null, type=null}", vacation.toString());
     }
 }

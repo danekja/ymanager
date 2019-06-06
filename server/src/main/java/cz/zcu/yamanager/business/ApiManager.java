@@ -1,6 +1,7 @@
 package cz.zcu.yamanager.business;
 
 import cz.zcu.yamanager.domain.User;
+import cz.zcu.yamanager.domain.Vacation;
 import cz.zcu.yamanager.dto.*;
 import cz.zcu.yamanager.repository.RequestRepository;
 import cz.zcu.yamanager.repository.UserRepository;
@@ -134,11 +135,16 @@ public class ApiManager implements Manager {
 
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
+
+        if (vacationDay.getDate().isBefore(LocalDate.now())) {
+            throw new RESTFullException("Vacation cannot be token in past.", "vacation.past.error");
+        }
+
         try {
             User user = userRepository.getUser(userId);
             vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
 
-            cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay();
+            Vacation vacation = new Vacation();
             vacation.setDate(vacationDay.getDate());
             vacation.setFrom(vacationDay.getFrom());
             vacation.setTo(vacationDay.getTo());
@@ -221,7 +227,7 @@ public class ApiManager implements Manager {
     @Override
     public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
         try {
-            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = vacationRepository.getVacationDay(vacationDay.getId());
+            Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationDay.getId());
             if (vacation.isPresent()) {
                 vacation.get().setDate(vacationDay.getDate());
                 vacation.get().setStatus(vacationDay.getStatus());
@@ -241,20 +247,20 @@ public class ApiManager implements Manager {
             switch (type) {
                 case VACATION: {
 
-                    Optional<cz.zcu.yamanager.domain.VacationDay> vacationDayOpt = vacationRepository.getVacationDay(request.getId());
+                    Optional<Vacation> vacationDayOpt = vacationRepository.getVacationDay(request.getId());
 
                     if (!vacationDayOpt.isPresent()) {
                         throw new RESTFullException("", "");
                     }
 
-                    cz.zcu.yamanager.domain.VacationDay vacationDay = vacationDayOpt.get();
+                    Vacation vacation = vacationDayOpt.get();
 
                     if (request.getStatus().equals(Status.REJECTED)) {
-                        User user = userRepository.getUser(vacationDay.getUserId());
+                        User user = userRepository.getUser(vacation.getUserId());
 
-                        switch (vacationDay.getType()) {
+                        switch (vacation.getType()) {
                             case VACATION: {
-                                user.addVacationCount(vacationDay.getFrom(), vacationDay.getTo());
+                                user.addVacationCount(vacation.getFrom(), vacation.getTo());
                                 userRepository.updateUserTakenVacation(user);
                             } break;
                             case SICK_DAY: {
@@ -264,7 +270,7 @@ public class ApiManager implements Manager {
                         }
                     }
 
-                    requestRepository.updateVacationRequest(vacationDay.getId(), request.getStatus());
+                    requestRepository.updateVacationRequest(vacation.getId(), request.getStatus());
 
                 } break;
                 case AUTHORIZATION: {
@@ -283,13 +289,13 @@ public class ApiManager implements Manager {
     public void deleteVacation(Long userId, Long vacationId) throws RESTFullException {
         try {
             User user = userRepository.getUser(userId);
-            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = vacationRepository.getVacationDay(vacationId);
+            Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationId);
 
             if (!vacation.isPresent()) {
                 throw new RESTFullException("", "");
             }
 
-            cz.zcu.yamanager.domain.VacationDay vacationDay = vacation.get();
+            Vacation vacationDay = vacation.get();
 
             if (vacationDay.getDate().isAfter(LocalDate.now())) {
                 if (!vacationDay.getStatus().equals(Status.REJECTED)) {

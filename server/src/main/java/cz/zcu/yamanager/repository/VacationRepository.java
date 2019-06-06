@@ -1,6 +1,7 @@
 package cz.zcu.yamanager.repository;
 
 import cz.zcu.yamanager.domain.User;
+import cz.zcu.yamanager.domain.Vacation;
 import cz.zcu.yamanager.dto.*;
 
 import org.slf4j.Logger;
@@ -23,15 +24,15 @@ import static java.util.Optional.ofNullable;
 @Repository
 public class VacationRepository {
     /**
-     * The mapper maps a row from a result of a query to an VacationDay.
+     * The mapper maps a row from a result of a query to an Vacation.
      */
     private class VacationDayMapper implements RowMapper<VacationDay> {
 
         /**
-         * Maps a row from a result of a query to an VacationDay.
+         * Maps a row from a result of a query to an Vacation.
          * @param resultSet the row from the result
          * @param i the index of the row
-         * @return the VacationDay object
+         * @return the Vacation object
          * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
          */
         @Override
@@ -116,13 +117,13 @@ public class VacationRepository {
                 new Object[]{userId, from, to, status.name()}, new VacationDayMapper());
     }
 
-    public Optional<cz.zcu.yamanager.domain.VacationDay> getVacationDay(final long id) {
+    public Optional<Vacation> getVacationDay(final long id) {
         return ofNullable(jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type, user_id " +
                         "FROM vacation_day WHERE id = ?", new Object[]{id},
                 (ResultSet rs, int rowNum) -> {
-                    cz.zcu.yamanager.domain.VacationDay vacationDay = new cz.zcu.yamanager.domain.VacationDay();
-                    vacationDay.setId(rs.getLong("id"));
-                    vacationDay.setDate(rs.getDate("vacation_date").toLocalDate());
+                    Vacation vacation = new Vacation();
+                    vacation.setId(rs.getLong("id"));
+                    vacation.setDate(rs.getDate("vacation_date").toLocalDate());
                     /*
                         When a result contains a sick day it doesn't have specified a start and end time because
                         it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
@@ -130,28 +131,28 @@ public class VacationRepository {
                     */
                     final Time timeFrom = rs.getTime("time_from");
                     if (timeFrom != null) {
-                        vacationDay.setFrom(timeFrom.toLocalTime());
+                        vacation.setFrom(timeFrom.toLocalTime());
                     }
 
                     final Time timeTo = rs.getTime("time_to");
                     if (timeTo != null) {
-                        vacationDay.setTo(timeTo.toLocalTime());
+                        vacation.setTo(timeTo.toLocalTime());
                     }
 
-                    vacationDay.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
-                    vacationDay.setStatus(getStatus(rs.getString("status")));
-                    vacationDay.setType(VacationType.getVacationType(rs.getString("vacation_type")));
-                    vacationDay.setUserId(rs.getLong("user_id"));
-                    return vacationDay;
+                    vacation.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
+                    vacation.setStatus(getStatus(rs.getString("status")));
+                    vacation.setType(VacationType.getVacationType(rs.getString("vacation_type")));
+                    vacation.setUserId(rs.getLong("user_id"));
+                    return vacation;
                 }));
     }
 
-    public void insertVacationDay(final Long userId, final cz.zcu.yamanager.domain.VacationDay day) {
+    public void insertVacationDay(final Long userId, final Vacation day) {
         jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status, vacation_type, user_id) VALUES (?,?,?,?,?,?)",
                 day.getDate(), day.getFrom(), day.getTo(), day.getStatus().name(), day.getType().name(), userId);
     }
 
-    public void updateVacationDay(final cz.zcu.yamanager.domain.VacationDay item) {
+    public void updateVacationDay(final Vacation item) {
         jdbc.update("UPDATE vacation_day SET vacation_date=?, time_from=?, time_to=?, status=?, vacation_type=? WHERE id=?",
                 item.getDate(), item.getFrom(), item.getTo(), item.getStatus().name(), item.getType().name(), item.getId());
     }

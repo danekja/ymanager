@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * The domain class {@code VacationDay} represents a single record in the 'vacation_day' table of a database.
+ * The domain class {@code Vacation} represents a single record in the 'vacation_day' table of a database.
  * Class holds informations of an overtime or a sick day taken by a user.
  */
-public class VacationDay {
+public class Vacation {
     /**
      * The logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(VacationDay.class);
+    private static final Logger log = LoggerFactory.getLogger(Vacation.class);
 
     /**
      * The ID of this vacation.
@@ -71,7 +71,7 @@ public class VacationDay {
      * @param id the given ID
      */
     public void setId(final Long id) {
-        VacationDay.log.debug("Setting a new id: {}", id);
+        Vacation.log.debug("Setting a new id: {}", id);
 
         this.id = id;
     }
@@ -93,10 +93,10 @@ public class VacationDay {
      * @throws IllegalArgumentException when the given date is null
      */
     public void setDate(final LocalDate date) throws IllegalArgumentException {
-        VacationDay.log.debug("Settings a new value of a date: {}", date);
+        Vacation.log.debug("Settings a new value of a date: {}", date);
 
         if (date == null) {
-            VacationDay.log.warn("The given date must not be null.");
+            Vacation.log.warn("The given date must not be null.");
             throw new IllegalArgumentException("date.null.error");
         }
 
@@ -120,16 +120,16 @@ public class VacationDay {
      * @throws IllegalArgumentException when the given time is later or equals the ending time of this vacation
      */
     public void setFrom(final LocalTime from) throws IllegalArgumentException {
-        VacationDay.log.debug("Settings a new value of the starting time of this vacation: {}", from);
+        Vacation.log.debug("Settings a new value of the starting time of this vacation: {}", from);
 
         if (from != null && this.type == VacationType.SICK_DAY) {
-            VacationDay.log.warn("A sick day must not have a starting or an ending time");
+            Vacation.log.warn("A sick day must not have a starting or an ending time");
             throw new IllegalArgumentException("time.sick.day.error");
         } else if(from == null && this.type == VacationType.VACATION) {
-            VacationDay.log.warn("A vacation has to have a starting and an ending time");
+            Vacation.log.warn("A vacation has to have a starting and an ending time");
             throw new IllegalArgumentException("time.vacation.error");
         } else if (from != null && this.to != null && from.compareTo(this.to) >= 0) {
-            VacationDay.log.warn("A vacation must not start after it ends. from={}, to={}", from, this.to);
+            Vacation.log.warn("A vacation must not start after it ends. from={}, to={}", from, this.to);
             throw new IllegalArgumentException("time.order.error");
         }
 
@@ -153,16 +153,16 @@ public class VacationDay {
      * @throws IllegalArgumentException when the given time is earlier or equals the starting time of this vacation
      */
     public void setTo(final LocalTime to) throws IllegalArgumentException {
-        VacationDay.log.debug("Settings a new value of the ending time of this vacation: {}", to);
+        Vacation.log.debug("Settings a new value of the ending time of this vacation: {}", to);
 
         if (to != null && this.type == VacationType.SICK_DAY) {
-            VacationDay.log.warn("A sick day must not have a starting or an ending time");
+            Vacation.log.warn("A sick day must not have a starting or an ending time");
             throw new IllegalArgumentException("time.sick_day.error");
         } else if(to == null && this.type == VacationType.VACATION) {
-            VacationDay.log.warn("A vacation has to have a starting and an ending time");
+            Vacation.log.warn("A vacation has to have a starting and an ending time");
             throw new IllegalArgumentException("time.vacation.error");
         } else if (to != null && this.from != null && to.compareTo(this.from) <= 0) {
-            VacationDay.log.warn("A vacation must not end after it starts. from={}, to={}", this.from, to);
+            Vacation.log.warn("A vacation must not end after it starts. from={}, to={}", this.from, to);
             throw new IllegalArgumentException("time.order.error");
         }
 
@@ -178,16 +178,16 @@ public class VacationDay {
      * @throws IllegalArgumentException when the ending time is earlier or equals the starting time
      */
     public void setTime(final LocalTime from, final LocalTime to) throws IllegalArgumentException {
-        VacationDay.log.debug("Settings a new value of the starting {} and the ending {} time of this vacation.", from, to);
+        Vacation.log.debug("Settings a new value of the starting {} and the ending {} time of this vacation.", from, to);
 
         if ((from != null || to != null) && this.type == VacationType.SICK_DAY) {
-            VacationDay.log.warn("A sick day must not have a starting or an ending time");
+            Vacation.log.warn("A sick day must not have a starting or an ending time");
             throw new IllegalArgumentException("time.sick.day_error");
         } else if((from == null || to == null) && this.type == VacationType.VACATION) {
-            VacationDay.log.warn("A vacation has to have a starting and an ending time");
+            Vacation.log.warn("A vacation has to have a starting and an ending time");
             throw new IllegalArgumentException("time.vacation.error");
         } else if (from != null && to != null && from.compareTo(to) >= 0) {
-            VacationDay.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
+            Vacation.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
             throw new IllegalArgumentException("time.order.error");
         }
 
@@ -210,7 +210,7 @@ public class VacationDay {
      * @param creationDate the new creation date
      */
     public void setCreationDate(final LocalDateTime creationDate) {
-        VacationDay.log.debug("Setting a new creation date of this vacation: {}", creationDate);
+        Vacation.log.debug("Setting a new creation date of this vacation: {}", creationDate);
 
         this.creationDate = creationDate;
     }
@@ -232,10 +232,10 @@ public class VacationDay {
      * @throws IllegalArgumentException when the given status is null
      */
     public void setStatus(final Status status) throws IllegalArgumentException {
-        VacationDay.log.debug("Setting a new approval status: {}", status);
+        Vacation.log.debug("Setting a new approval status: {}", status);
 
         if (status == null) {
-            VacationDay.log.warn("The given status must not be null");
+            Vacation.log.warn("The given status must not be null");
             throw new IllegalArgumentException("status.null.error");
         }
 
@@ -260,13 +260,13 @@ public class VacationDay {
      * @throws IllegalArgumentException when the given type is null
      */
     public void setType(final VacationType type) throws IllegalArgumentException {
-        VacationDay.log.debug("Setting a new type of this vacation: {}", type);
+        Vacation.log.debug("Setting a new type of this vacation: {}", type);
 
         if(type == VacationType.SICK_DAY) {
             this.from = null;
             this.to = null;
         } else if (type == null) {
-            VacationDay.log.warn("The given type of a vacation must not be null");
+            Vacation.log.warn("The given type of a vacation must not be null");
             throw new IllegalArgumentException("type.null.error");
         }
 
@@ -288,7 +288,7 @@ public class VacationDay {
      */
     @Override
     public String toString() {
-        return "VacationDay{" +
+        return "Vacation{" +
                 "id=" + this.id +
                 ", date=" + this.date +
                 ", from=" + this.from +
