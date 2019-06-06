@@ -63,6 +63,10 @@
     "confirm": "Potvrdit",
     "close": "Zavřít"
   },
+  "ACCEPTED": "Schváleno",
+  "AUTHORIZED": "Autorizováno",
+  "PENDING": "Čekající",
+  "REJECTED": "Odmítnuto",
   "EMPLOYER": "Zaměstnavatel",
   "EMPLOYEE": "Zaměstnanec",
   "VACATION": "Dovolená",

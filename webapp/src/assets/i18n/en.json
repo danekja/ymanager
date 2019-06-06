@@ -62,9 +62,12 @@
     "confirm": "Confirm",
     "close": "Close"
   },
+  "ACCEPTED": "Accepted",
+  "AUTHORIZED": "Authorized",
+  "PENDING": "Pending",
+  "REJECTED": "Rejected",
   "EMPLOYER": "Employer",
   "EMPLOYEE": "Employee",
   "VACATION": "Vacation",
   "SICKDAY": "Sickday"
-
 }
