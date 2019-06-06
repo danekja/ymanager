@@ -4,14 +4,15 @@ import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 import {Languages} from '../../enums/common.enum';
 import {MatSnackBar} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileService extends BasicService {
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
-    super(http, snackBar);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
+    super(http, snackBar, translateService);
   }
 
   /**

@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {VacationType} from '../enums/common.enum';
 import {FormControl} from '@angular/forms';
 import {DateFormatterService} from '../services/util/date-formatter.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-days-off-dialog',
@@ -22,7 +23,8 @@ export class AddVacationDialogComponent {
     public dialogRef: MatDialogRef<AddVacationDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddVacationDialogData,
     private snackBar: MatSnackBar,
-    private dateFormatterService: DateFormatterService
+    private dateFormatterService: DateFormatterService,
+    private translateService: TranslateService
   ) {
     if (this.data.fromTime == null) {
       this.data.fromTime = '08:00';
@@ -36,7 +38,9 @@ export class AddVacationDialogComponent {
 
   onConfirmClick(): void {
     if (this.selectedVacationType == null) {
-      this.snackBar.open('Nevybrán typ volna', 'Zavřít', { duration: 5000 });
+      this.translateService.get('error.vacationTypeNotSelected').subscribe((res: string) => {
+        this.snackBar.open(res, 'X', { duration: 5000 });
+      });
     } else {
       let data;
       const formattedDate = this.dateFormatterService.formatDate(this.data.date);

@@ -49,7 +49,7 @@
     "to": "To",
     "vacationType": "Type"
   },
-  "dayShortName" : {
+  "dayShortName": {
     "mon": "mon",
     "tue": "tue",
     "wed": "wed",
@@ -61,6 +61,14 @@
   "button": {
     "confirm": "Confirm",
     "close": "Close"
+  },
+  "infoMessage": {
+    "importSuccessful": "Successfully imported"
+  },
+  "error": {
+    "serverCommunication": "Communication with server failed",
+    "vacationTypeNotSelected": "Vacation type not selected",
+    "missingField": "Not everything is filled in"
   },
   "ACCEPTED": "Accepted",
   "AUTHORIZED": "Authorized",

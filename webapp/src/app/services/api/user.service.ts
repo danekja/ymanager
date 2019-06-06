@@ -10,6 +10,7 @@ import {UserProfile} from '../../models/user.model';
 import {UserRequest} from '../../models/requests.model';
 import {MatSnackBar} from '@angular/material';
 import {DateFormatterService} from '../util/date-formatter.service';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,8 @@ import {DateFormatterService} from '../util/date-formatter.service';
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
   private _userUrl = this.baseUrl + '/api/user/';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, private dateFormater: DateFormatterService) {
-    super(http, snackBar);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, private dateFormater: DateFormatterService) {
+    super(http, snackBar, translateService);
   }
 
   /**

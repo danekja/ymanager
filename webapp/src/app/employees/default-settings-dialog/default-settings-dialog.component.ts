@@ -1,5 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-default-settings',
@@ -13,6 +14,7 @@ export class DefaultSettingsDialogComponent {
     public dialogRef: MatDialogRef<DefaultSettingsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DefaultSettingsDialogData,
     private snackBar: MatSnackBar,
+    private translateService: TranslateService
   ) {
   }
 
@@ -26,7 +28,9 @@ export class DefaultSettingsDialogComponent {
         }
       );
     } else {
-      this.snackBar.open('Nevyplněny všechny potřebné položky');
+      this.translateService.get('error.missingField').subscribe((res: string) => {
+        this.snackBar.open(res, 'X', { duration: 5000 });
+      });
     }
   }
 

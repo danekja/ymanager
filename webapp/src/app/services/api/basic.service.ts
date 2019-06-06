@@ -3,27 +3,28 @@ import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {throwError} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {MatSnackBar} from '@angular/material';
-
+import {TranslateService} from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
 export class BasicService {
   protected baseUrl = environment.apiUrl;
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) { }
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) { }
 
   protected handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
+    let errMsg;
+    if (!error.error.error) {
+      this.translateService.get('error.serverCommunication').subscribe((res: string) => {
+        errMsg = res;
+      });
     } else {
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+      errMsg = error.error.message;
     }
 
-    this.snackBar.open('Komunikace se serverem se nezdařila', 'Zavřít');
-    return throwError(
-      'Something bad happened; please try again later.');
+    this.snackBar.open(errMsg, 'X');
+
+    return throwError(errMsg);
   }
 
   /**

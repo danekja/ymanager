@@ -63,6 +63,14 @@
     "confirm": "Potvrdit",
     "close": "Zavřít"
   },
+  "infoMessage": {
+    "importSuccessful": "Successfully imported"
+  },
+  "error": {
+    "serverCommunication": "Komunikace se serverem se nezdařila",
+    "vacationTypeNotSelected": "Nevybrán typ volna",
+    "missingField": "Nevyplněny všechny údaje"
+  },
   "ACCEPTED": "Schváleno",
   "AUTHORIZED": "Autorizováno",
   "PENDING": "Čekající",

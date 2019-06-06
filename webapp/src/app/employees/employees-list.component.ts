@@ -14,6 +14,7 @@ import {DateFormatterService} from '../services/util/date-formatter.service';
 import {FileService} from '../services/api/file.service';
 import {ProfileService} from '../services/util/profile.service';
 import {UserProfileDialogComponent} from './user-profile/user-profile-dialog.component';
+import {TranslateService} from '@ngx-translate/core';
 
 const daysOfWeek: string[] = [
   'dayShortName.mon',
@@ -48,7 +49,9 @@ export class EmployeesListComponent implements OnInit {
     private fileService: FileService,
     private profileService: ProfileService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar) {
+    private snackBar: MatSnackBar,
+    private translateService: TranslateService
+  ) {
     this.generateDays();
     this.generateDates();
     this.editDates();
@@ -70,8 +73,7 @@ export class EmployeesListComponent implements OnInit {
           linkElement.href = link;
           linkElement.download = 'dochazka.pdf';
           linkElement.click();
-        },
-        error1 => this.showSnackBarError(error1, 'Export PDF souboru se nezdařil'));
+        });
   }
 
   /**
@@ -81,9 +83,11 @@ export class EmployeesListComponent implements OnInit {
    */
   uploadXlsxFile(files: FileList): void {
     this.fileService.uploadXlsFile(files)
-      .subscribe(() => this.snackBar.open('Import souboru se provedl', 'Zavřít', {duration: 5000}),
-        error1 => this.showSnackBarError(error1, 'Import soubor se nezdařil')
-      );
+      .subscribe(() => {
+        this.translateService.get('infoMessage.importSuccessful').subscribe((res: string) => {
+          this.snackBar.open(res, 'X', { duration: 5000 });
+        });
+      });
   }
 
   openUserProfile(user: User): void {
@@ -110,10 +114,9 @@ export class EmployeesListComponent implements OnInit {
 
           dialogRef.componentInstance.postUserSettings.subscribe((emittedData) => {
             this.userService.putUserSettings(emittedData)
-              .subscribe(() => this.snackBar.open('Povedlo se', 'Zavrit', {duration: 5000}));
+              .subscribe();
           });
-        },
-        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila')
+        }
       );
   }
 
@@ -138,8 +141,7 @@ export class EmployeesListComponent implements OnInit {
                 .subscribe();
             }
           });
-        },
-        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila'));
+        });
   }
 
   private toSettings(data): Settings {
@@ -217,18 +219,12 @@ export class EmployeesListComponent implements OnInit {
     return dayInfo;
   }
 
-  private showSnackBarError(error1, message: string) {
-    console.log(error1);
-    this.snackBar.open(message, 'Zavřít', {duration: 5000});
-  }
-
   ngOnInit() {
     this.usersService.getAuthorizedUsers()
       .subscribe((data: UserBasicInformation[]) => {
           this._employeesBasicInformation = data;
           this.mapUsers();
-        },
-        error1 => this.showSnackBarError(error1, 'Komunikace se serverem se nezdařila'));
+        });
   }
 
 }

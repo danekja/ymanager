@@ -6,6 +6,7 @@ import { BasicService } from './basic.service';
 import { Settings } from '../../models/settings.model';
 import {Languages} from '../../enums/common.enum';
 import {MatSnackBar} from '@angular/material';
+import {TranslateService} from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ import {MatSnackBar} from '@angular/material';
 export class SettingsService extends BasicService {
   defaultSettingsUrl = this.baseUrl + '/api/settings';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar) {
-    super(http, snackBar);
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
+    super(http, snackBar, translateService);
   }
 
   /**

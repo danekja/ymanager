@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
 import {UserType} from '../../enums/common.enum';
 import {UserProfile} from '../../models/user.model';
 import {UserSettings} from '../../models/settings.model';
+import {TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -21,7 +22,9 @@ export class EditEmployeeDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<EditEmployeeDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: UserProfile,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private translateService: TranslateService
+  ) {
     this._sickDaysCount = data.sickDayCount;
     this._addVacationHoursCount = 0;
     this._userType = data.role;
@@ -33,7 +36,9 @@ export class EditEmployeeDialogComponent implements OnInit {
 
   onConfirmClick(): void {
     if (this._sickDaysCount == null || this._addVacationHoursCount == null || this._userType == null) {
-      this.snackBar.open('Vyplňte prosím všechny údaje', 'Zavřít');
+      this.translateService.get('error.missingField').subscribe((res: string) => {
+        this.snackBar.open(res, 'X', { duration: 5000 });
+      });
     } else {
       this.postUserSettings.emit({
         id: this._userId,
