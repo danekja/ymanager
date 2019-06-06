@@ -1,10 +1,7 @@
 package cz.zcu.yamanager.repository;
 
 import cz.zcu.yamanager.domain.User;
-import cz.zcu.yamanager.dto.Status;
-import cz.zcu.yamanager.dto.UserRole;
-import cz.zcu.yamanager.dto.VacationDay;
-import cz.zcu.yamanager.dto.VacationType;
+import cz.zcu.yamanager.dto.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +16,9 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import static cz.zcu.yamanager.dto.Status.getStatus;
+import static java.util.Optional.ofNullable;
 
 @Repository
 public class VacationRepository {
@@ -55,7 +55,7 @@ public class VacationRepository {
                 item.setTo(timeTo.toLocalTime());
             }
 
-            item.setStatus(Status.getStatus(resultSet.getString("v.status")));
+            item.setStatus(getStatus(resultSet.getString("v.status")));
             item.setType(VacationType.getVacationType(resultSet.getString("v.vacation_type")));
             return item;
         }
@@ -84,7 +84,7 @@ public class VacationRepository {
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from) {
-        return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id = ? AND v.vacation_date >= ?",
@@ -92,7 +92,7 @@ public class VacationRepository {
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final Status status) {
-        return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id = ? AND v.vacation_date >= ? AND v.status = ?",
@@ -100,7 +100,7 @@ public class VacationRepository {
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final LocalDate to) {
-        return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id=? AND v.vacation_date >= ? AND v.vacation_date <= ?",
@@ -109,7 +109,7 @@ public class VacationRepository {
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final LocalDate to, final Status status) {
-        return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
+        return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id=? AND v.vacation_date >= ? AND v.vacation_date <= ? AND v.status = ?",
@@ -117,7 +117,7 @@ public class VacationRepository {
     }
 
     public Optional<cz.zcu.yamanager.domain.VacationDay> getVacationDay(final long id) {
-        return Optional.ofNullable(this.jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type " +
+        return ofNullable(jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type, user_id " +
                         "FROM vacation_day WHERE id = ?", new Object[]{id},
                 (ResultSet rs, int rowNum) -> {
                     cz.zcu.yamanager.domain.VacationDay vacationDay = new cz.zcu.yamanager.domain.VacationDay();
@@ -139,43 +139,49 @@ public class VacationRepository {
                     }
 
                     vacationDay.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
-                    vacationDay.setStatus(Status.getStatus(rs.getString("status")));
+                    vacationDay.setStatus(getStatus(rs.getString("status")));
                     vacationDay.setType(VacationType.getVacationType(rs.getString("vacation_type")));
+                    vacationDay.setUserId(rs.getLong("user_id"));
                     return vacationDay;
                 }));
     }
 
     public void insertVacationDay(final Long userId, final cz.zcu.yamanager.domain.VacationDay day) {
-        this.jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status, vacation_type, user_id) VALUES (?,?,?,?,?,?)",
+        jdbc.update("INSERT INTO vacation_day (vacation_date, time_from, time_to, status, vacation_type, user_id) VALUES (?,?,?,?,?,?)",
                 day.getDate(), day.getFrom(), day.getTo(), day.getStatus().name(), day.getType().name(), userId);
     }
 
     public void updateVacationDay(final cz.zcu.yamanager.domain.VacationDay item) {
-        this.jdbc.update("UPDATE vacation_day SET vacation_date=?, time_from=?, time_to=?, status=?, vacation_type=? WHERE id=?",
+        jdbc.update("UPDATE vacation_day SET vacation_date=?, time_from=?, time_to=?, status=?, vacation_type=? WHERE id=?",
                 item.getDate(), item.getFrom(), item.getTo(), item.getStatus().name(), item.getType().name(), item.getId());
     }
 
     public void deleteVacationDay(final long id) {
-        this.jdbc.update("DELETE FROM vacation_day WHERE id=?", id);
+        jdbc.update("DELETE FROM vacation_day WHERE id=?", id);
     }
 
     public Optional<User> findUserByVacationID(final long id) {
-        return Optional.ofNullable(this.jdbc.queryForObject("SELECT u.* FROM vacation_day v INNER JOIN end_user u ON v.user_id = u.id WHERE v.user_id = ?", new Object[]{id}, (ResultSet rs, int rowNum)->
+        return ofNullable(jdbc.queryForObject(
+                "SELECT u.id,u.first_name, u.last_name, u.no_vacations," +
+                        "u.no_sick_days, u.taken_sick_days, u.alert, u.token, u.email," +
+                        "u.photo, u.creation_date, u.user_role, u.status " +
+                "FROM vacation_day v INNER JOIN end_user u ON v.user_id = u.id " +
+                "WHERE v.id = ?", new Object[]{id}, (ResultSet rs, int rowNum)->
         {
             User user = new User();
             user.setId(rs.getLong("u.id"));
             user.setFirstName(rs.getString("u.first_name"));
             user.setLastName(rs.getString("u.last_name"));
             user.setVacationCount(rs.getFloat("u.no_vacations"));
-            user.setTotalSickDayCount(rs.getInt("u.total_sick_days"));
+            user.setTotalSickDayCount(rs.getInt("u.no_sick_days"));
             user.setTakenSickDayCount(rs.getInt("u.taken_sick_days"));
             user.setNotification(rs.getTimestamp("u.alert").toLocalDateTime());
             user.setToken(rs.getString("u.token"));
             user.setEmail(rs.getString("u.email"));
             user.setPhoto(rs.getString("u.photo"));
             user.setCreationDate(rs.getTimestamp("u.creation_date").toLocalDateTime());
-            user.setRole(UserRole.getUserRole(rs.getString("u.role")));
-            user.setStatus(Status.getStatus(rs.getString("u.status")));
+            user.setRole(UserRole.getUserRole(rs.getString("u.user_role")));
+            user.setStatus(getStatus(rs.getString("u.status")));
             return user;
         }));
     }

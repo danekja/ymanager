@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -18,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static cz.zcu.yamanager.dto.UserRole.getUserRole;
 
 /**
  * An instance of the class UserRepository handles queries which selects and updates users and their settings in a database.
@@ -196,6 +196,12 @@ public class UserRepository {
                 new Object[]{status.name()}, new BasicProfileUserMapper());
     }
 
+    public UserRole getPermission(Long id) {
+        return jdbc.queryForObject("SELECT user_role FROM end_user WHERE id = ?" ,new Object[]{id}, (rs, rowNum) ->
+            getUserRole(rs.getString("user_role"))
+        );
+    }
+
     /**
      *
      * @param id
@@ -216,7 +222,7 @@ public class UserRepository {
         user.setNotification(((Timestamp) resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String) resultMap.get("out_email"));
         user.setPhoto((String) resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String) resultMap.get("out_role")));
+        user.setRole(getUserRole((String) resultMap.get("out_role")));
         user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
         return user;
 
@@ -237,7 +243,7 @@ public class UserRepository {
         user.setNotification(((Timestamp) resultMap.get("out_alert")).toLocalDateTime());
         user.setEmail((String) resultMap.get(("out_email")));
         user.setPhoto((String) resultMap.get("out_photo"));
-        user.setRole(UserRole.getUserRole((String) resultMap.get("out_role")));
+        user.setRole(getUserRole((String) resultMap.get("out_role")));
         user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
         return user;
     }
@@ -262,14 +268,9 @@ public class UserRepository {
         user.setEmail((String)resultMap.get("out_email"));
         user.setPhoto((String)resultMap.get("out_photo"));
         user.setCreationDate(((Timestamp)resultMap.get("out_creation_date")).toLocalDateTime());
-        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
+        user.setRole(getUserRole((String)resultMap.get("out_role")));
         user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
         return user;
-    }
-
-    public void updateUserSettings(final  User user) {
-        this.jdbc.update("UPDATE end_user SET no_vacations = ?, no_sick_days = ?, alert = ? WHERE id = ?",
-                user.getVacationCount(), user.getTotalSickDayCount(), user.getNotification(), user.getId());
     }
 
     public void updateUser(final User user) {
@@ -284,5 +285,20 @@ public class UserRepository {
 
     public void insertSettings(final cz.zcu.yamanager.domain.DefaultSettings settings) {
         this.jdbc.update("INSERT INTO default_settings (no_sick_days, alert) VALUES (?, ?)", settings.getSickDayCount(), settings.getNotification());
+    }
+
+    public void updateUserSettings(User user) {
+        jdbc.update("UPDATE end_user SET alert = ?, user_role = ?, no_sick_days = ?, no_vacations = ? WHERE id = ?",
+                user.getNotification(), user.getRole().name(), user.getTotalSickDayCount(), user.getVacationCount(), user.getId());
+    }
+
+    public void updateUserTakenVacation(User user) {
+        jdbc.update("UPDATE end_user SET no_vacations = ? WHERE id = ?",
+                user.getVacationCount(), user.getId());
+    }
+
+    public void updateUserTakenSickDay(User user) {
+        jdbc.update("UPDATE end_user SET taken_sick_days = ? WHERE id = ?",
+                user.getTakenSickDayCount(), user.getId());
     }
 }

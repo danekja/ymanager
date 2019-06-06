@@ -5,7 +5,6 @@ import cz.zcu.yamanager.dto.VacationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -54,6 +53,8 @@ public class VacationDay {
      * The type of this vacation.
      */
     private VacationType type;
+
+    private Long userId;
 
     /**
      * Returns the ID of this vacation.
@@ -270,6 +271,14 @@ public class VacationDay {
         }
 
         this.type = type;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     /**
