@@ -1,6 +1,8 @@
 package cz.zcu.yamanager.repository;
 
+import cz.zcu.yamanager.domain.User;
 import cz.zcu.yamanager.dto.Status;
+import cz.zcu.yamanager.dto.UserRole;
 import cz.zcu.yamanager.dto.VacationDay;
 import cz.zcu.yamanager.dto.VacationType;
 
@@ -8,15 +10,57 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class VacationRepository {
+    /**
+     * The mapper maps a row from a result of a query to an VacationDay.
+     */
+    private class VacationDayMapper implements RowMapper<VacationDay> {
+
+        /**
+         * Maps a row from a result of a query to an VacationDay.
+         * @param resultSet the row from the result
+         * @param i the index of the row
+         * @return the VacationDay object
+         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
+         */
+        @Override
+        public VacationDay mapRow(ResultSet resultSet, int i) throws SQLException {
+            final VacationDay item = new VacationDay();
+            item.setId(resultSet.getLong("v.id"));
+            item.setDate(resultSet.getDate("v.vacation_date").toLocalDate());
+
+            /*
+                When a result contains a sick day it doesn't have specified a start and end time because
+                it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
+                Which must be handled.
+            */
+            final Time timeFrom = resultSet.getTime("v.time_from");
+            if (timeFrom != null) {
+                item.setFrom(timeFrom.toLocalTime());
+            }
+
+            final Time timeTo = resultSet.getTime("v.time_to");
+            if (timeTo != null) {
+                item.setTo(timeTo.toLocalTime());
+            }
+
+            item.setStatus(Status.getStatus(resultSet.getString("v.status")));
+            item.setType(VacationType.getVacationType(resultSet.getString("v.vacation_type")));
+            return item;
+        }
+    }
+
     /**
      * The logger.
      */
@@ -35,6 +79,7 @@ public class VacationRepository {
     @Autowired
     public VacationRepository(final JdbcTemplate jdbc) {
         VacationRepository.log.trace("Creating a new instance of the class VacationRepository");
+
         this.jdbc = jdbc;
     }
 
@@ -43,24 +88,7 @@ public class VacationRepository {
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id = ? AND v.vacation_date >= ?",
-                new Object[]{userId, from}, (ResultSet rs, int rowNum) -> {
-                    final VacationDay item = new VacationDay();
-                    item.setId(rs.getLong("v.id"));
-                    item.setDate(rs.getDate("v.vacation_date").toLocalDate());
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        item.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        item.setTo(timeTo.toLocalTime());
-                    }
-
-                    item.setStatus(Status.getStatus(rs.getString("v.status")));
-                    item.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    return item;
-                });
+                new Object[]{userId, from}, new VacationDayMapper());
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final Status status) {
@@ -68,24 +96,7 @@ public class VacationRepository {
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id = ? AND v.vacation_date >= ? AND v.status = ?",
-                new Object[]{userId, from, status.name()}, (ResultSet rs, int rowNum) -> {
-                    final VacationDay item = new VacationDay();
-                    item.setId(rs.getLong("v.id"));
-                    item.setDate(rs.getDate("v.vacation_date").toLocalDate());
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        item.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        item.setTo(timeTo.toLocalTime());
-                    }
-
-                    item.setStatus(Status.getStatus(rs.getString("v.status")));
-                    item.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    return item;
-                });
+                new Object[]{userId, from, status.name()}, new VacationDayMapper());
     }
 
     public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final LocalDate to) {
@@ -93,24 +104,7 @@ public class VacationRepository {
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id=? AND v.vacation_date >= ? AND v.vacation_date <= ?",
-                new Object[]{userId, from, to}, (ResultSet rs, int rowNum) -> {
-                    final VacationDay item = new VacationDay();
-                    item.setId(rs.getLong("v.id"));
-                    item.setDate(rs.getDate("v.vacation_date").toLocalDate());
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        item.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        item.setTo(timeTo.toLocalTime());
-                    }
-
-                    item.setStatus(Status.getStatus(rs.getString("v.status")));
-                    item.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    return item;
-                });
+                new Object[]{userId, from, to}, new VacationDayMapper());
 
     }
 
@@ -119,41 +113,36 @@ public class VacationRepository {
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.user_id=? AND v.vacation_date >= ? AND v.vacation_date <= ? AND v.status = ?",
-                new Object[]{userId, from, to, status.name()}, (ResultSet rs, int rowNum) -> {
-                    final VacationDay item = new VacationDay();
-                    item.setId(rs.getLong("v.id"));
-                    item.setDate(rs.getDate("v.vacation_date").toLocalDate());
-
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        item.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        item.setTo(timeTo.toLocalTime());
-                    }
-
-                    item.setStatus(Status.getStatus(rs.getString("v.status")));
-                    item.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    return item;
-                });
+                new Object[]{userId, from, to, status.name()}, new VacationDayMapper());
     }
 
-    public cz.zcu.yamanager.domain.VacationDay getVacationDay(final long id) {
-        return this.jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type" +
-                        "FROM vacation_day " +
-                        "WHERE id = ?", new Object[]{id},
-                (ResultSet rs, int rowNum) ->
-                    new cz.zcu.yamanager.domain.VacationDay(
-                            rs.getLong("id"),
-                            rs.getDate("vacation_date").toLocalDate(),
-                            rs.getTime("time_from").toLocalTime(),
-                            rs.getTime("time_to").toLocalTime(),
-                            rs.getTimestamp("creation_date").toLocalDateTime(),
-                            Status.getStatus(rs.getString("status")),
-                            VacationType.getVacationType(rs.getString("v.vacation_type")))
-                );
+    public Optional<cz.zcu.yamanager.domain.VacationDay> getVacationDay(final long id) {
+        return Optional.ofNullable(this.jdbc.queryForObject("SELECT id, vacation_date, time_from, time_to, creation_date, status, vacation_type " +
+                        "FROM vacation_day WHERE id = ?", new Object[]{id},
+                (ResultSet rs, int rowNum) -> {
+                    cz.zcu.yamanager.domain.VacationDay vacationDay = new cz.zcu.yamanager.domain.VacationDay();
+                    vacationDay.setId(rs.getLong("id"));
+                    vacationDay.setDate(rs.getDate("vacation_date").toLocalDate());
+                    /*
+                        When a result contains a sick day it doesn't have specified a start and end time because
+                        it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
+                        Which must be handled.
+                    */
+                    final Time timeFrom = rs.getTime("time_from");
+                    if (timeFrom != null) {
+                        vacationDay.setFrom(timeFrom.toLocalTime());
+                    }
+
+                    final Time timeTo = rs.getTime("time_to");
+                    if (timeTo != null) {
+                        vacationDay.setTo(timeTo.toLocalTime());
+                    }
+
+                    vacationDay.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
+                    vacationDay.setStatus(Status.getStatus(rs.getString("status")));
+                    vacationDay.setType(VacationType.getVacationType(rs.getString("vacation_type")));
+                    return vacationDay;
+                }));
     }
 
     public void insertVacationDay(final Long userId, final cz.zcu.yamanager.domain.VacationDay day) {
@@ -168,5 +157,26 @@ public class VacationRepository {
 
     public void deleteVacationDay(final long id) {
         this.jdbc.update("DELETE FROM vacation_day WHERE id=?", id);
+    }
+
+    public Optional<User> findUserByVacationID(final long id) {
+        return Optional.ofNullable(this.jdbc.queryForObject("SELECT u.* FROM vacation_day v INNER JOIN end_user u ON v.user_id = u.id WHERE v.user_id = ?", new Object[]{id}, (ResultSet rs, int rowNum)->
+        {
+            User user = new User();
+            user.setId(rs.getLong("u.id"));
+            user.setFirstName(rs.getString("u.first_name"));
+            user.setLastName(rs.getString("u.last_name"));
+            user.setVacationCount(rs.getFloat("u.no_vacations"));
+            user.setTotalSickDayCount(rs.getInt("u.total_sick_days"));
+            user.setTakenSickDayCount(rs.getInt("u.taken_sick_days"));
+            user.setNotification(rs.getTimestamp("u.alert").toLocalDateTime());
+            user.setToken(rs.getString("u.token"));
+            user.setEmail(rs.getString("u.email"));
+            user.setPhoto(rs.getString("u.photo"));
+            user.setCreationDate(rs.getTimestamp("u.creation_date").toLocalDateTime());
+            user.setRole(UserRole.getUserRole(rs.getString("u.role")));
+            user.setStatus(Status.getStatus(rs.getString("u.status")));
+            return user;
+        }));
     }
 }

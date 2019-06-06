@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.util.List;
 
@@ -20,6 +22,72 @@ import java.util.List;
  */
 @Repository
 public class RequestRepository {
+    /**
+     * The mapper maps a row from a result of a query to an AuthorizationRequest.
+     */
+    private class AuthorizationRequestMapper implements RowMapper<AuthorizationRequest> {
+
+        /**
+         * Maps a row from a result of a query to an AuthorizationRequest.
+         * @param resultSet the row from the result
+         * @param i the index of the row
+         * @return the AuthorizationRequest object
+         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
+         */
+        @Override
+        public AuthorizationRequest mapRow(ResultSet resultSet, int i) throws SQLException {
+            final AuthorizationRequest request = new AuthorizationRequest();
+            request.setId(resultSet.getLong("id"));
+            request.setFirstName(resultSet.getString("first_name"));
+            request.setLastName(resultSet.getString("last_name"));
+            request.setTimestamp(resultSet.getTimestamp("creation_date").toLocalDateTime());
+            request.setStatus(Status.getStatus(resultSet.getString("status")));
+            return request;
+        }
+    }
+
+    /**
+     * The mapper maps each row from a result of a query to a VacationRequest.
+     */
+    private class VacationRequestMapper implements RowMapper<VacationRequest> {
+
+        /**
+         * Maps a row from a result of a query to an VacationRequest.
+         * @param resultSet the row from the result
+         * @param i the index of the row
+         * @return the VacationRequest object
+         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
+         */
+        @Override
+        public VacationRequest mapRow(ResultSet resultSet, int i) throws SQLException {
+            final VacationRequest request = new VacationRequest();
+            request.setId(resultSet.getLong("v.id"));
+            request.setFirstName(resultSet.getString("u.first_name"));
+            request.setLastName(resultSet.getString("u.last_name"));
+            request.setDate(resultSet.getDate("v.vacation_date").toLocalDate());
+
+            /*
+                When a result contains a sick day it doesn't have specified a start and end time because
+                it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
+                Which must be handled.
+            */
+            final Time timeFrom = resultSet.getTime("v.time_from");
+            if (timeFrom != null) {
+                request.setFrom(timeFrom.toLocalTime());
+            }
+
+            final Time timeTo = resultSet.getTime("v.time_to");
+            if (timeTo != null) {
+                request.setTo(timeTo.toLocalTime());
+            }
+
+            request.setTimestamp(resultSet.getTimestamp("v.creation_date").toLocalDateTime());
+            request.setType(VacationType.getVacationType(resultSet.getString("v.vacation_type")));
+            request.setStatus(Status.getStatus(resultSet.getString("v.status")));
+            return request;
+        }
+    }
+
     /**
      * The logger.
      */
@@ -38,6 +106,7 @@ public class RequestRepository {
     @Autowired
     public RequestRepository(final JdbcTemplate jdbc) {
         RequestRepository.log.trace("Creating a new instance of the class RequestRepository");
+
         this.jdbc = jdbc;
     }
 
@@ -52,16 +121,7 @@ public class RequestRepository {
     public List<AuthorizationRequest> getAllAuthorizations() {
         RequestRepository.log.trace("Selecting all authorization requests from a database.");
 
-        return this.jdbc.query("SELECT id, first_name, last_name, creation_date, status FROM end_user",
-                (ResultSet rs, int rowNum) -> {
-                    final AuthorizationRequest request = new AuthorizationRequest();
-                    request.setId(rs.getLong("id"));
-                    request.setFirstName(rs.getString("first_name"));
-                    request.setLastName(rs.getString("last_name"));
-                    request.setTimestamp(rs.getTimestamp("creation_date").toLocalDateTime());
-                    request.setStatus(Status.getStatus(rs.getString("status")));
-                    return request;
-                });
+        return this.jdbc.query("SELECT id, first_name, last_name, creation_date, status FROM end_user", new AuthorizationRequestMapper());
     }
 
     /**
@@ -77,17 +137,7 @@ public class RequestRepository {
         RequestRepository.log.trace("Selecting all authorization requests from a database with requested status.");
         RequestRepository.log.debug("Status: {}", status);
 
-        return this.jdbc.query("SELECT id, first_name, last_name, creation_date FROM end_user WHERE status = ?",
-                new Object[]{status.name()},
-                (ResultSet rs, int rowNum) -> {
-                    final AuthorizationRequest request = new AuthorizationRequest();
-                    request.setId(rs.getLong("id"));
-                    request.setFirstName(rs.getString("first_name"));
-                    request.setLastName(rs.getString("last_name"));
-                    request.setTimestamp(rs.getTimestamp("creation_date").toLocalDateTime());
-                    request.setStatus(status);
-                    return request;
-                });
+        return this.jdbc.query("SELECT id, first_name, last_name, creation_date, status FROM end_user WHERE status = ?", new Object[]{status.name()}, new AuthorizationRequestMapper());
     }
 
     /**
@@ -124,35 +174,8 @@ public class RequestRepository {
         RequestRepository.log.trace("Selecting all vacation requests from a database.");
 
         return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, v.vacation_type, v.status, u.first_name, u.last_name " +
-                        "FROM vacation_day v " +
-                        "INNER JOIN end_user u ON v.user_id = u.id",
-                (ResultSet rs, int rowNum) -> {
-                    final VacationRequest request = new VacationRequest();
-                    request.setId(rs.getLong("v.id"));
-                    request.setFirstName(rs.getString("u.first_name"));
-                    request.setLastName(rs.getString("u.last_name"));
-                    request.setDate(rs.getDate("v.vacation_date").toLocalDate());
-
-                    /*
-                        When a result contains a sickday it doesn't have specified a start and end time because
-                        it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
-                        Which must be handled.
-                     */
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        request.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        request.setTo(timeTo.toLocalTime());
-                    }
-
-                    request.setTimestamp(rs.getTimestamp("v.creation_date").toLocalDateTime());
-                    request.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    request.setStatus(Status.getStatus(rs.getString("v.status")));
-                    return request;
-                });
+                "FROM vacation_day v " +
+                "INNER JOIN end_user u ON v.user_id = u.id", new VacationRequestMapper());
     }
 
     /**
@@ -171,34 +194,7 @@ public class RequestRepository {
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
                         "WHERE v.status=?",
-                new Object[]{status.name()},
-                (ResultSet rs, int rowNum) -> {
-                    final VacationRequest request = new VacationRequest();
-                    request.setId(rs.getLong("v.id"));
-                    request.setFirstName(rs.getString("u.first_name"));
-                    request.setLastName(rs.getString("u.last_name"));
-                    request.setDate(rs.getDate("v.vacation_date").toLocalDate());
-
-                     /*
-                        When a result contains a sickday it doesn't have specified start and end time because
-                        it can be taken only as a whole day. In this case the v.time_from and v.time_to are null.
-                        Which must be handled.
-                     */
-                    final Time timeFrom = rs.getTime("v.time_from");
-                    if (timeFrom != null) {
-                        request.setFrom(timeFrom.toLocalTime());
-                    }
-
-                    final Time timeTo = rs.getTime("v.time_to");
-                    if (timeTo != null) {
-                        request.setTo(timeTo.toLocalTime());
-                    }
-
-                    request.setTimestamp(rs.getTimestamp("v.creation_date").toLocalDateTime());
-                    request.setType(VacationType.getVacationType(rs.getString("v.vacation_type")));
-                    request.setStatus(status);
-                    return request;
-                });
+                new Object[]{status.name()}, new VacationRequestMapper());
     }
 
     /**

@@ -6,20 +6,69 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * An instance of the class UserRepository handles queries which selects and updates users and their settings in a database.
  */
 @Repository
 public class UserRepository {
+
+    /**
+     * The mapper maps a row from a result of a query to an BasicProfileUser.
+     */
+    private class BasicProfileUserMapper implements RowMapper<BasicProfileUser> {
+
+        /**
+         * Maps a row from a result of a query to an BasicProfileUser.
+         * @param resultSet the row from the result
+         * @param i the index of the row
+         * @return the BasicProfileUser object
+         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
+         */
+        @Override
+        public BasicProfileUser mapRow(ResultSet resultSet, int i) throws SQLException {
+            final BasicProfileUser user = new BasicProfileUser();
+            user.setId(resultSet.getLong("id"));
+            user.setFirstName(resultSet.getString("first_name"));
+            user.setLastName(resultSet.getString("last_name"));
+            user.setPhoto(resultSet.getString("photo"));
+            return user;
+        }
+    }
+
+    /**
+     * The mapper maps a row from a result of a query to an BasicProfileUser.
+     */
+    private class DefaultSettingsMapper implements RowMapper<DefaultSettings> {
+
+        /**
+         * Maps a row from a result of a query to an DefaultSettings.
+         * @param resultSet the row from the result
+         * @param i the index of the row
+         * @return the DefaultSettings object
+         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
+         */
+        @Override
+        public DefaultSettings mapRow(ResultSet resultSet, int i) throws SQLException {
+            final DefaultSettings settings = new DefaultSettings();
+            settings.setSickDayCount(resultSet.getInt("no_sick_days"));
+            settings.setNotification(resultSet.getTimestamp("alert").toLocalDateTime());
+            return settings;
+        }
+    }
+
     /**
      * The logger.
      */
@@ -127,14 +176,7 @@ public class UserRepository {
     public List<BasicProfileUser> getAllBasicUsers() {
         UserRepository.log.trace("Selecting basic profiles of all users from a database.");
 
-        return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user", (ResultSet rs, int rowNum) -> {
-            final BasicProfileUser user = new BasicProfileUser();
-            user.setId(rs.getLong("id"));
-            user.setFirstName(rs.getString("first_name"));
-            user.setLastName(rs.getString("last_name"));
-            user.setPhoto(rs.getString("photo"));
-            return user;
-        });
+        return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user", new BasicProfileUserMapper());
     }
 
     /**
@@ -151,14 +193,7 @@ public class UserRepository {
         UserRepository.log.debug("Status: {}", status);
 
         return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user WHERE status = ?",
-                new Object[]{status.name()}, (ResultSet rs, int rowNum) -> {
-                    final BasicProfileUser user = new BasicProfileUser();
-                    user.setId(rs.getLong("id"));
-                    user.setFirstName(rs.getString("first_name"));
-                    user.setLastName(rs.getString("last_name"));
-                    user.setPhoto(rs.getString("photo"));
-                    return user;
-                });
+                new Object[]{status.name()}, new BasicProfileUserMapper());
     }
 
     /**
@@ -207,39 +242,39 @@ public class UserRepository {
         return user;
     }
 
-    public DefaultSettings getLastDefaultSettings() {
-        return this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", (ResultSet rs, int rowNum) -> {
-            final DefaultSettings settings = new DefaultSettings();
-            settings.setSickDayCount(rs.getInt("no_sick_days"));
-            settings.setNotification(rs.getTimestamp("alert").toLocalDateTime());
-            return settings;
-        });
+    public Optional<DefaultSettings> getLastDefaultSettings() {
+        return Optional.ofNullable(this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", new DefaultSettingsMapper()));
     }
 
     //---------------------------------- DOMAIN -----------------------------------
 
     public User getUser(final long id) {
         final Map<String, Object> resultMap = this.getUserColumns(id);
-        return new User(
-                id,
-                (String) resultMap.get("out_first_name"),
-                (String) resultMap.get("out_last_name"),
-                ((Double) resultMap.get("out_no_vacations")).floatValue(),
-                (Integer) resultMap.get("out_no_sick_days"),
-                (Integer) resultMap.get("out_taken_sick_days"),
-                ((Timestamp) resultMap.get("out_alert")).toLocalDateTime(),
-                (String) resultMap.get("out_token"),
-                (String) resultMap.get("out_email"),
-                (String) resultMap.get("out_photo"),
-                ((Timestamp) resultMap.get("out_creation_date")).toLocalDateTime(),
-                UserRole.getUserRole((String) resultMap.get("out_role")),
-                Status.getStatus((String) resultMap.get("out_status"))
-        );
+        User user = new User();
+        user.setId((Long) resultMap.get("out_id"));
+        user.setFirstName((String)resultMap.get("out_first_name"));
+        user.setLastName((String)resultMap.get("out_last_name"));
+        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
+        user.setTotalSickDayCount((Integer)resultMap.get("out_no_sick_days"));
+        user.setTakenSickDayCount((Integer)resultMap.get("out_taken_sick_days"));
+        user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
+        user.setToken((String)resultMap.get("out_token"));
+        user.setEmail((String)resultMap.get("out_email"));
+        user.setPhoto((String)resultMap.get("out_photo"));
+        user.setCreationDate(((Timestamp)resultMap.get("out_creation_date")).toLocalDateTime());
+        user.setRole(UserRole.getUserRole((String)resultMap.get("out_role")));
+        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
+        return user;
     }
 
-    public void updateUser(final cz.zcu.yamanager.domain.User user) {
-        this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, no_sick_days = ?, taken_sick_days = ?, alert = ?, token = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
-                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
+    public void updateUserSettings(final  User user) {
+        this.jdbc.update("UPDATE end_user SET no_vacations = ?, no_sick_days = ?, alert = ? WHERE id = ?",
+                user.getVacationCount(), user.getTotalSickDayCount(), user.getNotification(), user.getId());
+    }
+
+    public void updateUser(final User user) {
+        this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, taken_sick_days = ?, token = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
+                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTakenSickDayCount(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
     }
 
     public void insertUser(final User user) {
