@@ -214,7 +214,7 @@ public class ApiController {
             @RequestBody UserSettings settings)
     {
         return handle(getLanguage(lang), () ->
-                manager.changeSettings(getUserId(settings.getId()), settings)
+                manager.changeSettings(getUserId("me"), settings)
         );
     }
 

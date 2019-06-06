@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,16 +40,17 @@ public class ApiManager implements Manager {
     @Override
     public List<BasicProfileUser> getUsers(Status status) throws RESTFullException {
         try {
-            List<BasicProfileUser> users = status == null ? this.userRepository.getAllBasicUsers() : this.userRepository.getAllBasicUsers(status);
+            List<BasicProfileUser> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
 
             LocalDate today = LocalDate.now();
             LocalDate weekBefore = today.minusDays(ApiManager.WEEK_LENGTH);
             LocalDate weekAfter = today.plusDays(ApiManager.WEEK_LENGTH);
             for (BasicProfileUser user : users) {
-                user.setCalendar(this.vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
+                user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
             }
 
             return users;
+
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -60,7 +60,7 @@ public class ApiManager implements Manager {
     @Override
     public List<VacationRequest> getVacationRequests(Status status) throws RESTFullException {
         try {
-            return status == null ? this.requestRepository.getAllVacationRequests() : this.requestRepository.getAllVacationRequests(status);
+            return status == null ? requestRepository.getAllVacationRequests() : requestRepository.getAllVacationRequests(status);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -70,7 +70,7 @@ public class ApiManager implements Manager {
     @Override
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
         try {
-            return status == null ? this.requestRepository.getAllAuthorizations() : this.requestRepository.getAllAuthorizations(status);
+            return status == null ? requestRepository.getAllAuthorizations() : requestRepository.getAllAuthorizations(status);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -80,7 +80,7 @@ public class ApiManager implements Manager {
     @Override
     public FullUserProfile getUserProfile(Long userId) throws RESTFullException {
         try {
-            return this.userRepository.getFullUser(userId);
+            return userRepository.getFullUser(userId);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -90,7 +90,7 @@ public class ApiManager implements Manager {
     @Override
     public DefaultSettings getDefaultSettings() throws RESTFullException {
         try {
-            return this.userRepository.getLastDefaultSettings().orElse(new DefaultSettings());
+            return userRepository.getLastDefaultSettings().orElse(new DefaultSettings());
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -102,16 +102,17 @@ public class ApiManager implements Manager {
         try {
             List<VacationDay> vacations;
             if (status == null && toDate == null) {
-                vacations = this.vacationRepository.getVacationDays(userId, fromDate);
+                vacations = vacationRepository.getVacationDays(userId, fromDate);
             } else if (status == null) {
-                vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate);
+                vacations = vacationRepository.getVacationDays(userId, fromDate, toDate);
             } else if (toDate != null) {
-                vacations = this.vacationRepository.getVacationDays(userId, fromDate, toDate, status);
+                vacations = vacationRepository.getVacationDays(userId, fromDate, toDate, status);
             } else {
-                vacations = this.vacationRepository.getVacationDays(userId, fromDate, status);
+                vacations = vacationRepository.getVacationDays(userId, fromDate, status);
             }
 
             return vacations;
+
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -124,7 +125,7 @@ public class ApiManager implements Manager {
             cz.zcu.yamanager.domain.DefaultSettings defaultSettings = new cz.zcu.yamanager.domain.DefaultSettings();
             defaultSettings.setSickDayCount(settings.getSickDayCount());
             defaultSettings.setNotification(settings.getNotification());
-            this.userRepository.insertSettings(defaultSettings);
+            userRepository.insertSettings(defaultSettings);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -134,7 +135,7 @@ public class ApiManager implements Manager {
     @Override
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
         try {
-            User user = this.userRepository.getUser(userId);
+            User user = userRepository.getUser(userId);
             vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
 
             cz.zcu.yamanager.domain.VacationDay vacation = new cz.zcu.yamanager.domain.VacationDay();
@@ -150,28 +151,67 @@ public class ApiManager implements Manager {
                 user.takeSickDay();
             }
 
-            this.vacationRepository.insertVacationDay(userId, vacation);
-            this.userRepository.updateUser(user);
+            vacationRepository.insertVacationDay(userId, vacation);
+            userRepository.updateUser(user);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
         }
     }
 
+    private void changeSettingsByEmployee(User user, UserSettings settings, DefaultSettings defaultSettings) {
+        if (settings.getNotification() != null && !settings.getNotification().equals(user.getNotification())) {
+            user.setNotification(settings.getNotification());
+        }
+
+        if (user.getTotalSickDayCount().equals(defaultSettings.getSickDayCount())) {
+            user.setTotalSickDayCount(null);
+        }
+    }
+
+    private void changeSettingsByEmployer(User user, UserSettings settings, DefaultSettings defaultSettings) {
+
+        if (settings.getRole() != null && !settings.getRole().equals(user.getRole())) {
+            user.setRole(settings.getRole());
+        }
+
+        if (settings.getSickDayCount() != null) {
+            if (settings.getSickDayCount().equals(defaultSettings.getSickDayCount())) {
+                user.setTotalSickDayCount(null);
+            } else {
+                user.setTotalSickDayCount(settings.getSickDayCount());
+            }
+        } else if (user.getTotalSickDayCount().equals(defaultSettings.getSickDayCount())) {
+            user.setTotalSickDayCount(null);
+        }
+
+        if (settings.getVacationCount() != null) {
+            user.setVacationCount(user.getVacationCount() + settings.getVacationCount());
+        }
+
+        if (settings.getNotification() != null && !settings.getNotification().equals(user.getNotification())) {
+            user.setNotification(settings.getNotification());
+        }
+    }
+
     @Override
     public void changeSettings(Long userId, UserSettings settings) throws RESTFullException {
-        try {
-            User user = this.userRepository.getUser(userId);
 
-            if (settings.getRole() == null && settings.getSickDayCount() == null && settings.getVacationCount() == null) {
-                user.setNotification(settings.getNotification());
+        try {
+            UserRole invokedUserPermission = userRepository.getPermission(userId);
+            boolean invokedUserIsAdmin = invokedUserPermission.equals(UserRole.EMPLOYER);
+            DefaultSettings defaultSettings = getDefaultSettings();
+
+            User userForChange = userRepository.getUser(settings.getId() == null ? userId : settings.getId());
+
+            if (invokedUserIsAdmin) {
+                changeSettingsByEmployer(userForChange, settings, defaultSettings);
             } else {
-                user.addVacationCount(settings.getVacationCount());
-                user.setTotalSickDayCount(settings.getSickDayCount());
-                user.setRole(settings.getRole());
+                changeSettingsByEmployee(userForChange, settings, defaultSettings);
             }
 
-            this.userRepository.updateUserSettings(user);
+            userRepository.updateUserSettings(userForChange);
+
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -181,15 +221,13 @@ public class ApiManager implements Manager {
     @Override
     public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
         try {
-            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = this.vacationRepository.getVacationDay(vacationDay.getId());
+            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = vacationRepository.getVacationDay(vacationDay.getId());
             if (vacation.isPresent()) {
                 vacation.get().setDate(vacationDay.getDate());
                 vacation.get().setStatus(vacationDay.getStatus());
                 vacation.get().setType(vacationDay.getType());
                 vacation.get().setTime(vacationDay.getFrom(), vacationDay.getTo());
-                this.vacationRepository.updateVacationDay(vacation.get());
-            } else {
-
+                vacationRepository.updateVacationDay(vacation.get());
             }
         } catch (DataAccessException e) {
             log.error(e.getMessage());
@@ -200,42 +238,76 @@ public class ApiManager implements Manager {
     @Override
     public void changeRequest(RequestType type, BasicRequest request) throws RESTFullException {
         try {
-            if (RequestType.VACATION == type) {
-                Optional<User> user = this.vacationRepository.findUserByVacationID(request.getId());
-                Optional<cz.zcu.yamanager.domain.VacationDay> vacationDay = this.vacationRepository.getVacationDay(request.getId());
-                if (user.isPresent() && request.getStatus() == Status.REJECTED) {
-                    if (vacationDay.get().getType() == VacationType.SICK_DAY) {
-                        user.get().addTakenSickDayCount(-1);
-                    } else {
-                        user.get().addVacationCount(vacationDay.get().getFrom(), vacationDay.get().getTo());
-                    }
-                }
+            switch (type) {
+                case VACATION: {
 
-                this.requestRepository.updateVacationRequest(request);
-            } else {
-                this.requestRepository.updateAuthorization(request);
+                    Optional<cz.zcu.yamanager.domain.VacationDay> vacationDayOpt = vacationRepository.getVacationDay(request.getId());
+
+                    if (!vacationDayOpt.isPresent()) {
+                        throw new RESTFullException("", "");
+                    }
+
+                    cz.zcu.yamanager.domain.VacationDay vacationDay = vacationDayOpt.get();
+
+                    if (request.getStatus().equals(Status.REJECTED)) {
+                        User user = userRepository.getUser(vacationDay.getUserId());
+
+                        switch (vacationDay.getType()) {
+                            case VACATION: {
+                                user.addVacationCount(vacationDay.getFrom(), vacationDay.getTo());
+                                userRepository.updateUserTakenVacation(user);
+                            } break;
+                            case SICK_DAY: {
+                                user.addTakenSickDayCount(-1);
+                                userRepository.updateUserTakenSickDay(user);
+                            } break;
+                        }
+                    }
+
+                    requestRepository.updateVacationRequest(vacationDay.getId(), request.getStatus());
+
+                } break;
+                case AUTHORIZATION: {
+                    requestRepository.updateAuthorization(request);
+                } break;
             }
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
+        } catch (IllegalArgumentException e) {
+            throw new RESTFullException("Cannot create a domain object.", e.getMessage());
         }
     }
 
     @Override
     public void deleteVacation(Long userId, Long vacationId) throws RESTFullException {
         try {
-            User user = this.userRepository.getUser(userId);
-            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = this.vacationRepository.getVacationDay(vacationId);
-            if (vacation.isPresent()) {
-                if (vacation.get().getType() == VacationType.SICK_DAY) {
-                    user.addTakenSickDayCount(-1);
-                } else {
-                    user.addVacationCount(vacation.get().getFrom(), vacation.get().getTo());
-                }
+            User user = userRepository.getUser(userId);
+            Optional<cz.zcu.yamanager.domain.VacationDay> vacation = vacationRepository.getVacationDay(vacationId);
+
+            if (!vacation.isPresent()) {
+                throw new RESTFullException("", "");
             }
 
-            this.userRepository.updateUser(user);
-            this.vacationRepository.deleteVacationDay(vacationId);
+            cz.zcu.yamanager.domain.VacationDay vacationDay = vacation.get();
+
+            if (vacationDay.getDate().isAfter(LocalDate.now())) {
+                if (!vacationDay.getStatus().equals(Status.REJECTED)) {
+                    switch (vacationDay.getType()) {
+                        case VACATION: {
+                            user.addVacationCount(vacationDay.getFrom(), vacationDay.getTo());
+                            userRepository.updateUserTakenVacation(user);
+                        }
+                        break;
+                        case SICK_DAY: {
+                            user.addTakenSickDayCount(-1);
+                            userRepository.updateUserTakenSickDay(user);
+                        }
+                        break;
+                    }
+                }
+                vacationRepository.deleteVacationDay(vacationDay.getId());
+            }
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
