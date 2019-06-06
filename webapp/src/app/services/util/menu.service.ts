@@ -37,9 +37,9 @@ export class MenuService {
 
   private createAppropriateMenuForUser(profile: UserProfile): MenuItem[] {
     const menuItems: MenuItem[] = [];
-    menuItems.push({name: 'Dashboard', routePath: 'dashboard'});
+    menuItems.push({name: 'menuItem.dashboard', routePath: 'dashboard'});
     if (profile.role === UserType.EMPLOYER) {
-      menuItems.push({name: 'Zaměstnanci', routePath: 'employees'});
+      menuItems.push({name: 'menuItem.employees', routePath: 'employees'});
     }
 
     return menuItems;

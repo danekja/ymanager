@@ -127,7 +127,6 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   putNotificationSettingsWithLanguage(settings: NotificationSettings, language: Languages) {
-    console.log(settings);
     return this.makePutNotificationSettingsApiCall(settings, language);
   }
   /**
@@ -242,7 +241,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
   }
 
   /**
-   * Změna nastavení notifikace uživatele podle id
+   * Změna nastavení notifikace
    * PUT /user/settings?[lang=<CZ,EN>]
    * @param settings notification setting to be set for given user
    * @param language specified language

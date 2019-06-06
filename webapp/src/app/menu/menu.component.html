@@ -5,7 +5,7 @@
           [class.selected]="item === _selectedMenuItem"
           (click)="onSelect(item)"
           class="nav-item">
-        <a routerLink="{{item.routePath}}"><div>{{item.name}}</div></a>
+        <a routerLink="{{item.routePath}}"><div>{{item.name | translate}}</div></a>
       </li>
     </ul>
   </nav>

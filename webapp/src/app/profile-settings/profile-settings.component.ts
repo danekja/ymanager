@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import {DateToolsService} from '../services/util/date-tools.service';
-import {DateFormatterService} from "../services/util/date-formatter.service";
+import {DateFormatterService} from '../services/util/date-formatter.service';
 
 @Component({
   selector: 'app-profile-settings',
@@ -9,8 +9,8 @@ import {DateFormatterService} from "../services/util/date-formatter.service";
   styleUrls: ['./profile-settings.component.sass']
 })
 export class ProfileSettingsComponent {
-  readonly date: Date;
-  readonly time: string;
+  private date: Date;
+  private time: string;
 
   constructor(
     private dateToolsService: DateToolsService,

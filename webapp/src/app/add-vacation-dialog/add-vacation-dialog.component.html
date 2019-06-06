@@ -1,20 +1,20 @@
-<h1 mat-dialog-title>Výběr volna</h1>
+<h1 mat-dialog-title>{{ 'addVacation.headline' | translate }}</h1>
 
 <div mat-dialog-content>
   <div class="vacation-selection-container">
-    <label id="vacation-type-radio-group-label" class="dialog-label">Typ volna: </label>
+    <label id="vacation-type-radio-group-label" class="dialog-label">{{ 'basic.vacationType' | translate }}</label>
     <mat-radio-group aria-labelledby="vacation-type-radio-group-label" class="vacation-type-radio-group" [(ngModel)]="selectedVacationType">
       <mat-radio-button class="vacation-type-radio-button" [value]=vacationType.SICKDAY>
-        {{vacationType.SICKDAY}}
+        {{ vacationType.SICKDAY | translate }}
       </mat-radio-button>
       <mat-radio-button class="vacation-type-radio-button" [value]=vacationType.VACATION>
-        {{vacationType.VACATION}}
+        {{ vacationType.VACATION | translate }}
       </mat-radio-button>
     </mat-radio-group>
   </div>
   <div class="datetime-selection-container">
     <div class="date-selection">
-      <span class="dialog-label">Datum:</span>
+      <span class="dialog-label">{{ 'basic.date' | translate }}</span>
       <mat-form-field class="date-input">
         <input id="date-input" matInput [matDatepicker]="datePicker" [(ngModel)]="data.date">
         <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
@@ -43,6 +43,6 @@
 </div>
 
 <div mat-dialog-actions align="end">
-  <button mat-raised-button color="primary" (click)="onConfirmClick()">Potvrdit</button>
-  <button mat-raised-button color="basic" (click)="onCloseClick()">Zavřít</button>
+  <button mat-raised-button color="primary" (click)="onConfirmClick()">{{ 'button.confirm' | translate }}</button>
+  <button mat-raised-button color="basic" (click)="onCloseClick()">{{ 'button.close' | translate }}</button>
 </div>

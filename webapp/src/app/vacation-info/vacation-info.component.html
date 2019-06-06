@@ -1,17 +1,19 @@
-<div class="days-off-info-container">
+<div class="vacation-info-container">
 
-  <div class="component-header" translate>
-    <span translate>daysOffInfo.remaining</span>
+  <div class="component-header">
+    <span translate>{{ 'vacationInfo.header' | translate }}</span>
   </div>
 
-  <div class="days-off-type-container">
-    <span class="days-off-remaining">{{extraVacationRemaining}}</span>
-    <span class="days-off-type" translate>vacationType.vacation</span>
+  <div class="vacation-type-container">
+    <span class="vacation-remaining">{{extraVacationRemaining}}</span>
+    <span class="units">{{ 'vacationInfo.hours' | translate }}</span>
+    <span class="vacation-type" translate>vacationType.vacation</span>
   </div>
 
-  <div class="days-off-type-container">
-    <span class="days-off-remaining">{{sickDaysRemaining}}</span>
-    <span class="days-off-type" translate>vacationType.sickday</span>
+  <div class="vacation-type-container">
+    <span class="vacation-remaining">{{sickDaysRemaining}}</span>
+    <span class="units">{{ 'vacationInfo.days' | translate }}</span>
+    <span class="vacation-type" translate>vacationType.sickday</span>
   </div>
 
 </div>
