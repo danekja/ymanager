@@ -64,9 +64,6 @@ public class ApiController {
         } catch (RESTFullException e) {
             log.error(e.getMessage());
             return sendError(400, e.getLocalizedMessage(), language);
-        } catch (DataAccessException | SQLException e) {
-            log.error(e.getMessage());
-            return sendError(500, "database.error", language);
         } catch (Exception e) {
             log.error(e.getMessage());
             return sendError(401, e.getMessage(), language);
