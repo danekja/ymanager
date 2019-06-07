@@ -188,6 +188,11 @@ public class ApiManager implements Manager {
         }
 
         if (settings.getSickDayCount() != null) {
+
+            if (user.getTakenSickDayCount() > settings.getSickDayCount()) {
+                throw new IllegalArgumentException("settings.sick.day.lt.taken.error");
+            }
+
             if (settings.getSickDayCount().equals(defaultSettings.getSickDayCount())) {
                 user.setTotalSickDayCount(null);
             } else {

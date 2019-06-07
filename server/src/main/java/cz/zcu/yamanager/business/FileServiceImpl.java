@@ -2,13 +2,21 @@ package cz.zcu.yamanager.business;
 
 import cz.zcu.yamanager.business.file.excel.*;
 import cz.zcu.yamanager.ws.rest.RESTFullException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
 import static cz.zcu.yamanager.business.file.excel.ExcelParser.parseXLSX;
 
+@Component
 public class FileServiceImpl implements FileService {
 
     private class Content {
@@ -55,6 +63,31 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileExportResult createPDFFile() throws RESTFullException {
-        return new FileExportResult("unknown", new byte[0]);
+
+        PDDocument document = new PDDocument();
+        PDPage page1 = new PDPage(PDRectangle.A4);
+        document.addPage(page1);
+
+        try {
+            PDPageContentStream cos = new PDPageContentStream(document, page1);
+
+            cos.beginText();
+            cos.setFont(PDType1Font.HELVETICA, 12);
+            cos.newLineAtOffset(100, 10);
+            cos.showText("Test");
+            cos.endText();
+
+            cos.close();
+
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            document.save(output);
+            document.close();
+
+            return new FileExportResult("export.pdf", output.toByteArray());
+
+        } catch (IOException e) {
+            throw new RESTFullException("", "");
+        }
     }
 }

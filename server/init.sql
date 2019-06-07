@@ -117,8 +117,6 @@ DELIMITER ;
 -- Insert table end_user
 -- -----------------------------------------------------
 INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg', 'EMPLOYER', 'ACCEPTED');
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Jan', 'Novák', 0, 10, 0, '2019-12-6 16:30:00.000', '', '', 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg', 'EMPLOYEE', 'PENDING');
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('Josef', 'Svoboda', 2, NULL, 3, NULL, '', '', 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg', 'EMPLOYEE', 'REJECTED');
 
 -- -----------------------------------------------------
 -- Insert table vacation_day
