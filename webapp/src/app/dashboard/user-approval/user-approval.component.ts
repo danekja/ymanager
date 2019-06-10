@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {AuthorizationRequest} from '../models/requests.model';
-import {LocalizationService} from '../localization/localization.service';
+import {AuthorizationRequest} from '../../models/requests.model';
+import {LocalizationService} from '../../localization/localization.service';
 
 @Component({
   selector: 'app-user-approval',

@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
 import {CalendarEvent, CalendarView} from 'angular-calendar';
-import {LocalizationService} from '../localization/localization.service';
-import {VacationType} from '../enums/common.enum';
-import {Calendar} from '../models/calendar.model';
-import {DateToolsService} from '../services/util/date-tools.service';
+import {LocalizationService} from '../../localization/localization.service';
+import {VacationType} from '../../enums/common.enum';
+import {Calendar} from '../../models/calendar.model';
+import {DateToolsService} from '../../services/util/date-tools.service';
 import {Subject} from 'rxjs';
 
 @Component({

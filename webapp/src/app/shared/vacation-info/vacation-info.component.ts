@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {LocalizationService} from '../localization/localization.service';
+import {LocalizationService} from '../../localization/localization.service';
 
 @Component({
   selector: 'app-vacation-info',

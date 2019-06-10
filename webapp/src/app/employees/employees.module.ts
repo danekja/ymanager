@@ -19,8 +19,8 @@ import {DefaultSettingsDialogComponent} from './default-settings-dialog/default-
 import {NgbTimepickerModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../shared/shared.module';
 import { UserProfileDialogComponent } from './user-profile/user-profile-dialog.component';
-import {DayPickerModule} from '../day-picker/day-picker.module';
-import {VacationInfoModule} from '../vacation-info/vacation-info.module';
+import {DayPickerModule} from '../shared/day-picker/day-picker.module';
+import {VacationInfoModule} from '../shared/vacation-info/vacation-info.module';
 
 @NgModule({
   declarations: [

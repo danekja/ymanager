@@ -1,1 +1,49 @@
-<app-employer-dashboard></app-employer-dashboard>
+<div class="container-fluid h-100">
+  <div class="row">
+    <div class="col-lg-8 mid-panel">
+
+      <div class="dashboard-user-approval"
+           *ngIf="authorizationRequests && authorizationRequests.length > 0 && isEmployer()">
+        <app-user-approval
+          [authorizationRequests]="authorizationRequests"
+          (userApprovalEvent)="userApproved($event.requestId, $event.approved)"
+        ></app-user-approval>
+      </div>
+
+      <div class="dashboard-vacation-approval"
+           *ngIf="vacationRequests && vacationRequests.length > 0 && isEmployer()">
+        <app-days-off-approval
+          [vacationRequests]="vacationRequests"
+          (vacationApprovalEvent)="vacationApproved($event.requestId, $event.approved)"
+        ></app-days-off-approval>
+      </div>
+
+      <div class="dashboard-oncoming-vacation"
+           *ngIf="oncomingVacation && oncomingVacation.length > 0">
+        <app-coming-days-off
+          [oncomingVacation]="oncomingVacation"
+          (vacationRemove)="removeVacation($event)"
+        ></app-coming-days-off>
+      </div>
+
+      <div class="dashboard-day-picker">
+        <app-day-picker #dayPicker
+                        (selectedDate)="onDateSelect($event)"
+                        (selectedMonth)="onSelectedMonthChange($event)"
+        ></app-day-picker>
+      </div>
+
+    </div>
+
+    <div class="col-lg-4 right-panel">
+
+      <div class="days-off-info" *ngIf="profile">
+        <app-vacation-info
+          [sickDaysRemaining]="profile.sickDayCount - profile.takenSickDayCount"
+          [extraVacationRemaining]="profile.vacationCount"
+        ></app-vacation-info>
+      </div>
+
+    </div>
+  </div>
+</div>

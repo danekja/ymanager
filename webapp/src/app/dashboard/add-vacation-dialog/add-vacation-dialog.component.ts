@@ -1,8 +1,8 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
-import {VacationType} from '../enums/common.enum';
+import {VacationType} from '../../enums/common.enum';
 import {FormControl} from '@angular/forms';
-import {DateFormatterService} from '../services/util/date-formatter.service';
+import {DateFormatterService} from '../../services/util/date-formatter.service';
 import {TranslateService} from '@ngx-translate/core';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { VacationRequest } from '../models/requests.model';
+import { VacationRequest } from '../../models/requests.model';
 
 @Component({
   selector: 'app-days-off-approval',

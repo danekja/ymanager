@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Calendar} from '../models/calendar.model';
+import {Calendar} from '../../models/calendar.model';
 
 @Component({
   selector: 'app-coming-days-off',
