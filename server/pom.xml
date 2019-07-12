@@ -91,7 +91,6 @@
                             <goal>repackage</goal>
                         </goals>
                         <configuration>
-                            <classifier>full-app</classifier>
                             <mainClass>cz.zcu.yamanager.Application</mainClass>
                         </configuration>
                     </execution>
