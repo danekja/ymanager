@@ -8,7 +8,7 @@ import static java.util.ResourceBundle.getBundle;
 
 public final class Message {
 
-    private static Map<Language, ResourceBundle> BUNDLES;
+    static Map<Language, ResourceBundle> BUNDLES;
 
     static {
         BUNDLES = new HashMap<>();

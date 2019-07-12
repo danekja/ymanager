@@ -1,10 +1,16 @@
 package cz.zcu.yamanager.util.localization;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MessageTest {
+
+    @AfterEach
+    void tearDown() {
+        Message.BUNDLES.clear();
+    }
 
     @Test
     void getString_inCzech_true() {
