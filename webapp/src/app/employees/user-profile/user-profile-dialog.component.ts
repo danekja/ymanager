@@ -13,7 +13,7 @@ import {LocalizationService} from '../../localization/localization.service';
   styleUrls: ['./user-profile-dialog.component.sass']
 })
 export class UserProfileDialogComponent implements OnInit, AfterViewInit {
-  @ViewChild('dayPicker') calendar;
+  @ViewChild('dayPicker', {static: false}) calendar;
 
   private profile: UserProfile;
 

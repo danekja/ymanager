@@ -16,7 +16,7 @@ import {DateToolsService} from '../services/util/date-tools.service';
   styleUrls: ['./dashboard.component.sass']
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild('dayPicker') calendar;
+  @ViewChild('dayPicker', {static: false}) calendar;
 
   private profile: UserProfile;
   private authorizationRequests: AuthorizationRequest[];
