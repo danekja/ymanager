@@ -1,4 +1,4 @@
-package org.danekja.ymanager.ws.rest;
+package org.danekja.ymanager;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
