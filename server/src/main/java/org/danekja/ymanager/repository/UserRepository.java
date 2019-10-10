@@ -2,6 +2,7 @@ package org.danekja.ymanager.repository;
 
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import static org.danekja.ymanager.dto.UserRole.getUserRole;
  */
 @Repository
 public class UserRepository {
+
+    private final RowMapper<User> USER_MAPPER = new UserRowMapper();
 
     /**
      * The mapper maps a row from a result of a query to an BasicProfileUser.
@@ -228,25 +231,6 @@ public class UserRepository {
 
     }
 
-    public FullUserProfile getFullUser(final String token) {
-        UserRepository.log.trace("Selecting full profile of a user with the specified token from a database: {}", token);
-
-        final Map<String, Object> resultMap = this.getUserColumns(token);
-
-        final FullUserProfile user = new FullUserProfile();
-        user.setId((Long) resultMap.get("out_id"));
-        user.setFirstName((String) resultMap.get("out_first_name"));
-        user.setLastName((String) resultMap.get("out_last_name"));
-        user.setVacationCount(((Double) resultMap.get("out_no_vacations")).floatValue());
-        user.setSickDayCount((Integer) resultMap.get("out_no_sick_days"));
-        user.setTakenSickDayCount((Integer) resultMap.get("out_taken_sick_days"));
-        user.setNotification(((Timestamp) resultMap.get("out_alert")).toLocalDateTime());
-        user.setEmail((String) resultMap.get(("out_email")));
-        user.setPhoto((String) resultMap.get("out_photo"));
-        user.setRole(getUserRole((String) resultMap.get("out_role")));
-        user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
-        return user;
-    }
 
     public Optional<DefaultSettings> getLastDefaultSettings() {
         return Optional.ofNullable(this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", new DefaultSettingsMapper()));
@@ -254,23 +238,28 @@ public class UserRepository {
 
     //---------------------------------- DOMAIN -----------------------------------
 
+    /**
+     * Gets user from database based on its email
+     *
+     * @param email email value, used as search key
+     * @return found user object or null (if not found)
+     */
+    public User getUser(final String email) {
+        List<User> users = this.jdbc.query("SELECT * FROM end_user WHERE email = ?", USER_MAPPER, email);
+
+        return RepositoryUtils.singleResult(users);
+    }
+
+    /**
+     * Gets user from database based on its id
+     *
+     * @param id id value, used as search key
+     * @return found user object or null (if not found)
+     */
     public User getUser(final long id) {
-        final Map<String, Object> resultMap = this.getUserColumns(id);
-        User user = new User();
-        user.setId((Long) resultMap.get("out_id"));
-        user.setFirstName((String)resultMap.get("out_first_name"));
-        user.setLastName((String)resultMap.get("out_last_name"));
-        user.setVacationCount(((Double)resultMap.get("out_no_vacations")).floatValue());
-        user.setTotalSickDayCount((Integer)resultMap.get("out_no_sick_days"));
-        user.setTakenSickDayCount((Integer)resultMap.get("out_taken_sick_days"));
-        user.setNotification(((Timestamp)resultMap.get("out_alert")).toLocalDateTime());
-        user.setToken((String)resultMap.get("out_token"));
-        user.setEmail((String)resultMap.get("out_email"));
-        user.setPhoto((String)resultMap.get("out_photo"));
-        user.setCreationDate(((Timestamp)resultMap.get("out_creation_date")).toLocalDateTime());
-        user.setRole(getUserRole((String)resultMap.get("out_role")));
-        user.setStatus(Status.getStatus((String)resultMap.get("out_status")));
-        return user;
+        List<User> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_MAPPER, id);
+
+        return RepositoryUtils.singleResult(users);
     }
 
     public void updateUser(final User user) {
