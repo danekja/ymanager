@@ -8,12 +8,14 @@ import {DashboardModule} from './dashboard/dashboard.module';
 import {HeaderComponent} from './header/header.component';
 import {MatDialogModule, MatMenuModule} from '@angular/material';
 import {ProfileSettingsModule} from './profile-settings/profile-settings.module';
-import {HttpClient, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 import {EmployeesModule} from './employees/employees.module';
 import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {CommonModule} from '@angular/common';
+
+import {BasicAuthInterceptor} from "./auth/basic-auth.interceptor";
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import {CommonModule} from '@angular/common';
     MatMenuModule,
     CommonModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
