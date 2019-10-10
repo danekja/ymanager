@@ -5,31 +5,19 @@ import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.util.localization.Language;
-import org.danekja.ymanager.util.localization.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-public class ApiController {
-
-    private static final Logger log = LoggerFactory.getLogger(ApiController.class);
+public class ApiController extends BaseController {
 
     private final Manager manager;
 
@@ -39,58 +27,6 @@ public class ApiController {
     public ApiController(Manager manager, FileService fileService) {
         this.manager = manager;
         this.fileService = fileService;
-    }
-
-    private ResponseEntity sendError(Integer errorCode, String messageKey, Language language) {
-        String localizedMessage = Message.getString(language, messageKey);
-        Map<String, String> result = new HashMap<>();
-        result.put("error", errorCode.toString());
-        result.put("message", localizedMessage);
-        return ResponseEntity.status(errorCode).contentType(MediaType.APPLICATION_JSON).body(result);
-    }
-
-    private <T> ResponseEntity handle(Language language, RESTInvokeHandler<T> handler) {
-        try {
-            handler.invoke();
-            return ok(OK);
-        } catch (RESTFullException e) {
-            log.error(e.getMessage());
-            return sendError(400, e.getLocalizedMessage(), language);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return sendError(401, e.getMessage(), language);
-        }
-    }
-
-    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler) {
-        return handle(language, handler, null, null);
-    }
-
-    private <T> ResponseEntity handle(Language language, RESTGetHandler<T> handler, Function<T, String[]> header, Function<T, Object> bodyValue) {
-        try {
-            T result = handler.get();
-
-            ResponseEntity.BodyBuilder response = ResponseEntity.ok();
-
-            if (header != null) {
-                String[] headers = header.apply(result);
-
-                if (headers.length > 1) {
-                    response.header(headers[0], Arrays.copyOfRange(headers, 1, headers.length - 1));
-                } else if (headers.length == 1) {
-                    response.header(headers[0]);
-                }
-            }
-
-            return response.body(bodyValue != null ? bodyValue.apply(result) : result);
-
-        } catch (RESTFullException e) {
-            log.error(e.getMessage());
-            return sendError(400, e.getLocalizedMessage(), language);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return sendError(401, "rest.exception.generic", language);
-        }
     }
 
     private Long getUserId(String id) {
@@ -138,16 +74,6 @@ public class ApiController {
         return handle(Language.getLanguage(lang), () ->
                 manager.getAuthorizationRequests(Status.getStatus(status))
          );
-    }
-
-    @RequestMapping(value = "/user/{id}/profile", method=GET)
-    public ResponseEntity userProfile(
-            @PathVariable("id") String id,
-            @RequestParam(value = "lang", required = false) String lang)
-    {
-        return handle(Language.getLanguage(lang), () ->
-                manager.getUserProfile(getUserId(id))
-        );
     }
 
     @RequestMapping(value = "/user/{id}/calendar", method=GET)

@@ -1,24 +1,25 @@
 package org.danekja.ymanager.ws.rest;
 
-import org.danekja.ymanager.business.UserManager;
+import org.danekja.ymanager.business.Manager;
 import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.dto.FullUserProfile;
+import org.danekja.ymanager.util.localization.Language;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller for Users collection of WS API.
  */
-@RestController("/users")
-public class UserController {
+@RestController
+@RequestMapping("/users")
+public class UserController extends BaseController {
 
-    private final UserManager manager;
+    private final Manager manager;
 
     @Autowired
-    public UserController(UserManager manager) {
+    public UserController(Manager manager) {
         this.manager = manager;
     }
 
@@ -29,13 +30,23 @@ public class UserController {
      * @return user information object
      */
     @GetMapping("/current/profile")
-    public FullUserProfile getCurrentUser(Authentication auth) {
+    public ResponseEntity getCurrentUser(Authentication auth) {
 
-        if (auth instanceof AnonymousAuthenticationToken) {
+        if (auth instanceof AnonymousAuthenticationToken
+                || auth.getPrincipal() == null
+                || !(auth.getPrincipal() instanceof User)) {
             return null;
         }
 
-        User user = manager.getUser(auth.getName());
-        return user != null ? new FullUserProfile(user) : null;
+        return getUserProfile(((User) auth.getPrincipal()).getId(), null);
+    }
+
+    @GetMapping("/{id}/profile")
+    public ResponseEntity getUserProfile(
+            @PathVariable("id") Long id,
+            @RequestParam(value = "lang", required = false) String lang) {
+        return handle(Language.getLanguage(lang), () ->
+                manager.getUserProfile(id)
+        );
     }
 }
