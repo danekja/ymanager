@@ -1,5 +1,7 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.User;
+
 import java.time.LocalDateTime;
 
 /**
@@ -61,6 +63,27 @@ public class FullUserProfile {
      * The user's email address.
      */
     private String email;
+
+    public FullUserProfile() {
+    }
+
+    public FullUserProfile(User user) {
+        this(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoto(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getStatus(), user.getRole(), user.getNotification(), user.getEmail());
+    }
+
+    public FullUserProfile(Long id, String firstName, String lastName, String photo, Float vacationCount, Integer sickDayCount, Integer takenSickDayCount, Status status, UserRole role, LocalDateTime notification, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.photo = photo;
+        this.vacationCount = vacationCount;
+        this.sickDayCount = sickDayCount;
+        this.takenSickDayCount = takenSickDayCount;
+        this.status = status;
+        this.role = role;
+        this.notification = notification;
+        this.email = email;
+    }
 
     /**
      * Returns the user's email address.
