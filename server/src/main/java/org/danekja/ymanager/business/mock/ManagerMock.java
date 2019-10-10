@@ -1,6 +1,10 @@
 package org.danekja.ymanager.business.mock;
 
 import org.danekja.ymanager.business.Manager;
+import org.danekja.ymanager.domain.RequestType;
+import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.UserRole;
+import org.danekja.ymanager.domain.VacationType;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.ws.rest.RESTFullException;
 

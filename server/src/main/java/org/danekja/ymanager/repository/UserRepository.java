@@ -1,6 +1,8 @@
 package org.danekja.ymanager.repository;
 
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.domain.UserRole;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
@@ -18,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.danekja.ymanager.dto.UserRole.getUserRole;
+import static org.danekja.ymanager.domain.UserRole.getUserRole;
 
 /**
  * An instance of the class UserRepository handles queries which selects and updates users and their settings in a database.

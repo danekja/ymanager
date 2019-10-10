@@ -1,5 +1,7 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.Status;
+
 import java.time.LocalDateTime;
 
 /**

@@ -3,6 +3,8 @@ package org.danekja.ymanager.ws.rest;
 import org.apache.commons.lang3.StringUtils;
 import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
+import org.danekja.ymanager.domain.RequestType;
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.util.localization.Language;
 import org.springframework.beans.factory.annotation.Autowired;

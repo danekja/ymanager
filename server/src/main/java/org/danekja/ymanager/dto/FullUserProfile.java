@@ -1,6 +1,8 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.domain.UserRole;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package org.danekja.ymanager.dto;
+package org.danekja.ymanager.domain;
 
 /**
  * The enum {@code Status} represents states of authorization and vacation approval process.

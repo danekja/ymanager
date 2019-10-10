@@ -1,5 +1,7 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.Status;
+
 /**
  * An instance of the messenger class {@code BasicRequest} can represent an authorization or a vacation request.
  * The class is used for changing a status of the authorization or the vacation request when a client sends a request on an api endpoint.

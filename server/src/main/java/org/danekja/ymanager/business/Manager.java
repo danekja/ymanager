@@ -1,5 +1,7 @@
 package org.danekja.ymanager.business;
 
+import org.danekja.ymanager.domain.RequestType;
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.ws.rest.RESTFullException;
 

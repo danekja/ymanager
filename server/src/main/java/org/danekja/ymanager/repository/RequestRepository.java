@@ -1,5 +1,7 @@
 package org.danekja.ymanager.repository;
 
+import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.VacationType;
 import org.danekja.ymanager.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

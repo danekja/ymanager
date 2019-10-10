@@ -1,5 +1,8 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.VacationType;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 

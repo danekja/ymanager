@@ -1,8 +1,8 @@
 package org.danekja.ymanager.business;
 
-import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.domain.Vacation;
+import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.repository.RequestRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;

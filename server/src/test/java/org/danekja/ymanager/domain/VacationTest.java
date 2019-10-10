@@ -1,7 +1,5 @@
 package org.danekja.ymanager.domain;
 
-import org.danekja.ymanager.dto.Status;
-import org.danekja.ymanager.dto.VacationType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

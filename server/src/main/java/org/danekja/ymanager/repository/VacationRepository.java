@@ -2,10 +2,10 @@ package org.danekja.ymanager.repository;
 
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.domain.Vacation;
-import org.danekja.ymanager.dto.Status;
-import org.danekja.ymanager.dto.UserRole;
+import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.UserRole;
 import org.danekja.ymanager.dto.VacationDay;
-import org.danekja.ymanager.dto.VacationType;
+import org.danekja.ymanager.domain.VacationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static org.danekja.ymanager.dto.Status.getStatus;
+import static org.danekja.ymanager.domain.Status.getStatus;
 
 @Repository
 public class VacationRepository {

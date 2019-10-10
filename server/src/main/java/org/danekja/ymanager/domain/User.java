@@ -1,7 +1,5 @@
 package org.danekja.ymanager.domain;
 
-import org.danekja.ymanager.dto.Status;
-import org.danekja.ymanager.dto.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;

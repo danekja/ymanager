@@ -1,4 +1,4 @@
-package org.danekja.ymanager.dto;
+package org.danekja.ymanager.domain;
 
 /**
  * The enum {@code RequestType} represents different types of a request.

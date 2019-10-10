@@ -1,8 +1,8 @@
 package org.danekja.ymanager.repository.jdbc.mappers;
 
 import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.dto.Status;
-import org.danekja.ymanager.dto.UserRole;
+import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.UserRole;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

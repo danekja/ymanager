@@ -1,5 +1,7 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.UserRole;
+
 import java.time.LocalDateTime;
 
 /**
