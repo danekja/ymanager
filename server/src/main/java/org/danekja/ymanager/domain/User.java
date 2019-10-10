@@ -4,9 +4,14 @@ import org.danekja.ymanager.dto.Status;
 import org.danekja.ymanager.dto.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Collections;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
@@ -14,7 +19,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
  * The domain class {@code User} represents a single record in the 'end_user' table of a database.
  * User holds all informations about a user which is logged to the application.
  */
-public class User {
+public class User implements UserDetails {
     /**
      * The maximal length of a name.
      */
@@ -99,6 +104,72 @@ public class User {
      * The user's authorization status.
      */
     private Status status;
+
+    public User() {
+    }
+
+    public User(Long id, String firstName, String lastName, Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, String token, String email, String photo, LocalDateTime creationDate, UserRole role, Status status) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.vacationCount = vacationCount;
+        this.totalSickDayCount = totalSickDayCount;
+        this.takenSickDayCount = takenSickDayCount;
+        this.notification = notification;
+        this.token = token;
+        this.email = email;
+        this.photo = photo;
+        this.creationDate = creationDate;
+        this.role = role;
+        this.status = status;
+    }
+
+    /*
+    ########################### UserDetails API #################################
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //TODO do not create collection on each call
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        //unsupported functionality
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        //unsupported functionality
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        //unsupported functionality
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status == Status.ACCEPTED;
+    }
+
+    /*
+    ################# UserDetails API (END) #########################
+     */
+
 
     /**
      * Returns the user's ID.
