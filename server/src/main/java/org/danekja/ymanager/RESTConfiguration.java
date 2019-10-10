@@ -26,7 +26,9 @@ public class RESTConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
+                .allowedOrigins("http://localhost") //TODO replace with env variable
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowCredentials(true);
     }
 
     @Bean
