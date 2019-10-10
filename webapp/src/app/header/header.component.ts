@@ -4,6 +4,7 @@ import {LocalizationService} from '../localization/localization.service';
 import {UserService} from '../services/api/user.service';
 import {UserProfile} from '../models/user.model';
 import {ProfileSettingsComponent} from '../profile-settings/profile-settings.component';
+import {UsersService} from "../services/api/users.service";
 
 @Component({
   selector: 'app-header',
@@ -17,9 +18,10 @@ export class HeaderComponent {
   constructor(
     private dialog: MatDialog,
     private localizationService: LocalizationService,
-    private userService: UserService
+    private userService: UserService,
+    private usersService: UsersService
     ) {
-    userService.getLoggedUserProfile()
+    usersService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => this.profile = data);
     this.language = this.localizationService.getCurrentLanguage();
   }
@@ -28,7 +30,7 @@ export class HeaderComponent {
     this.language = this.localizationService.switchLocale(language);
   }
   onProfileClick(): void {
-    this.userService.getLoggedUserProfile()
+    this.usersService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => {
         this.profile = data;
 
@@ -47,7 +49,7 @@ export class HeaderComponent {
             },
             this.localizationService.getCurrentLanguage()
           ).subscribe(() => {
-            this.userService.getLoggedUserProfile().subscribe((profile: UserProfile) => this.profile = profile);
+            this.usersService.getLoggedUserProfile().subscribe((profile: UserProfile) => this.profile = profile);
           });
         });
       });

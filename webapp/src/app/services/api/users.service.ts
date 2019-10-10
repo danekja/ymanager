@@ -6,7 +6,7 @@ import {catchError} from 'rxjs/operators';
 import {AuthorizationRequest, VacationRequest} from '../../models/requests.model';
 import {Languages, ProfileStatus} from '../../enums/common.enum';
 import {Observable} from 'rxjs';
-import {UserBasicInformation} from '../../models/user.model';
+import {UserBasicInformation, UserProfile} from '../../models/user.model';
 import {MatSnackBar} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
 
@@ -18,6 +18,44 @@ export class UsersService extends BasicService {
 
   constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
     super(http, snackBar, translateService);
+  }
+
+  /**
+   * Returns profile of currently logged user
+   * UserProfile.notification might be returned as string instead of date
+   */
+  getLoggedUserProfile() {
+    return this.makeGetProfileApiCall('current', null);
+  }
+
+  /**
+   * Returns profile of currently logged user filtered by language
+   * UserProfile.notification might be returned as string instead of date
+   * @param language filter profile by language
+   */
+  getLoggedUserProfileWithLanguage(language: Languages) {
+    return this.makeGetProfileApiCall('current', language);
+  }
+
+  /**
+   * Returns user profile if the user making this call
+   * is logged as admin
+   * UserProfile.notification might be returned as string instead of date
+   * @param id user profile id
+   */
+  getUserProfile(id: number) {
+    return this.makeGetProfileApiCall(id.toString(), null);
+  }
+
+  /**
+   * Overloaded version of getUserProfile to filter profiles
+   * by language
+   * UserProfile.notification might be returned as string instead of date
+   * @param id user profile id
+   * @param language language to filtery by
+   */
+  getUserProfileWithLanguage(id: number, language: Languages) {
+    return this.makeGetProfileApiCall(id.toString(), language);
   }
 
   /**
@@ -160,5 +198,22 @@ export class UsersService extends BasicService {
         catchError(err => this.handleError(err))
       );
   }
+
+  /**
+   * Získání profilu aktuálně přihlášeného uživatele nebo uživatele podle zadaného id.
+   * GET /user/<{id} || me>/profile?[lang=<CZ,EN>]
+   * @param id id of profile to get (number or 'me')
+   * @param language filter by language
+   */
+  private makeGetProfileApiCall(id: string, language: string) {
+    const httpParams: HttpParams = this.createParams({lang: language});
+    const options = {params: httpParams};
+
+    return this.http.get<UserProfile>(this._usersUrl + "/" + id + '/profile', options)
+      .pipe(
+        catchError(err => this.handleError(err))
+      );
+  }
+
 
 }

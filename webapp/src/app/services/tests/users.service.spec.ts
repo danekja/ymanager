@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 
 import {UsersService} from '../api/users.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {RequestStatus, VacationType} from '../../enums/common.enum';
+import {Languages, RequestStatus, UserType, VacationType} from '../../enums/common.enum';
 import {environment} from '../../../environments/environment';
 
 describe('UsersService', () => {
@@ -21,6 +21,61 @@ describe('UsersService', () => {
   });
   afterEach(() => httpMock.verify());
 
+  it('getLoggedUser', () => {
+    const dummyData = {
+      id: 1,
+      firstName: 'Tomas',
+      lastName: 'Novak',
+      photo: 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
+      vacationCount: 8.5,
+      sickDayCount: 3,
+      status: 'ACCEPTED',
+      role: 'EMPLOYER',
+      notification: '2000/12/01 09:00:00'
+    };
+
+
+    service.getLoggedUserProfile().subscribe((data: any) => {
+      expect(data.id).toBe(1);
+      expect(data.vacationCount).toBe(8.5);
+      expect(data.sickDayCount).toBe(3);
+      expect(data.status).toBe(RequestStatus.ACCEPTED);
+      expect(data.role).toBe(UserType.EMPLOYER);
+      expect(data.notification).toBeDefined();
+    });
+
+    const req = httpMock.expectOne(baseUrl + '/api/user/me/profile');
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyData);
+  });
+
+  it('getLoggedUserWithLanguage', () => {
+    const dummyData = {
+      id: 1,
+      firstName: 'Tomas',
+      lastName: 'Novak',
+      photo: 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
+      vacationCount: 8.5,
+      sickDayCount: 3,
+      status: 'ACCEPTED',
+      role: 'EMPLOYER',
+      notification: '2000/12/01 09:00:00'
+    };
+
+
+    service.getLoggedUserProfileWithLanguage(Languages.ENGLISH).subscribe((data: any) => {
+      expect(data.id).toBe(1);
+      expect(data.vacationCount).toBe(8.5);
+      expect(data.sickDayCount).toBe(3);
+      expect(data.status).toBe(RequestStatus.ACCEPTED);
+      expect(data.role).toBe(UserType.EMPLOYER);
+      expect(data.notification).toBeDefined();
+    });
+
+    const req = httpMock.expectOne(baseUrl + '/api/user/me/profile?lang=EN');
+    expect(req.request.method).toBe('GET');
+    req.flush(dummyData);
+  });
 
   it('getAuthorizationRequests', () => {
     const dummyRequests = [

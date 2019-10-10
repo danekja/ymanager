@@ -6,7 +6,6 @@ import {BasicService} from './basic.service';
 import {catchError} from 'rxjs/operators';
 import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
 import {NotificationSettings, UserSettings} from '../../models/settings.model';
-import {UserProfile} from '../../models/user.model';
 import {UserRequest} from '../../models/requests.model';
 import {MatSnackBar} from '@angular/material';
 import {DateFormatterService} from '../util/date-formatter.service';
@@ -16,48 +15,10 @@ import {TranslateService} from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
-  private _userUrl = this.baseUrl + '/api/user/';
+  private _userUrl = this.baseUrl + '/api/users/';
 
   constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, private dateFormater: DateFormatterService) {
     super(http, snackBar, translateService);
-  }
-
-  /**
-   * Returns user profile if the user making this call
-   * is logged as admin
-   * UserProfile.notification might be returned as string instead of date
-   * @param id user profile id
-   */
-  getUserProfile(id: number) {
-    return this.makeGetProfileApiCall(id.toString(), null);
-  }
-
-  /**
-   * Overloaded version of getUserProfile to filter profiles
-   * by language
-   * UserProfile.notification might be returned as string instead of date
-   * @param id user profile id
-   * @param language language to filtery by
-   */
-  getUserProfileWithLanguage(id: number, language: Languages) {
-    return this.makeGetProfileApiCall(id.toString(), language);
-  }
-
-  /**
-   * Returns profile of currently logged user
-   * UserProfile.notification might be returned as string instead of date
-   */
-  getLoggedUserProfile() {
-    return this.makeGetProfileApiCall('me', null);
-  }
-
-  /**
-   * Returns profile of currently logged user filtered by language
-   * UserProfile.notification might be returned as string instead of date
-   * @param language filter profile by language
-   */
-  getLoggedUserProfileWithLanguage(language: Languages) {
-    return this.makeGetProfileApiCall('me', language);
   }
 
   /**
@@ -165,22 +126,6 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    */
   deleteCalendar(id: number, language: Languages) {
     return this.makeDeleteCalendarApiCall(id, language);
-  }
-
-  /**
-   * Získání profilu aktuálně přihlášeného uživatele nebo uživatele podle zadaného id.
-   * GET /user/<{id} || me>/profile?[lang=<CZ,EN>]
-   * @param id id of profile to get (number or 'me')
-   * @param language filter by language
-   */
-  private makeGetProfileApiCall(id: string, language: string) {
-    const httpParams: HttpParams = this.createParams({lang: language});
-    const options = {params: httpParams};
-
-    return this.http.get<UserProfile>(this._userUrl + id + '/profile', options)
-      .pipe(
-        catchError(err => this.handleError(err))
-      );
   }
 
   /**

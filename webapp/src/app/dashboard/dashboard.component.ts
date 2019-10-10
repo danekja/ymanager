@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.selectedMonth = this.dateToolsService.toStartOfMonth(new Date());
 
-    this.userService.getLoggedUserProfile()
+    this.usersService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => {
         this.profile = data;
         if (this.isEmployer()) {
@@ -117,7 +117,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private loadProfile() {
-    this.userService.getLoggedUserProfile()
+    this.usersService.getLoggedUserProfile()
       .subscribe((data: UserProfile) => this.profile = data);
   }
 

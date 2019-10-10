@@ -106,7 +106,7 @@ export class EmployeesListComponent implements OnInit {
    * @param user user information
    */
   openEditUserDialog(user: User): void {
-    this.userService.getUserProfile(user.id)
+    this.usersService.getUserProfile(user.id)
       .subscribe((userProfile: UserProfile) => {
           const dialogRef = this.dialog.open(EditEmployeeDialogComponent, {
             data: userProfile,

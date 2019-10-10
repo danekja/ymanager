@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {UserService} from '../api/user.service';
 import {UserProfile} from '../../models/user.model';
 import {Observable, of} from 'rxjs';
+import {UsersService} from "../api/users.service";
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +9,12 @@ import {Observable, of} from 'rxjs';
 export class ProfileService {
   private profile: UserProfile;
 
-  constructor(private userService: UserService) {
+  constructor(private usersService: UsersService) {
 
   }
+
+  //hardcoded username for now, to be replaced after proper authentication is in place
+  public currentUserValue = "testuser@yoso.fi";
 
   /**
    * Returns logged user profile if the server responds
@@ -28,7 +31,7 @@ export class ProfileService {
     }
 
     return new Observable<UserProfile>((obs) => {
-      this.userService.getLoggedUserProfile()
+      this.usersService.getLoggedUserProfile()
         .subscribe((userProfile: UserProfile) => {
             this.profile = {...userProfile};
             obs.next(this.profile);

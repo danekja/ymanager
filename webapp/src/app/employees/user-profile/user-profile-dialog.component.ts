@@ -6,6 +6,7 @@ import {RequestStatus} from '../../enums/common.enum';
 import {UserService} from '../../services/api/user.service';
 import {DateToolsService} from '../../services/util/date-tools.service';
 import {LocalizationService} from '../../localization/localization.service';
+import {UsersService} from "../../services/api/users.service";
 
 @Component({
   selector: 'app-user-profile',
@@ -21,6 +22,7 @@ export class UserProfileDialogComponent implements OnInit, AfterViewInit {
     public dialogRef: MatDialogRef<UserProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UserProfileDialogData,
     private userService: UserService,
+    private usersService: UsersService,
     private dateToolsService: DateToolsService,
     private localizationService: LocalizationService
   ) { }
@@ -44,7 +46,7 @@ export class UserProfileDialogComponent implements OnInit, AfterViewInit {
   }
 
   private loadProfile() {
-    this.userService.getUserProfile(this.data.userId)
+    this.usersService.getUserProfile(this.data.userId)
       .subscribe((data: UserProfile) => this.profile = data);
   }
 
