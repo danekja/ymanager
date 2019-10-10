@@ -116,7 +116,11 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- Insert table end_user
 -- -----------------------------------------------------
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', '', 'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg', 'EMPLOYER', 'ACCEPTED');
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo,
+                      user_role, status)
+VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', 'testuser@yoso.fi',
+        'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
+        'EMPLOYER', 'ACCEPTED');
 
 -- -----------------------------------------------------
 -- Insert table vacation_day
