@@ -5,7 +5,10 @@ import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
 import org.danekja.ymanager.domain.RequestType;
 import org.danekja.ymanager.domain.Status;
-import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.dto.BasicRequest;
+import org.danekja.ymanager.dto.DefaultSettings;
+import org.danekja.ymanager.dto.UserSettings;
+import org.danekja.ymanager.dto.VacationDay;
 import org.danekja.ymanager.util.localization.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -47,16 +50,6 @@ public class ApiController extends BaseController {
     }
 
     // *********************** GET ****************************
-
-    @RequestMapping(value = "/users", method=GET)
-    public ResponseEntity users(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) String status)
-    {
-        return handle(Language.getLanguage(lang), () ->
-                manager.getUsers(Status.getStatus(status))
-        );
-    }
 
     @RequestMapping(value = "/users/requests/vacation", method=GET)
     public ResponseEntity usersRequestsVacation(

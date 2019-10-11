@@ -201,8 +201,8 @@ export class UsersService extends BasicService {
 
   /**
    * Získání profilu aktuálně přihlášeného uživatele nebo uživatele podle zadaného id.
-   * GET /user/<{id} || me>/profile?[lang=<CZ,EN>]
-   * @param id id of profile to get (number or 'me')
+   * GET /user/<{id} || current>/profile?[lang=<CZ,EN>]
+   * @param id id of profile to get (number or 'current')
    * @param language filter by language
    */
   private makeGetProfileApiCall(id: string, language: string) {

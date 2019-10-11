@@ -3,21 +3,22 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 
 import {Calendar, CalendarEdit, PostCalendar} from '../../models/calendar.model';
 import {BasicService} from './basic.service';
-import {catchError} from 'rxjs/operators';
+import {catchError, flatMap} from 'rxjs/operators';
 import {Languages, RequestStatus, RequestTypes} from '../../enums/common.enum';
 import {NotificationSettings, UserSettings} from '../../models/settings.model';
 import {UserRequest} from '../../models/requests.model';
 import {MatSnackBar} from '@angular/material';
 import {DateFormatterService} from '../util/date-formatter.service';
 import {TranslateService} from '@ngx-translate/core';
+import {ProfileService} from "../util/profile.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
-  private _userUrl = this.baseUrl + '/api/users/';
+  private _userUrl = this.baseUrl + '/api/user/';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, private dateFormater: DateFormatterService) {
+  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, protected profileService: ProfileService, private dateFormater: DateFormatterService) {
     super(http, snackBar, translateService);
   }
 
@@ -27,7 +28,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param from returns days from this date forward
    */
   getLoggedUserCalendar(from: Date) {
-    return this.makeGetCalendarApiCall('me', from, null, null, null);
+    return this.profileService.getLoggedUser(true).pipe(flatMap((profile) => this.makeGetCalendarApiCall(profile.id.toString(), from, null, null, null)));
   }
 
   /**
@@ -39,7 +40,7 @@ export class UserService extends BasicService { // dost podobny k usersService, 
    * @param status filter by status
    */
   getLoggedUserCalendarWithOptions(from: Date, to: Date, language: Languages, status: RequestStatus) {
-    return this.makeGetCalendarApiCall('me', from, to, language, status);
+    return this.profileService.getLoggedUser(true).pipe(flatMap((profile) => this.makeGetCalendarApiCall(profile.id.toString(), from, to, language, status)));
   }
 
   /**

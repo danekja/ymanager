@@ -1,6 +1,11 @@
 package org.danekja.ymanager.business;
 
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.dto.BasicProfileUser;
+import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
+
+import java.util.List;
 
 /**
  * Interface for application logic handler of User entities.
@@ -8,10 +13,21 @@ import org.danekja.ymanager.domain.User;
 public interface UserManager {
 
     /**
-     * Gets user by email (username)
+     * List all users with given status.
+     * <p>
+     * TODO: refactor to return domain class instead of DTO as part of #32
      *
-     * @param email email value, used as search key
+     * @param status status filter value
+     * @return list of users or empty list if none found
+     * @throws RESTFullException
+     */
+    List<BasicProfileUser> getUsers(Status status) throws RESTFullException;
+
+    /**
+     * Gets user by id (PK)
+     *
+     * @param id id value, used as search key
      * @return found user Object or null
      */
-    User getUser(String email);
+    User getUser(Long id);
 }

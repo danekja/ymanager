@@ -1,8 +1,11 @@
 package org.danekja.ymanager.ws.rest;
 
-import org.danekja.ymanager.business.Manager;
+import org.danekja.ymanager.business.UserManager;
+import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.dto.FullUserProfile;
 import org.danekja.ymanager.util.localization.Language;
+import org.danekja.ymanager.ws.rest.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,12 +19,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController extends BaseController {
 
-    private final Manager manager;
+    private final UserManager userManager;
 
     @Autowired
-    public UserController(Manager manager) {
-        this.manager = manager;
+    public UserController(UserManager userManager) {
+        this.userManager = userManager;
     }
+
+    @GetMapping
+    public ResponseEntity users(
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "status", required = false) String status) {
+        return handle(Language.getLanguage(lang), () ->
+                userManager.getUsers(Status.getStatus(status))
+        );
+    }
+
 
     /**
      * Returns currently authenticated user.
@@ -30,7 +43,7 @@ public class UserController extends BaseController {
      * @return user information object
      */
     @GetMapping("/current/profile")
-    public ResponseEntity getCurrentUser(Authentication auth) {
+    public FullUserProfile getCurrentUser(Authentication auth) throws Exception {
 
         if (auth instanceof AnonymousAuthenticationToken
                 || auth.getPrincipal() == null
@@ -38,15 +51,17 @@ public class UserController extends BaseController {
             return null;
         }
 
-        return getUserProfile(((User) auth.getPrincipal()).getId(), null);
+        return getUserProfile(((User) auth.getPrincipal()).getId());
     }
 
     @GetMapping("/{id}/profile")
-    public ResponseEntity getUserProfile(
-            @PathVariable("id") Long id,
-            @RequestParam(value = "lang", required = false) String lang) {
-        return handle(Language.getLanguage(lang), () ->
-                manager.getUserProfile(id)
-        );
+    public FullUserProfile getUserProfile(@PathVariable("id") Long id) throws Exception {
+        User u = userManager.getUser(id);
+
+        if (u == null) {
+            throw new NotFoundException();
+        }
+
+        return new FullUserProfile(u);
     }
 }

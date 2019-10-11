@@ -1,6 +1,6 @@
 package org.danekja.ymanager.business;
 
-import org.danekja.ymanager.ws.rest.RESTFullException;
+import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 
 public interface FileService {
 

@@ -1,12 +1,12 @@
 package org.danekja.ymanager.business;
 
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.dto.DefaultSettings;
+import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.repository.RequestRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;
-import org.danekja.ymanager.ws.rest.RESTFullException;
+import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,6 @@ public class ApiManager implements Manager {
      */
     private static final Logger log = LoggerFactory.getLogger(UserRepository.class);
 
-    private static final int WEEK_LENGTH = 7;
-
     private RequestRepository requestRepository;
     private UserRepository userRepository;
     private VacationRepository vacationRepository;
@@ -36,26 +34,6 @@ public class ApiManager implements Manager {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.vacationRepository = vacationRepository;
-    }
-
-    @Override
-    public List<BasicProfileUser> getUsers(Status status) throws RESTFullException {
-        try {
-            List<BasicProfileUser> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
-
-            LocalDate today = LocalDate.now();
-            LocalDate weekBefore = today.minusDays(ApiManager.WEEK_LENGTH);
-            LocalDate weekAfter = today.plusDays(ApiManager.WEEK_LENGTH);
-            for (BasicProfileUser user : users) {
-                user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
-            }
-
-            return users;
-
-        } catch (DataAccessException e) {
-            log.error(e.getMessage());
-            throw new RESTFullException(e.getMessage(), "database.error");
-        }
     }
 
     @Override
@@ -72,16 +50,6 @@ public class ApiManager implements Manager {
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
         try {
             return status == null ? requestRepository.getAllAuthorizations() : requestRepository.getAllAuthorizations(status);
-        } catch (DataAccessException e) {
-            log.error(e.getMessage());
-            throw new RESTFullException(e.getMessage(), "database.error");
-        }
-    }
-
-    @Override
-    public FullUserProfile getUserProfile(Long userId) throws RESTFullException {
-        try {
-            return userRepository.getFullUser(userId);
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");

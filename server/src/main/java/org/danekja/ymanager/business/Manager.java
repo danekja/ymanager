@@ -3,20 +3,17 @@ package org.danekja.ymanager.business;
 import org.danekja.ymanager.domain.RequestType;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.dto.*;
-import org.danekja.ymanager.ws.rest.RESTFullException;
+import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface Manager {
 
-    List<BasicProfileUser> getUsers(Status status) throws RESTFullException;
 
     List<VacationRequest> getVacationRequests(Status status) throws RESTFullException;
 
     List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException;
-
-    FullUserProfile getUserProfile(Long userId) throws RESTFullException;
 
     DefaultSettings getDefaultSettings() throws RESTFullException;
 

@@ -1,4 +1,4 @@
-package org.danekja.ymanager.ws.rest;
+package org.danekja.ymanager.ws.rest.exceptions;
 
 public class RESTFullException extends Exception {
 

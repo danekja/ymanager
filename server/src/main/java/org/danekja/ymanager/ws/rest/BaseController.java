@@ -2,6 +2,7 @@ package org.danekja.ymanager.ws.rest;
 
 import org.danekja.ymanager.util.localization.Language;
 import org.danekja.ymanager.util.localization.Message;
+import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
