@@ -42,9 +42,9 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
     }
 
     @Override
-    @PreAuthorize(AuthExpressions.SELF_ONLY_ID_PARAM)
-    public User getUser(Long id) {
-        return userRepository.getUser(id);
+    @PreAuthorize(AuthExpressions.MASTER_SELF_ID_PARAM)
+    public User getUser(Long userId) {
+        return userRepository.getUser(userId);
     }
 
     @Override

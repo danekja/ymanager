@@ -26,8 +26,8 @@ public interface UserManager {
     /**
      * Gets user by id (PK)
      *
-     * @param id id value, used as search key
+     * @param userId id value, used as search key
      * @return found user Object or null
      */
-    User getUser(Long id);
+    User getUser(Long userId);
 }

@@ -14,8 +14,8 @@ public class AuthExpressions {
      * <li>data owner - employee can edit only his records</li>
      * </ul>
      * <p>
-     * In this case, the protected method needs to take <b>id</b> parameter which represents the "userId" value and
+     * In this case, the protected method needs to take <b>userId</b> parameter which represents the "userId" value and
      * is compared to principal id.
      */
-    public static final String SELF_ONLY_ID_PARAM = "hasAuthority('EMPLOYER') or #id == authentication.principal.id";
+    public static final String MASTER_SELF_ID_PARAM = "hasAuthority('EMPLOYER') or #userId == authentication.principal.id";
 }
