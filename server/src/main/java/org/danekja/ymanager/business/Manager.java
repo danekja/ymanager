@@ -25,9 +25,9 @@ public interface Manager {
 
     void changeSettings(Long userId, UserSettings settings) throws RESTFullException;
 
-    void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException;
+    void changeVacation(VacationDay vacationDay) throws RESTFullException;
 
     void changeRequest(RequestType type, BasicRequest request) throws RESTFullException;
 
-    void deleteVacation(Long userId, Long vacationId) throws RESTFullException;
+    void deleteVacation(Long vacationId) throws RESTFullException;
 }

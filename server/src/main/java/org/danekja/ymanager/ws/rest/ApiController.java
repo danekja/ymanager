@@ -139,13 +139,12 @@ public class ApiController extends BaseController {
     @RequestMapping(value = "/user/calendar/edit", method=PUT)
     public ResponseEntity userCalendarEdit(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody VacationDay vacationDay,
-            Authentication auth)
+            @RequestBody VacationDay vacationDay)
     {
-        //TODO make api endpoint contain userId in path as part of #39, also drop the edit part of path
+        //TODO make api endpoint point to vacation endpoint as part of #39, also drop the edit part of path
         //TODO drop the auth parameter afterwards
         return handle(Language.getLanguage(lang), () ->
-                manager.changeVacation(((User) auth.getPrincipal()).getId(), vacationDay)
+                manager.changeVacation(vacationDay)
         );
     }
 
@@ -164,11 +163,11 @@ public class ApiController extends BaseController {
 
     @RequestMapping(value = "/calendar/{id}/delete", method=DELETE)
     public ResponseEntity calendarDelete(
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             @RequestParam(value = "lang", required = false) String lang)
     {
         return handle(Language.getLanguage(lang), () ->
-            manager.deleteVacation(getUserId("me"), StringUtils.isNumeric(id) ? Long.parseLong(id) : -1)
+                manager.deleteVacation(id)
         );
     }
 

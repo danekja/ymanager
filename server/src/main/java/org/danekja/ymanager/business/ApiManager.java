@@ -1,5 +1,6 @@
 package org.danekja.ymanager.business;
 
+import org.danekja.ymanager.business.auth.anot.CanModifyVacation;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.DefaultSettings;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.security.DenyAll;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -206,8 +208,9 @@ public class ApiManager implements Manager {
     }
 
     @Override
-    @IsOwner
-    public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
+    //TODO not called anyway, allow after reimplementation
+    @DenyAll
+    public void changeVacation(VacationDay vacationDay) throws RESTFullException {
         try {
             Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationDay.getId());
             if (vacation.isPresent()) {
@@ -268,9 +271,9 @@ public class ApiManager implements Manager {
     }
 
     @Override
-    public void deleteVacation(Long userId, Long vacationId) throws RESTFullException {
+    @CanModifyVacation
+    public void deleteVacation(Long vacationId) throws RESTFullException {
         try {
-            User user = userRepository.getUser(userId);
             Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationId);
 
             if (!vacation.isPresent()) {
@@ -278,6 +281,7 @@ public class ApiManager implements Manager {
             }
 
             Vacation vacationDay = vacation.get();
+            User user = userRepository.getUser(vacationDay.getUserId());
 
             if (vacationDay.getDate().isAfter(LocalDate.now())) {
                 if (!vacationDay.getStatus().equals(Status.REJECTED)) {
