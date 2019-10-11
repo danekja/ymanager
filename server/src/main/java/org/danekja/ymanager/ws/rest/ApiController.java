@@ -139,10 +139,13 @@ public class ApiController extends BaseController {
     @RequestMapping(value = "/user/calendar/edit", method=PUT)
     public ResponseEntity userCalendarEdit(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody VacationDay vacationDay)
+            @RequestBody VacationDay vacationDay,
+            Authentication auth)
     {
+        //TODO make api endpoint contain userId in path as part of #39, also drop the edit part of path
+        //TODO drop the auth parameter afterwards
         return handle(Language.getLanguage(lang), () ->
-                manager.changeVacation(getUserId("me"), vacationDay)
+                manager.changeVacation(((User) auth.getPrincipal()).getId(), vacationDay)
         );
     }
 

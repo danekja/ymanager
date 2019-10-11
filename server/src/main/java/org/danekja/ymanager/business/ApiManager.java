@@ -207,6 +207,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @PreAuthorize(AuthExpressions.MASTER_SELF_ID_PARAM)
     public void changeVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
         try {
             Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationDay.getId());
