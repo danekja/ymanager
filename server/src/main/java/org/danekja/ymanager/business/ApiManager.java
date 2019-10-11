@@ -1,5 +1,6 @@
 package org.danekja.ymanager.business;
 
+import org.danekja.ymanager.business.auth.AuthExpressions;
 import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.dto.*;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -102,6 +104,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @PreAuthorize(AuthExpressions.MASTER_SELF_ID_PARAM)
     public void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException {
 
         if (vacationDay.getDate().isBefore(LocalDate.now())) {

@@ -5,6 +5,7 @@ import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
 import org.danekja.ymanager.domain.RequestType;
 import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.dto.BasicRequest;
 import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.dto.UserSettings;
@@ -13,6 +14,7 @@ import org.danekja.ymanager.util.localization.Language;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -111,10 +113,13 @@ public class ApiController extends BaseController {
     @RequestMapping(value = "/user/calendar/create", method=POST)
     public ResponseEntity userCalendarCreate(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody VacationDay vacationDay)
+            @RequestBody VacationDay vacationDay,
+            Authentication auth)
     {
+        //TODO make api endpoint contain userId in path as part of #39, also drop the create part of path
+        //TODO drop the auth parameter afterwards
         return handle(Language.getLanguage(lang), () ->
-                manager.createVacation(getUserId("me"), vacationDay)
+                manager.createVacation(((User) auth.getPrincipal()).getId(), vacationDay)
         );
     }
 
