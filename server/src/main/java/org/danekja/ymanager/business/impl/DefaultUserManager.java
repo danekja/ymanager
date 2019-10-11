@@ -1,8 +1,8 @@
 package org.danekja.ymanager.business.impl;
 
 import org.danekja.ymanager.business.UserManager;
-import org.danekja.ymanager.business.auth.AuthExpressions;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
+import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.dto.BasicProfileUser;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,7 +41,7 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
     }
 
     @Override
-    @PreAuthorize(AuthExpressions.MASTER_SELF_ID_PARAM)
+    @IsOwner
     public User getUser(Long userId) {
         return userRepository.getUser(userId);
     }
