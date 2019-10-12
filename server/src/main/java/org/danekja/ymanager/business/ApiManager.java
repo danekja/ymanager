@@ -1,6 +1,7 @@
 package org.danekja.ymanager.business;
 
 import org.danekja.ymanager.business.auth.anot.CanModifyVacation;
+import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.DefaultSettings;
@@ -227,6 +228,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsEmployer
     public void changeRequest(RequestType type, BasicRequest request) throws RESTFullException {
         try {
             switch (type) {
