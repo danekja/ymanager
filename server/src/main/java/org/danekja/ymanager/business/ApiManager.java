@@ -96,6 +96,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsEmployer
     public void createSettings(DefaultSettings settings) throws RESTFullException {
         try {
             org.danekja.ymanager.domain.DefaultSettings defaultSettings = new org.danekja.ymanager.domain.DefaultSettings();
