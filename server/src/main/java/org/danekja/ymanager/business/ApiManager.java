@@ -74,6 +74,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsOwner
     public List<VacationDay> getUserCalendar(Long userId, LocalDate fromDate, LocalDate toDate, Status status) throws RESTFullException {
         try {
             List<VacationDay> vacations;
