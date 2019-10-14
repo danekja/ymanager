@@ -45,6 +45,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsEmployer
     public List<VacationRequest> getVacationRequests(Status status) throws RESTFullException {
         try {
             return status == null ? requestRepository.getAllVacationRequests() : requestRepository.getAllVacationRequests(status);
@@ -55,6 +56,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsEmployer
     public List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException {
         try {
             return status == null ? requestRepository.getAllAuthorizations() : requestRepository.getAllAuthorizations(status);
