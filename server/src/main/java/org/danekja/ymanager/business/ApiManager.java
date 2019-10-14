@@ -33,11 +33,14 @@ public class ApiManager implements Manager {
     private final UserRepository userRepository;
     private final VacationRepository vacationRepository;
 
+    private final AuthorizationService authService;
+
     @Autowired
-    public ApiManager(RequestRepository requestRepository, UserRepository userRepository, VacationRepository vacationRepository) {
+    public ApiManager(RequestRepository requestRepository, UserRepository userRepository, VacationRepository vacationRepository, AuthorizationService authService) {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.vacationRepository = vacationRepository;
+        this.authService = authService;
     }
 
     @Override
@@ -185,10 +188,11 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsOwner
     public void changeSettings(Long userId, UserSettings settings) throws RESTFullException {
 
         try {
-            UserRole invokedUserPermission = userRepository.getPermission(userId);
+            UserRole invokedUserPermission = authService.getCurrentUser().getRole();
             boolean invokedUserIsAdmin = invokedUserPermission.equals(UserRole.EMPLOYER);
             DefaultSettings defaultSettings = getDefaultSettings();
 
