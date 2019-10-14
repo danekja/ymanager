@@ -24,58 +24,20 @@ public abstract class User {
      */
     protected static final Logger log = LoggerFactory.getLogger(User.class);
 
+    protected final UserData userData;
+
     /**
      * The user's ID.
      */
     protected Long id;
 
-    /**
-     * The number of user's remaining hours of an overtime.
-     */
-    protected Float vacationCount;
-
-    /**
-     * The number of user's sick days available during a year.
-     */
-    protected Integer totalSickDayCount;
-
-    /**
-     * The number of user's taken sick days.
-     */
-    protected Integer takenSickDayCount;
-
-    /**
-     * The date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
-     */
-    protected LocalDateTime notification;
-
-    /**
-     * The token for the Google oAuth.
-     */
-    protected String token;
-
-    /**
-     * The user's role.
-     */
-    protected UserRole role;
-
-    /**
-     * The user's authorization status.
-     */
-    protected Status status;
-
-    public User() {
+    protected User() {
+        this.userData = new UserData();
     }
 
-    public User(Long id, Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, String token, UserRole role, Status status) {
+    protected User(Long id, UserData userData) {
         this.id = id;
-        this.vacationCount = vacationCount;
-        this.totalSickDayCount = totalSickDayCount;
-        this.takenSickDayCount = takenSickDayCount;
-        this.notification = notification;
-        this.token = token;
-        this.role = role;
-        this.status = status;
+        this.userData = userData;
     }
 
     /**
@@ -118,7 +80,7 @@ public abstract class User {
      * @return the number of user's remaining hours of the overtime
      */
     public Float getVacationCount() {
-        return this.vacationCount;
+        return userData.getVacationCount();
     }
 
     /**
@@ -129,17 +91,8 @@ public abstract class User {
      * @throws IllegalArgumentException when the given value is negative
      */
     public void setVacationCount(final Float vacationCount) throws IllegalArgumentException {
-        User.log.debug("Setting a new number of remaining overtime: {}", vacationCount);
 
-        if(vacationCount == null) {
-            User.log.warn("The number of remaining overtime must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
-        }else if (vacationCount < 0) {
-            User.log.warn("The number of remaining overtime must not be negative");
-            throw new IllegalArgumentException("negative.vacation.error");
-        }
-
-        this.vacationCount = vacationCount;
+        userData.setVacationCount(vacationCount);
     }
 
     /**
@@ -150,17 +103,8 @@ public abstract class User {
      * @throws IllegalArgumentException when he given parameter is null or a result of the addition is negative
      */
     public void addVacationCount(final Float value) {
-        User.log.debug("Adding the given number of hours {} to the vacation", value);
 
-        if(value == null) {
-            User.log.warn("The given value must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
-        } else if (this.vacationCount + value < 0) {
-            User.log.warn("The number of remaining overtime must not be negative");
-            throw new IllegalArgumentException("negative.vacation.error");
-        }
-
-        this.vacationCount += value;
+        userData.addVacationCount(value);
     }
 
     /**
@@ -174,18 +118,8 @@ public abstract class User {
      *          or the times are not in order
      */
     public void addVacationCount(final LocalTime from, final LocalTime to) {
-        User.log.debug("Adding a vacation from {} to {}", from, to);
 
-        if(from == null || to == null) {
-            User.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
-        } else if (from.compareTo(to) >= 0) {
-            User.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
-            throw new IllegalArgumentException("time.order.error");
-        }
-
-        final float difference = from.until(to, MINUTES) / 60f;
-        this.vacationCount += difference;
+        userData.addVacationCount(from, to);
     }
 
     /**
@@ -194,7 +128,7 @@ public abstract class User {
      * @return the number of user's sick days available during the year
      */
     public Integer getTotalSickDayCount() {
-        return this.totalSickDayCount;
+        return userData.getTotalSickDayCount();
     }
 
     /**
@@ -205,14 +139,8 @@ public abstract class User {
      * @throws IllegalArgumentException when the given value is negative
      */
     public void setTotalSickDayCount(final Integer totalSickDayCount) throws IllegalArgumentException {
-        User.log.debug("Setting a new number of user's sick days available during a year: {}", totalSickDayCount);
 
-        if (totalSickDayCount != null && totalSickDayCount < 0) {
-            User.log.warn("The number of user's available sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
-        }
-
-        this.totalSickDayCount = totalSickDayCount;
+        userData.setTotalSickDayCount(totalSickDayCount);
     }
 
     /**
@@ -221,7 +149,7 @@ public abstract class User {
      * @return the number of user's taken sick days
      */
     public Integer getTakenSickDayCount() {
-        return this.takenSickDayCount;
+        return userData.getTakenSickDayCount();
     }
 
     /**
@@ -232,20 +160,8 @@ public abstract class User {
      * @throws IllegalArgumentException when the given value is negative
      */
     public void setTakenSickDayCount(final Integer takenSickDayCount) throws IllegalArgumentException {
-        User.log.debug("Setting a new number of user's taken sick days: {}", takenSickDayCount);
 
-        if (takenSickDayCount == null) {
-            User.log.warn("The number number of user's taken sick days must not be null");
-            throw new IllegalArgumentException("sick.day.null.error");
-        } else if (takenSickDayCount < 0) {
-            User.log.warn("The number number of user's taken sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
-        } else if(takenSickDayCount > this.totalSickDayCount){
-            User.log.warn("The number number of user's taken sick days must not greater than his/her available sick days");
-            throw new IllegalArgumentException("taken.sick.day.count.error");
-        }
-
-        this.takenSickDayCount = takenSickDayCount;
+        userData.setTakenSickDayCount(takenSickDayCount);
     }
 
     /**
@@ -256,20 +172,8 @@ public abstract class User {
      * @throws IllegalArgumentException when the given number is null or a result of the addition is negative
      */
     public void addTakenSickDayCount(final Integer value) throws IllegalArgumentException {
-        User.log.debug("Increasing the number of remaining overtime by {}", value);
 
-        if (value == null) {
-            User.log.warn("The given value must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
-        } else if (this.takenSickDayCount + value < 0) {
-            User.log.warn("The number number of user's taken sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
-        } else if (this.takenSickDayCount + value > this.totalSickDayCount) {
-            User.log.warn("The number number of user's taken sick days must not greater than his/her available sick days");
-            throw new IllegalArgumentException("taken.sick.day.count.error");
-        }
-
-        this.takenSickDayCount += value;
+        userData.addTakenSickDayCount(value);
     }
 
     /**
@@ -278,7 +182,7 @@ public abstract class User {
      * @return the date and time
      */
     public LocalDateTime getNotification() {
-        return this.notification;
+        return userData.getNotification();
     }
 
     /**
@@ -289,34 +193,8 @@ public abstract class User {
      * @throws IllegalArgumentException when the given notification is null
      */
     public void setNotification(final LocalDateTime notification) throws IllegalArgumentException {
-        User.log.debug("Setting a new date and time of sending an email warning: {}", notification);
 
-        this.notification = notification;
-    }
-
-    /**
-     * Returns the user's token for the Google oAuth.
-     *
-     * @return the user's token for the Google oAuth
-     */
-    public String getToken() {
-        return this.token;
-    }
-
-    /**
-     * Replaces the user's token for the Google oAuth with the specified string.
-     *
-     * @param token the new token for the Google oAuth
-     */
-    public void setToken(final String token) {
-        User.log.debug("Setting a new token: {}", token);
-
-        if (token == null) {
-            User.log.warn("The given token must not be null");
-            throw new IllegalArgumentException("token.null.error");
-        }
-
-        this.token = token;
+        userData.setNotification(notification);
     }
 
     /**
@@ -335,23 +213,13 @@ public abstract class User {
         return DEFAULT_PHOTO;
     }
 
-    ;
-
-
-    /**
-     * Returns the date and time of a user's creation.
-     *
-     * @return the date and time of the user's creation
-     */
-    public abstract LocalDateTime getCreationDate();
-
     /**
      * Returns the user's role.
      *
      * @return the user's role
      */
     public UserRole getRole() {
-        return this.role;
+        return userData.getRole();
     }
 
     /**
@@ -362,14 +230,7 @@ public abstract class User {
      * @throws IllegalArgumentException when the given role is null
      */
     public void setRole(final UserRole role) throws IllegalArgumentException {
-        User.log.debug("Setting a new user's role: {}", role);
-
-        if(role == null) {
-            User.log.warn("The given role must not be null");
-            throw new IllegalArgumentException("role.null.error");
-        }
-
-        this.role = role;
+        userData.setRole(role);
     }
 
     /**
@@ -378,7 +239,7 @@ public abstract class User {
      * @return the user's authorization status
      */
     public Status getStatus() {
-        return this.status;
+        return userData.getStatus();
     }
 
     /**
@@ -387,14 +248,7 @@ public abstract class User {
      * @param status the new authorization status
      */
     public void setStatus(final Status status) {
-        User.log.debug("Setting a new authorization status: {}", status);
-
-        if(status == null) {
-            User.log.warn("The given status must not be null");
-            throw new IllegalArgumentException("status.null.error");
-        }
-
-        this.status = status;
+        this.userData.setStatus(status);
     }
 
     /**
@@ -419,14 +273,14 @@ public abstract class User {
         }
 
         final float difference = from.until(to, MINUTES) / 60f;
-        final float tempVacationCount = this.vacationCount - difference;
+        final float tempVacationCount = this.userData.getVacationCount() - difference;
 
         if (tempVacationCount < 0) {
             User.log.warn("Cannot take a vacation, not enough available hours");
             throw new IllegalArgumentException("available.vacation.error");
         }
 
-        this.vacationCount = tempVacationCount;
+        this.userData.setVacationCount(tempVacationCount);
     }
 
     /**
@@ -437,14 +291,8 @@ public abstract class User {
      */
     public void takeSickDay() throws  IllegalArgumentException {
         User.log.trace("Taking a sick day");
-        final int tempTakenSickDayCount = ++this.takenSickDayCount;
 
-        if (tempTakenSickDayCount > this.totalSickDayCount) {
-            User.log.warn("Cannot take a sick day, not enough available days");
-            throw new IllegalArgumentException("available.sick.day.error");
-        }
-
-        this.takenSickDayCount = tempTakenSickDayCount;
+        this.userData.addTakenSickDayCount(1);
     }
 
     /**
@@ -460,13 +308,7 @@ public abstract class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", vacationCount=" + vacationCount +
-                ", totalSickDayCount=" + totalSickDayCount +
-                ", takenSickDayCount=" + takenSickDayCount +
-                ", notification=" + notification +
-                ", token='" + token + '\'' +
-                ", role=" + role +
-                ", status=" + status +
+                ", " + this.userData.toString() +
                 '}';
     }
 }

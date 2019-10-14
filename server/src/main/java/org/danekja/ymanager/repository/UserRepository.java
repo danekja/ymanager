@@ -135,43 +135,6 @@ public class UserRepository {
         }, paramList);
     }
 
-    private Map<String, Object> getUserColumns(final String token) {
-        final List<SqlParameter> paramList = new ArrayList<>();
-        paramList.add(new SqlParameter(Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
-        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_token", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
-
-        return jdbc.call(con -> {
-            final CallableStatement callableStatement = con.prepareCall("{call GetUserToken(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-            callableStatement.setString(1, token);
-            callableStatement.registerOutParameter(2, Types.BIGINT);
-            callableStatement.registerOutParameter(3, Types.VARCHAR);
-            callableStatement.registerOutParameter(4, Types.VARCHAR);
-            callableStatement.registerOutParameter(5, Types.FLOAT);
-            callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(9, Types.LONGVARCHAR);
-            callableStatement.registerOutParameter(10, Types.VARCHAR);
-            callableStatement.registerOutParameter(11, Types.LONGVARCHAR);
-            callableStatement.registerOutParameter(12, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(13, Types.VARCHAR);
-            callableStatement.registerOutParameter(14, Types.VARCHAR);
-            return callableStatement;
-        }, paramList);
-    }
-
     //---------------------------------- DTO -----------------------------------
 
     /**
@@ -268,13 +231,13 @@ public class UserRepository {
     }
 
     public void updateUser(final User user) {
-        this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, taken_sick_days = ?, token = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
-                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTakenSickDayCount(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
+        this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, taken_sick_days = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
+                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTakenSickDayCount(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
     }
 
     public void insertUser(final User user) {
-        this.jdbc.update("INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo, user_role, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getToken(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name());
+        this.jdbc.update("INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, email, photo, user_role, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name());
     }
 
     public void insertSettings(final org.danekja.ymanager.domain.DefaultSettings settings) {

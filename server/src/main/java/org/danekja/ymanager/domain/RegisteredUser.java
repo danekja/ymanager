@@ -48,16 +48,14 @@ public class RegisteredUser extends User implements UserDetails {
     public RegisteredUser() {
     }
 
-    public RegisteredUser(Long id, String firstName, String lastName, Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, String token, String email, String photo, LocalDateTime creationDate, UserRole role, Status status) {
-        super(id, vacationCount, totalSickDayCount, takenSickDayCount, notification, token, role, status);
+    public RegisteredUser(Long id, String firstName, String lastName, String email, String photo, LocalDateTime creationDate, UserData userData) {
+        super(id, userData);
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.photo = photo;
         this.creationDate = creationDate;
-        this.role = role;
-        this.status = status;
     }
 
     /*
@@ -66,7 +64,7 @@ public class RegisteredUser extends User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //TODO do not create collection on each call
-        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+        return Collections.singleton(new SimpleGrantedAuthority(userData.getRole().name()));
     }
 
     @Override
@@ -99,7 +97,7 @@ public class RegisteredUser extends User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status == Status.ACCEPTED;
+        return userData.getStatus() == Status.ACCEPTED;
     }
 
     /*
@@ -126,7 +124,6 @@ public class RegisteredUser extends User implements UserDetails {
         return photo;
     }
 
-    @Override
     public LocalDateTime getCreationDate() {
         return creationDate;
     }

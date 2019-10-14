@@ -2,6 +2,7 @@ package org.danekja.ymanager.repository.jdbc.mappers;
 
 import org.danekja.ymanager.domain.RegisteredUser;
 import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.UserData;
 import org.danekja.ymanager.domain.UserRole;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -27,7 +28,6 @@ public class UserRowMapper implements RowMapper<RegisteredUser> {
         Timestamp date = resultSet.getTimestamp("alert");
         LocalDateTime alert = date != null ? ((Timestamp) date).toLocalDateTime() : null;
 
-        String token = resultSet.getNString("token");
         String email = resultSet.getString("email");
         String photo = resultSet.getNString("photo");
 
@@ -36,6 +36,7 @@ public class UserRowMapper implements RowMapper<RegisteredUser> {
         UserRole role = UserRole.valueOf(resultSet.getString("user_role"));
         Status status = Status.valueOf(resultSet.getString("status"));
 
-        return new RegisteredUser(id, firstName, lastName, vacations, sickDays, takenSickDays, alert, token, email, photo, creationDate, role, status);
+        UserData userData = new UserData(vacations, sickDays, takenSickDays, alert, role, status);
+        return new RegisteredUser(id, firstName, lastName, email, photo, creationDate, userData);
     }
 }
