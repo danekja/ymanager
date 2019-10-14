@@ -1,9 +1,12 @@
 package org.danekja.ymanager.repository;
 
+import org.danekja.ymanager.domain.RegisteredUser;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.domain.UserRole;
-import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.dto.BasicProfileUser;
+import org.danekja.ymanager.dto.DefaultSettings;
+import org.danekja.ymanager.dto.FullUserProfile;
 import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +31,7 @@ import static org.danekja.ymanager.domain.UserRole.getUserRole;
 @Repository
 public class UserRepository {
 
-    private final RowMapper<User> USER_MAPPER = new UserRowMapper();
+    private final RowMapper<RegisteredUser> USER_MAPPER = new UserRowMapper();
 
     /**
      * The mapper maps a row from a result of a query to an BasicProfileUser.
@@ -246,8 +249,8 @@ public class UserRepository {
      * @param email email value, used as search key
      * @return found user object or null (if not found)
      */
-    public User getUser(final String email) {
-        List<User> users = this.jdbc.query("SELECT * FROM end_user WHERE email = ?", USER_MAPPER, email);
+    public RegisteredUser getUser(final String email) {
+        List<RegisteredUser> users = this.jdbc.query("SELECT * FROM end_user WHERE email = ?", USER_MAPPER, email);
 
         return RepositoryUtils.singleResult(users);
     }
@@ -258,8 +261,8 @@ public class UserRepository {
      * @param id id value, used as search key
      * @return found user object or null (if not found)
      */
-    public User getUser(final long id) {
-        List<User> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_MAPPER, id);
+    public RegisteredUser getUser(final long id) {
+        List<RegisteredUser> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_MAPPER, id);
 
         return RepositoryUtils.singleResult(users);
     }

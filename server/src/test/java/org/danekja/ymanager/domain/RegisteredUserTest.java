@@ -9,22 +9,22 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * This class tests methods of the {@code User} class.
- * @see User
+ * This class tests methods of the {@code RegisteredUser} class.
+ * @see RegisteredUser
  */
-class UserTest {
+class RegisteredUserTest {
 
     /**
-     * The empty instance of the {@code User}.
+     * The empty instance of the {@code RegisteredUser}.
      */
-    private User user;
+    private RegisteredUser user;
 
     /**
-     * Prepares the instance of the {@code User}.
+     * Prepares the instance of the {@code RegisteredUser}.
      */
     @BeforeEach
     void setUp() {
-        this.user = new User();
+        this.user = new RegisteredUser();
         this.user.setVacationCount(0f);
         this.user.setTotalSickDayCount(0);
         this.user.setTakenSickDayCount(0);
@@ -595,25 +595,4 @@ class UserTest {
         assertThrows(IllegalArgumentException.class, () -> this.user.takeSickDay());
     }
 
-    /**
-     * Tests the method {@code toString}.
-     */
-    @Test
-    void testToString() {
-        User user = new User();
-        user.setId(5L);
-        user.setFirstName("Jan");
-        user.setLastName("Nov\u00E1k");
-        user.setVacationCount(0f);
-        user.setTotalSickDayCount(10);
-        user.setTakenSickDayCount(5);
-        user.setNotification(LocalDateTime.of(2008,10,30,20,0));
-        user.setToken("tokenContent");
-        user.setEmail("novak@email.com");
-        user.setPhoto("url");
-        user.setCreationDate(LocalDateTime.of(2010,7,31,12,5));
-        user.setRole(UserRole.EMPLOYER);
-        user.setStatus(Status.ACCEPTED);
-        assertEquals("User{id=5, firstName='Jan', lastName='Nov\u00E1k', vacationCount=0.0, totalSickDayCount=10, takenSickDayCount=5, notification=2008-10-30T20:00, token='tokenContent', email='novak@email.com', photo='url', creationDate=2010-07-31T12:05, role=EMPLOYER, status=ACCEPTED}", user.toString());
-    }
 }

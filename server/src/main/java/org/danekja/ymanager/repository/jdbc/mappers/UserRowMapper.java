@@ -1,6 +1,6 @@
 package org.danekja.ymanager.repository.jdbc.mappers;
 
-import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.domain.RegisteredUser;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.UserRole;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 /**
  * Maps "end_user" query rows into User object.
  */
-public class UserRowMapper implements RowMapper<User> {
+public class UserRowMapper implements RowMapper<RegisteredUser> {
 
     @Override
-    public User mapRow(ResultSet resultSet, int i) throws SQLException {
+    public RegisteredUser mapRow(ResultSet resultSet, int i) throws SQLException {
         Long id = resultSet.getLong("id");
         String firstName = resultSet.getString("first_name");
         String lastName = resultSet.getString("last_name");
@@ -36,6 +36,6 @@ public class UserRowMapper implements RowMapper<User> {
         UserRole role = UserRole.valueOf(resultSet.getString("user_role"));
         Status status = Status.valueOf(resultSet.getString("status"));
 
-        return new User(id, firstName, lastName, vacations, sickDays, takenSickDays, alert, token, email, photo, creationDate, role, status);
+        return new RegisteredUser(id, firstName, lastName, vacations, sickDays, takenSickDays, alert, token, email, photo, creationDate, role, status);
     }
 }

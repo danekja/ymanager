@@ -1,11 +1,9 @@
 package org.danekja.ymanager.repository;
 
-import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.domain.Vacation;
 import org.danekja.ymanager.domain.Status;
-import org.danekja.ymanager.domain.UserRole;
-import org.danekja.ymanager.dto.VacationDay;
+import org.danekja.ymanager.domain.Vacation;
 import org.danekja.ymanager.domain.VacationType;
+import org.danekja.ymanager.dto.VacationDay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,31 +161,6 @@ public class VacationRepository {
         jdbc.update("DELETE FROM vacation_day WHERE id=?", id);
     }
 
-    public Optional<User> findUserByVacationID(final long id) {
-        return ofNullable(jdbc.queryForObject(
-                "SELECT u.id,u.first_name, u.last_name, u.no_vacations," +
-                        "u.no_sick_days, u.taken_sick_days, u.alert, u.token, u.email," +
-                        "u.photo, u.creation_date, u.user_role, u.status " +
-                "FROM vacation_day v INNER JOIN end_user u ON v.user_id = u.id " +
-                "WHERE v.id = ?", new Object[]{id}, (ResultSet rs, int rowNum)->
-        {
-            User user = new User();
-            user.setId(rs.getLong("u.id"));
-            user.setFirstName(rs.getString("u.first_name"));
-            user.setLastName(rs.getString("u.last_name"));
-            user.setVacationCount(rs.getFloat("u.no_vacations"));
-            user.setTotalSickDayCount(rs.getInt("u.no_sick_days"));
-            user.setTakenSickDayCount(rs.getInt("u.taken_sick_days"));
-            user.setNotification(rs.getTimestamp("u.alert").toLocalDateTime());
-            user.setToken(rs.getString("u.token"));
-            user.setEmail(rs.getString("u.email"));
-            user.setPhoto(rs.getString("u.photo"));
-            user.setCreationDate(rs.getTimestamp("u.creation_date").toLocalDateTime());
-            user.setRole(UserRole.getUserRole(rs.getString("u.user_role")));
-            user.setStatus(getStatus(rs.getString("u.status")));
-            return user;
-        }));
-    }
 
     public boolean isExistVacationForUser(Long userId, LocalDate date) {
         return jdbc.queryForObject("SELECT count(id) AS exist FROM vacation_day WHERE vacation_date = ? AND user_id = ?",

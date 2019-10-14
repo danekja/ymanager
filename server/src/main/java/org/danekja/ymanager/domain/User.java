@@ -2,14 +2,9 @@ package org.danekja.ymanager.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collection;
-import java.util.Collections;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
@@ -17,157 +12,71 @@ import static java.time.temporal.ChronoUnit.MINUTES;
  * The domain class {@code User} represents a single record in the 'end_user' table of a database.
  * User holds all informations about a user which is logged to the application.
  */
-public class User implements UserDetails {
-    /**
-     * The maximal length of a name.
-     */
-    private static final int NAME_LENGTH = 45;
-
-    /**
-     * The maximal length of an email address.
-     */
-    private static final int EMAIL_ADDRESS_LENGTH = 100;
+public abstract class User {
 
     /**
      * The url of a generic photo.
      */
-    private static final String DEFAULT_PHOTO = "https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg";
+    protected static final String DEFAULT_PHOTO = "https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg";
 
     /**
      * The logger.
      */
-    private static final Logger log = LoggerFactory.getLogger(User.class);
+    protected static final Logger log = LoggerFactory.getLogger(User.class);
 
     /**
      * The user's ID.
      */
-    private Long id;
-
-    /**
-     * The user's first name.
-     */
-    private String firstName;
-
-    /**
-     * The user's last name.
-     */
-    private String lastName;
+    protected Long id;
 
     /**
      * The number of user's remaining hours of an overtime.
      */
-    private Float vacationCount;
+    protected Float vacationCount;
 
     /**
      * The number of user's sick days available during a year.
      */
-    private Integer totalSickDayCount;
+    protected Integer totalSickDayCount;
 
     /**
      * The number of user's taken sick days.
      */
-    private Integer takenSickDayCount;
+    protected Integer takenSickDayCount;
 
     /**
      * The date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
      */
-    private LocalDateTime notification;
+    protected LocalDateTime notification;
 
     /**
      * The token for the Google oAuth.
      */
-    private String token;
-
-    /**
-     * The user's email address.
-     */
-    private String email;
-
-    /**
-     * The URL of a user's photo.
-     */
-    private String photo;
-
-    /**
-     * The date and time of a user's creation.
-     */
-    private LocalDateTime creationDate;
+    protected String token;
 
     /**
      * The user's role.
      */
-    private UserRole role;
+    protected UserRole role;
 
     /**
      * The user's authorization status.
      */
-    private Status status;
+    protected Status status;
 
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, String token, String email, String photo, LocalDateTime creationDate, UserRole role, Status status) {
+    public User(Long id, Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, String token, UserRole role, Status status) {
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.vacationCount = vacationCount;
         this.totalSickDayCount = totalSickDayCount;
         this.takenSickDayCount = takenSickDayCount;
         this.notification = notification;
         this.token = token;
-        this.email = email;
-        this.photo = photo;
-        this.creationDate = creationDate;
         this.role = role;
         this.status = status;
     }
-
-    /*
-    ########################### UserDetails API #################################
-     */
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        //TODO do not create collection on each call
-        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
-    }
-
-    @Override
-    public String getUsername() {
-        return getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        //unsupported functionality
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        //unsupported functionality
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        //unsupported functionality
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return status == Status.ACCEPTED;
-    }
-
-    /*
-    ################# UserDetails API (END) #########################
-     */
-
 
     /**
      * Returns the user's ID.
@@ -194,60 +103,14 @@ public class User implements UserDetails {
      *
      * @return the user's first name
      */
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    /**
-     * Replaces the user's first name with the new specified value.
-     * If the given name is longer than the maximal allowed number of characters the method throws an exception.
-     *
-     * @param firstName the new first name
-     * @throws IllegalArgumentException when the given name is longer than the maximal allowed number of characters
-     */
-    public void setFirstName(final String firstName) throws IllegalArgumentException {
-        User.log.debug("Setting a new first name: {}", firstName);
-
-        if (firstName == null) {
-            User.log.warn("The given first name must not be null");
-            throw new IllegalArgumentException("first.name.null.error");
-        } else if (firstName.length() > User.NAME_LENGTH) {
-            User.log.warn("The length of the given first name exceeded a limit");
-            throw new IllegalArgumentException("name.length.error");
-        }
-
-        this.firstName = firstName;
-    }
+    public abstract String getFirstName();
 
     /**
      * Returns the user's last name.
      *
      * @return the user's last name
      */
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    /**
-     * Replaces the user's last name with the given one.
-     * If the given name is longer than the maximal allowed number of characters the method throws an exception.
-     *
-     * @param lastName the new last name
-     * @throws IllegalArgumentException when the given name is longer than the maximal allowed number of characters
-     */
-    public void setLastName(final String lastName) throws IllegalArgumentException {
-        User.log.debug("Setting a new last name: {}", lastName);
-
-        if(lastName == null) {
-            User.log.warn("The given last name must not be null");
-            throw new IllegalArgumentException("last.name.null.error");
-        } else if (lastName.length() > User.NAME_LENGTH) {
-            User.log.warn("The length of the given last name exceeded a limit");
-            throw new IllegalArgumentException("name.length.error");
-        }
-
-        this.lastName = lastName;
-    }
+    public abstract String getLastName();
 
     /**
      * Returns the number of user's remaining hours of an overtime.
@@ -461,30 +324,7 @@ public class User implements UserDetails {
      *
      * @return the user's email address
      */
-    public String getEmail() {
-        return this.email;
-    }
-
-    /**
-     * Replaces the user's email address with the new given value.
-     * If the given email is longer than the maximal allowed number of characters the method throws an exception.
-     *
-     * @param email the new email address
-     * @throws IllegalArgumentException when the given email is longer than the maximal allowed number of characters
-     */
-    public void setEmail(final String email) throws IllegalArgumentException {
-        User.log.debug("Setting a new email address: {}", email);
-
-        if (email == null) {
-            User.log.warn("The given email must not be null");
-            throw new IllegalArgumentException("email.null.error");
-        }else if (email.length() > User.EMAIL_ADDRESS_LENGTH) {
-            User.log.warn("The length of the email address exceeded a limit");
-            throw new IllegalArgumentException("email.length.error");
-        }
-
-        this.email = email;
-    }
+    public abstract String getEmail();
 
     /**
      * Returns the URL of a user's photo.
@@ -492,39 +332,18 @@ public class User implements UserDetails {
      * @return the URL of the user's photo
      */
     public String getPhoto() {
-        return this.photo;
+        return DEFAULT_PHOTO;
     }
 
-    /**
-     * Replaces the URL of a user's photo with the given link.
-     *
-     * @param photo the new URL of the user's photo
-     */
-    public void setPhoto(final String photo) {
-        User.log.debug("Setting a new url of a photo: {}", photo);
+    ;
 
-        this.photo = photo == null ? User.DEFAULT_PHOTO : photo;
-    }
 
     /**
      * Returns the date and time of a user's creation.
      *
      * @return the date and time of the user's creation
      */
-    public LocalDateTime getCreationDate() {
-        return this.creationDate;
-    }
-
-    /**
-     * Replaces the user's creation date with the given date and time.
-     *
-     * @param creationDate the new creation date
-     */
-    public void setCreationDate(final LocalDateTime creationDate) {
-        User.log.debug("Setting a new user's creation date: {}", creationDate);
-
-        this.creationDate = creationDate;
-    }
+    public abstract LocalDateTime getCreationDate();
 
     /**
      * Returns the user's role.
@@ -640,19 +459,14 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + this.id +
-                ", firstName='" + this.firstName + '\'' +
-                ", lastName='" + this.lastName + '\'' +
-                ", vacationCount=" + this.vacationCount +
-                ", totalSickDayCount=" + this.totalSickDayCount +
-                ", takenSickDayCount=" + this.takenSickDayCount +
-                ", notification=" + this.notification +
-                ", token='" + this.token + '\'' +
-                ", email='" + this.email + '\'' +
-                ", photo='" + this.photo + '\'' +
-                ", creationDate=" + this.creationDate +
-                ", role=" + this.role +
-                ", status=" + this.status +
+                "id=" + id +
+                ", vacationCount=" + vacationCount +
+                ", totalSickDayCount=" + totalSickDayCount +
+                ", takenSickDayCount=" + takenSickDayCount +
+                ", notification=" + notification +
+                ", token='" + token + '\'' +
+                ", role=" + role +
+                ", status=" + status +
                 '}';
     }
 }

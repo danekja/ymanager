@@ -13,9 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,7 +25,7 @@ import java.util.List;
  * Also implements {@link UserDetailsService} to allow integration with Spring Security framework.
  */
 @Service
-public class DefaultUserManager implements UserManager, UserDetailsService {
+public class DefaultUserManager implements UserManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultUserManager.class);
 
@@ -67,15 +65,4 @@ public class DefaultUserManager implements UserManager, UserDetailsService {
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails details = userRepository.getUser(username);
-
-        //interface contract enforces this behavior
-        if (details == null) {
-            throw new UsernameNotFoundException("Username " + username + " not found!");
-        }
-
-        return details;
-    }
 }
