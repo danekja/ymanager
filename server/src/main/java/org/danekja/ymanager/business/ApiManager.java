@@ -3,6 +3,7 @@ package org.danekja.ymanager.business;
 import org.danekja.ymanager.business.auth.anot.CanModifyVacation;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
+import org.danekja.ymanager.business.auth.anot.IsSignedIn;
 import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.dto.*;
@@ -64,6 +65,7 @@ public class ApiManager implements Manager {
     }
 
     @Override
+    @IsSignedIn
     public DefaultSettings getDefaultSettings() throws RESTFullException {
         try {
             return userRepository.getLastDefaultSettings().orElse(new DefaultSettings());

@@ -93,8 +93,7 @@ public class ApiController extends BaseController {
     public ResponseEntity settings(
             @RequestParam(value = "lang", required = false) String lang)
     {
-        return handle(Language.getLanguage(lang), () ->
-                manager.getDefaultSettings()
+        return handle(Language.getLanguage(lang), manager::getDefaultSettings
         );
     }
 
