@@ -8,29 +8,36 @@ public class UserData {
     /**
      * The number of user's remaining hours of an overtime.
      */
-    private Float vacationCount;
+    private Float vacationCount = 0f;
     /**
      * The number of user's sick days available during a year.
      */
-    private Integer totalSickDayCount;
+    private Integer totalSickDayCount = 0;
     /**
      * The number of user's taken sick days.
      */
-    private Integer takenSickDayCount;
+    private Integer takenSickDayCount = 0;
     /**
      * The date and time of sending an email warning about an incoming reset of remaining overtimes and sick days.
      */
-    private LocalDateTime notification;
+    private LocalDateTime notification = null;
     /**
      * The user's role.
      */
-    private UserRole role;
+    private UserRole role = null;
     /**
      * The user's authorization status.
      */
-    private Status status;
+    private Status status = null;
 
     public UserData() {
+    }
+
+    public UserData(Integer totalSickDayCount, LocalDateTime notification, UserRole role, Status status) {
+        this.totalSickDayCount = totalSickDayCount;
+        this.notification = notification;
+        this.role = role;
+        this.status = status;
     }
 
     public UserData(Float vacationCount, Integer totalSickDayCount, Integer takenSickDayCount, LocalDateTime notification, UserRole role, Status status) {

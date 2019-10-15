@@ -75,6 +75,13 @@ public abstract class User {
     public abstract String getLastName();
 
     /**
+     * @return Returns full object with user's data
+     */
+    public UserData getUserData() {
+        return userData;
+    }
+
+    /**
      * Returns the number of user's remaining hours of an overtime.
      *
      * @return the number of user's remaining hours of the overtime

@@ -1,7 +1,10 @@
 package org.danekja.ymanager;
 
+import org.danekja.ymanager.business.UserManager;
+import org.danekja.ymanager.business.auth.service.GoogleOidcUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,10 +16,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private OAuth2UserService<OidcUserRequest, OidcUser> googleOauthUserService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -26,7 +35,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                .oauth2Login()
+                .userInfoEndpoint().oidcUserService(googleOauthUserService);
+    }
+
+    @Bean
+    public OAuth2UserService<OidcUserRequest, OidcUser> googleOauthUserService(UserManager userManager) {
+        return new GoogleOidcUserService(userManager);
     }
 
     /**

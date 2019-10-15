@@ -12,7 +12,6 @@ CREATE TABLE end_user (
   no_sick_days INT,
   taken_sick_days INT NOT NULL,
   alert DATETIME,
-  token TEXT NOT NULL,
   email VARCHAR(100) NOT NULL,
   photo TEXT,
   creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -116,9 +115,9 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- Insert table end_user
 -- -----------------------------------------------------
-INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, token, email, photo,
+INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, email, photo,
                       user_role, status)
-VALUES ('admin', 'admin', 0, NULL, 0, NULL, '', 'testuser@yoso.fi',
+VALUES ('admin', 'admin', 0, NULL, 0, NULL, 'testuser@yoso.fi',
         'https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg',
         'EMPLOYER', 'ACCEPTED');
 

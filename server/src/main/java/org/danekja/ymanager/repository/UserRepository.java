@@ -1,27 +1,22 @@
 package org.danekja.ymanager.repository;
 
-import org.danekja.ymanager.domain.RegisteredUser;
-import org.danekja.ymanager.domain.Status;
-import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.domain.UserRole;
+import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.BasicProfileUser;
-import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.dto.FullUserProfile;
+import org.danekja.ymanager.repository.jdbc.mappers.UserDataRowMapper;
 import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlOutParameter;
-import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 import static org.danekja.ymanager.domain.UserRole.getUserRole;
 
@@ -31,7 +26,9 @@ import static org.danekja.ymanager.domain.UserRole.getUserRole;
 @Repository
 public class UserRepository {
 
-    private final RowMapper<RegisteredUser> USER_MAPPER = new UserRowMapper();
+    private final RowMapper<UserData> USER_DATA_MAPPER = new UserDataRowMapper();
+    private final RowMapper<RegisteredUser> USER_MAPPER = new UserRowMapper(USER_DATA_MAPPER);
+
 
     /**
      * The mapper maps a row from a result of a query to an BasicProfileUser.
@@ -53,27 +50,6 @@ public class UserRepository {
             user.setLastName(resultSet.getString("last_name"));
             user.setPhoto(resultSet.getString("photo"));
             return user;
-        }
-    }
-
-    /**
-     * The mapper maps a row from a result of a query to an BasicProfileUser.
-     */
-    private class DefaultSettingsMapper implements RowMapper<DefaultSettings> {
-
-        /**
-         * Maps a row from a result of a query to an DefaultSettings.
-         * @param resultSet the row from the result
-         * @param i the index of the row
-         * @return the DefaultSettings object
-         * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
-         */
-        @Override
-        public DefaultSettings mapRow(ResultSet resultSet, int i) throws SQLException {
-            final DefaultSettings settings = new DefaultSettings();
-            settings.setSickDayCount(resultSet.getInt("no_sick_days"));
-            settings.setNotification(resultSet.getTimestamp("alert").toLocalDateTime());
-            return settings;
         }
     }
 
@@ -200,9 +176,6 @@ public class UserRepository {
     }
 
 
-    public Optional<DefaultSettings> getLastDefaultSettings() {
-        return Optional.ofNullable(this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", new DefaultSettingsMapper()));
-    }
 
     //---------------------------------- DOMAIN -----------------------------------
 
@@ -230,14 +203,45 @@ public class UserRepository {
         return RepositoryUtils.singleResult(users);
     }
 
+    /**
+     * Gets user data by user's id
+     *
+     * @param id TODO replace by subject Id for google and numeric id for registered (multiple queries)
+     * @return
+     */
+    public UserData getUserData(final long id) {
+        List<UserData> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_DATA_MAPPER, id);
+
+        return RepositoryUtils.singleResult(users);
+    }
+
     public void updateUser(final User user) {
         this.jdbc.update("UPDATE end_user SET first_name = ?, last_name = ?, no_vacations = ?, taken_sick_days = ?, email = ?, photo = ?, user_role = ?, status = ? WHERE id = ?",
                 user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTakenSickDayCount(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name(), user.getId());
     }
 
-    public void insertUser(final User user) {
-        this.jdbc.update("INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, email, photo, user_role, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name());
+    public long insertUser(final User user) {
+        PreparedStatementCreatorFactory factory = new PreparedStatementCreatorFactory("INSERT INTO end_user (first_name, last_name, no_vacations, no_sick_days, taken_sick_days, alert, email, photo, user_role, status) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.FLOAT,
+                Types.INTEGER,
+                Types.INTEGER,
+                Types.TIMESTAMP,
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.VARCHAR,
+                Types.VARCHAR);
+
+
+        factory.setReturnGeneratedKeys(true);
+
+        PreparedStatementCreator stmt = factory.newPreparedStatementCreator(new Object[]{user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name()});
+
+        GeneratedKeyHolder key = new GeneratedKeyHolder();
+        this.jdbc.update(stmt, key);
+
+        return Objects.requireNonNull(key.getKey()).longValue();
     }
 
     public void insertSettings(final DefaultSettings settings) {

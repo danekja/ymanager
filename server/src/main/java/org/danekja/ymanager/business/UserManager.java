@@ -1,9 +1,11 @@
 package org.danekja.ymanager.business;
 
+import org.danekja.ymanager.domain.GoogleUser;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.dto.BasicProfileUser;
 import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 
 import java.util.List;
 
@@ -30,4 +32,8 @@ public interface UserManager {
      * @return found user Object or null
      */
     User getUser(Long userId);
+
+    GoogleUser registerUser(OidcIdToken user);
+
+    GoogleUser getUser(OidcIdToken token);
 }
