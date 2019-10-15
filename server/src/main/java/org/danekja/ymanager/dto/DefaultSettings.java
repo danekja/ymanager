@@ -19,6 +19,19 @@ public class DefaultSettings {
      */
     private LocalDateTime notification;
 
+    public DefaultSettings() {
+    }
+
+    public DefaultSettings(Integer sickDayCount, LocalDateTime notification) {
+        this.sickDayCount = sickDayCount;
+        this.notification = notification;
+    }
+
+    public DefaultSettings(org.danekja.ymanager.domain.DefaultSettings src) {
+        this.sickDayCount = src.getSickDayCount();
+        this.notification = src.getNotification();
+    }
+
     /**
      * Returns the default number of available sick days in this default settings.
      *
@@ -53,6 +66,10 @@ public class DefaultSettings {
      */
     public void setNotification(final LocalDateTime notification) {
         this.notification = notification;
+    }
+
+    public org.danekja.ymanager.domain.DefaultSettings toEntity() {
+        return new org.danekja.ymanager.domain.DefaultSettings(getSickDayCount(), getNotification());
     }
 }
 

@@ -32,6 +32,14 @@ public class DefaultSettings {
      */
     private LocalDateTime notification;
 
+    public DefaultSettings() {
+    }
+
+    public DefaultSettings(Integer sickDayCount, LocalDateTime notification) {
+        this.setSickDayCount(sickDayCount);
+        this.setNotification(notification);
+    }
+
     /**
      * Returns the ID of this default settings.
      *

@@ -4,10 +4,11 @@ import org.danekja.ymanager.business.auth.anot.CanModifyVacation;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.business.auth.anot.IsSignedIn;
+import org.danekja.ymanager.domain.DefaultSettings;
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.DefaultSettings;
 import org.danekja.ymanager.dto.*;
 import org.danekja.ymanager.repository.RequestRepository;
+import org.danekja.ymanager.repository.SettingsRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;
 import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
@@ -33,14 +34,16 @@ public class ApiManager implements Manager {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final VacationRepository vacationRepository;
+    private final SettingsRepository settingsRepository;
 
     private final AuthorizationService authService;
 
     @Autowired
-    public ApiManager(RequestRepository requestRepository, UserRepository userRepository, VacationRepository vacationRepository, AuthorizationService authService) {
+    public ApiManager(RequestRepository requestRepository, UserRepository userRepository, VacationRepository vacationRepository, SettingsRepository settingsRepository, AuthorizationService authService) {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.vacationRepository = vacationRepository;
+        this.settingsRepository = settingsRepository;
         this.authService = authService;
     }
 
@@ -70,7 +73,7 @@ public class ApiManager implements Manager {
     @IsSignedIn
     public DefaultSettings getDefaultSettings() throws RESTFullException {
         try {
-            return userRepository.getLastDefaultSettings().orElse(new DefaultSettings());
+            return settingsRepository.get();
         } catch (DataAccessException e) {
             log.error(e.getMessage());
             throw new RESTFullException(e.getMessage(), "database.error");
@@ -104,7 +107,7 @@ public class ApiManager implements Manager {
     @IsEmployer
     public void createSettings(DefaultSettings settings) throws RESTFullException {
         try {
-            org.danekja.ymanager.domain.DefaultSettings defaultSettings = new org.danekja.ymanager.domain.DefaultSettings();
+            DefaultSettings defaultSettings = new DefaultSettings();
             defaultSettings.setSickDayCount(settings.getSickDayCount());
             defaultSettings.setNotification(settings.getNotification());
             userRepository.insertSettings(defaultSettings);

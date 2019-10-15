@@ -240,7 +240,7 @@ public class UserRepository {
                 user.getFirstName(), user.getLastName(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getNotification(), user.getEmail(), user.getPhoto(), user.getRole().name(), user.getStatus().name());
     }
 
-    public void insertSettings(final org.danekja.ymanager.domain.DefaultSettings settings) {
+    public void insertSettings(final DefaultSettings settings) {
         this.jdbc.update("INSERT INTO default_settings (no_sick_days, alert) VALUES (?, ?)", settings.getSickDayCount(), settings.getNotification());
     }
 

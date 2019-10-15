@@ -1,6 +1,5 @@
 package org.danekja.ymanager.ws.rest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
 import org.danekja.ymanager.domain.RequestType;
@@ -36,21 +35,6 @@ public class ApiController extends BaseController {
         this.fileService = fileService;
     }
 
-    private Long getUserId(String id) {
-        // TODO verify permission
-        if (id.toLowerCase().equals("me")) {
-            return 1L;
-        } else if (StringUtils.isNumeric(id)) {
-            return Long.valueOf(id);
-        } else {
-            throw new IllegalArgumentException("User not found.");
-        }
-    }
-
-    private Long getUserId(Long id) {
-        return id == null ? getUserId("me") : id;
-    }
-
     // *********************** GET ****************************
 
     @RequestMapping(value = "/users/requests/vacation", method=GET)
@@ -75,9 +59,9 @@ public class ApiController extends BaseController {
 
     @RequestMapping(value = "/user/{id}/calendar", method=GET)
     public ResponseEntity userCalendar(
-            @PathVariable("id") String id,
+            @PathVariable("id") Long id,
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "from", required = true) String from,
+            @RequestParam(value = "from") String from,
             @RequestParam(value = "to", required = false) String to,
             @RequestParam(value = "status", required = false) String status)
     {
@@ -85,7 +69,7 @@ public class ApiController extends BaseController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             LocalDate fromDate = LocalDate.parse(from, formatter);
             LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
-            return manager.getUserCalendar(getUserId(id), fromDate, toDate, Status.getStatus(status));
+            return manager.getUserCalendar(id, fromDate, toDate, Status.getStatus(status));
         });
     }
 
@@ -93,8 +77,7 @@ public class ApiController extends BaseController {
     public ResponseEntity settings(
             @RequestParam(value = "lang", required = false) String lang)
     {
-        return handle(Language.getLanguage(lang), manager::getDefaultSettings
-        );
+        return handle(Language.getLanguage(lang), () -> new DefaultSettings(manager.getDefaultSettings()));
     }
 
     // *********************** POST ****************************
@@ -105,7 +88,7 @@ public class ApiController extends BaseController {
             @RequestBody DefaultSettings settings)
     {
         return handle(Language.getLanguage(lang), () ->
-                manager.createSettings(settings)
+                manager.createSettings(settings.toEntity())
         );
     }
 
@@ -128,10 +111,13 @@ public class ApiController extends BaseController {
     @RequestMapping(value = "/user/settings", method=PUT)
     public ResponseEntity userSettings(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody UserSettings settings)
+            @RequestBody UserSettings settings,
+            Authentication auth)
     {
+        //TODO make api endpoint contain userId in path as part of #39
+        //TODO drop the auth parameter afterwards
         return handle(Language.getLanguage(lang), () ->
-                manager.changeSettings(getUserId("me"), settings)
+                manager.changeSettings(((User) auth.getPrincipal()).getId(), settings)
         );
     }
 
