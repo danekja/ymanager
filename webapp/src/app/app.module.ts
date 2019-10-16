@@ -16,13 +16,15 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {CommonModule} from '@angular/common';
 
 import {BasicAuthInterceptor} from "./auth/basic-auth.interceptor";
+import {LoginComponent} from "./login/login.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
     HeaderComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
