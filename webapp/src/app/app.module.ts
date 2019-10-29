@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, APP_INITIALIZER} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -17,6 +17,9 @@ import {CommonModule} from '@angular/common';
 
 import {BasicAuthInterceptor} from "./auth/basic-auth.interceptor";
 import {LoginComponent} from "./login/login.component";
+
+import {loadConfig} from './loadConfig';
+import {Config} from './services/util/config.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,20 @@ import {LoginComponent} from "./login/login.component";
     CommonModule
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true}
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: BasicAuthInterceptor,
+      multi: true,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: loadConfig,
+      deps: [
+        HttpClient,
+        Config,
+      ],
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

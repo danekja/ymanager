@@ -1,16 +1,19 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpParams} from '@angular/common/http';
 import {throwError} from 'rxjs';
-import {environment} from '../../../environments/environment';
 import {MatSnackBar} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
+import { Config } from '../util/config.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class BasicService {
-  protected baseUrl = environment.apiUrl;
+  protected baseUrl: string;
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) { }
+  constructor(protected config: Config, protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
+    this.baseUrl = config.baseUrl;
+  }
 
   protected handleError(error: HttpErrorResponse) {
     let errMsg;

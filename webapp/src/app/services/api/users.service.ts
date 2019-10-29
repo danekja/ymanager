@@ -9,6 +9,7 @@ import {Observable} from 'rxjs';
 import {UserBasicInformation, UserProfile} from '../../models/user.model';
 import {MatSnackBar} from '@angular/material';
 import {TranslateService} from '@ngx-translate/core';
+import { Config } from '../util/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +17,8 @@ import {TranslateService} from '@ngx-translate/core';
 export class UsersService extends BasicService {
   private _usersUrl = this.baseUrl + '/api/users';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
-    super(http, snackBar, translateService);
+  constructor(protected config: Config, protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService) {
+    super(config, http, snackBar, translateService);
   }
 
   /**
