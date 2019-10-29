@@ -11,6 +11,7 @@ import {MatSnackBar} from '@angular/material';
 import {DateFormatterService} from '../util/date-formatter.service';
 import {TranslateService} from '@ngx-translate/core';
 import {ProfileService} from "../util/profile.service";
+import { Config } from '../util/config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +19,8 @@ import {ProfileService} from "../util/profile.service";
 export class UserService extends BasicService { // dost podobny k usersService, mozna zmenit v rest api
   private _userUrl = this.baseUrl + '/api/user/';
 
-  constructor(protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, protected profileService: ProfileService, private dateFormater: DateFormatterService) {
-    super(http, snackBar, translateService);
+  constructor(protected config: Config, protected http: HttpClient, protected snackBar: MatSnackBar, protected translateService: TranslateService, protected profileService: ProfileService, private dateFormater: DateFormatterService) {
+    super(config, http, snackBar, translateService);
   }
 
   /**
