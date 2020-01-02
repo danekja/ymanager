@@ -1,5 +1,4 @@
-FROM maven:3.6-jdk-11 AS build
-
+FROM maven:3.6-jdk-11
 ARG BUILD_DIR=/app
 
 WORKDIR $BUILD_DIR
