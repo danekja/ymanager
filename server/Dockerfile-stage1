@@ -10,4 +10,5 @@ RUN mvn install
 
 # do the actual build
 COPY src/ src/
-RUN mvn clean install
+RUN mvn clean install \
+    && cp target/*.jar /app.jar
