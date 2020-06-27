@@ -49,7 +49,7 @@ public class ApiManager implements Manager {
 
     @Override
     @IsEmployer
-    public List<VacationRequest> getVacationRequests(Status status) {
+    public List<VacationRequestDTO> getVacationRequests(Status status) {
         if (status == null) {
             return requestRepository.getAllVacationRequests();
         } else {
@@ -59,7 +59,7 @@ public class ApiManager implements Manager {
 
     @Override
     @IsEmployer
-    public List<AuthorizationRequest> getAuthorizationRequests(Status status) {
+    public List<AuthorizationRequestDTO> getAuthorizationRequests(Status status) {
         if (status == null) {
             return requestRepository.getAllAuthorizations();
         } else {
@@ -75,8 +75,8 @@ public class ApiManager implements Manager {
 
     @Override
     @IsOwner
-    public List<VacationDay> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status) {
-        List<VacationDay> vacations;
+    public List<VacationDayDTO> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status) {
+        List<VacationDayDTO> vacations;
         if (status == null && toDate == null) {
             vacations = vacationRepository.getVacationDays(userId, fromDate);
         } else if (status == null) {
@@ -101,24 +101,24 @@ public class ApiManager implements Manager {
 
     @Override
     @IsOwner
-    public void createVacation(long userId, VacationDay vacationDay) {
-        if (vacationDay.getDate().isBefore(LocalDate.now())) {
+    public void createVacation(long userId, VacationDayDTO vacationDayDTO) {
+        if (vacationDayDTO.getDate().isBefore(LocalDate.now())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vacation cannot be token in past.");
         }
 
-        if (vacationRepository.isExistVacationForUser(userId, vacationDay.getDate())) {
+        if (vacationRepository.isExistVacationForUser(userId, vacationDayDTO.getDate())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot take a double vacation for the same day.");
         }
 
         User user = userRepository.getUser(userId);
-        vacationDay.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
+        vacationDayDTO.setStatus(user.getRole() == UserRole.EMPLOYER ? Status.ACCEPTED : Status.PENDING);
 
         Vacation vacation = new Vacation();
-        vacation.setDate(vacationDay.getDate());
-        vacation.setFrom(vacationDay.getFrom());
-        vacation.setTo(vacationDay.getTo());
-        vacation.setStatus(vacationDay.getStatus());
-        vacation.setType(vacationDay.getType());
+        vacation.setDate(vacationDayDTO.getDate());
+        vacation.setFrom(vacationDayDTO.getFrom());
+        vacation.setTo(vacationDayDTO.getTo());
+        vacation.setStatus(vacationDayDTO.getStatus());
+        vacation.setType(vacationDayDTO.getType());
 
         if (vacation.getType() == VacationType.VACATION) {
             user.takeVacation(vacation.getFrom(), vacation.getTo());
@@ -130,7 +130,7 @@ public class ApiManager implements Manager {
         userRepository.updateUser(user);
     }
 
-    private void changeSettingsByEmployee(User user, UserSettings settings, DefaultSettings defaultSettings) {
+    private void changeSettingsByEmployee(User user, UserSettingsDTO settings, DefaultSettings defaultSettings) {
         if (settings.getNotification() != null && !settings.getNotification().equals(user.getNotification())) {
             user.setNotification(settings.getNotification());
         }
@@ -140,7 +140,7 @@ public class ApiManager implements Manager {
         }
     }
 
-    private void changeSettingsByEmployer(User user, UserSettings settings, DefaultSettings defaultSettings) {
+    private void changeSettingsByEmployer(User user, UserSettingsDTO settings, DefaultSettings defaultSettings) {
 
         if (settings.getRole() != null && !settings.getRole().equals(user.getRole())) {
             user.setRole(settings.getRole());
@@ -172,7 +172,7 @@ public class ApiManager implements Manager {
 
     @Override
     @IsOwner
-    public void changeSettings(long userId, UserSettings settings) {
+    public void changeSettings(long userId, UserSettingsDTO settings) {
         UserRole invokedUserPermission = authService.getCurrentUser().getRole();
         boolean invokedUserIsAdmin = invokedUserPermission.equals(UserRole.EMPLOYER);
         DefaultSettings defaultSettings = getDefaultSettings();
@@ -191,20 +191,20 @@ public class ApiManager implements Manager {
     @Override
     //TODO not called anyway, allow after reimplementation
     @DenyAll
-    public void changeVacation(VacationDay vacationDay) {
-        Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationDay.getId());
+    public void changeVacation(VacationDayDTO vacationDayDTO) {
+        Optional<Vacation> vacation = vacationRepository.getVacationDay(vacationDayDTO.getId());
         if (vacation.isPresent()) {
-            vacation.get().setDate(vacationDay.getDate());
-            vacation.get().setStatus(vacationDay.getStatus());
-            vacation.get().setType(vacationDay.getType());
-            vacation.get().setTime(vacationDay.getFrom(), vacationDay.getTo());
+            vacation.get().setDate(vacationDayDTO.getDate());
+            vacation.get().setStatus(vacationDayDTO.getStatus());
+            vacation.get().setType(vacationDayDTO.getType());
+            vacation.get().setTime(vacationDayDTO.getFrom(), vacationDayDTO.getTo());
             vacationRepository.updateVacationDay(vacation.get());
         }
     }
 
     @Override
     @IsEmployer
-    public void changeRequest(RequestType type, BasicRequest request) {
+    public void changeRequest(RequestType type, BasicRequestDTO request) {
         switch (type) {
             case VACATION:
                 Optional<Vacation> vacationDayOpt = vacationRepository.getVacationDay(request.getId());

@@ -7,7 +7,7 @@ import org.danekja.ymanager.domain.Status;
  * The class is used for changing a status of the authorization or the vacation request when a client sends a request on an api endpoint.
  * This class is used to communicate with a frontend.
  */
-public class BasicRequest {
+public class BasicRequestDTO {
     /**
      * The ID of this request.
      */

@@ -10,7 +10,7 @@ import java.time.LocalTime;
  * The messenger class {@code Vacation} holds informations of an overtime or a sick day taken by a user.
  * This class is used in communication with a frontend.
  */
-public class VacationDay {
+public class VacationDayDTO {
     /**
      * The ID of this vacation.
      */

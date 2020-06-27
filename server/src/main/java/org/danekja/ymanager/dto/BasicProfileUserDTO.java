@@ -7,7 +7,7 @@ import java.util.List;
  * The basic profile contains default, the most important informations which helps identify a user like a name or photo.
  * This class is used to communicate with a frontend.
  */
-public class BasicProfileUser {
+public class BasicProfileUserDTO {
     /**
      * The user's ID.
      */
@@ -31,7 +31,7 @@ public class BasicProfileUser {
     /**
      * The list of user's vacations.
      */
-    private List<VacationDay> calendar;
+    private List<VacationDayDTO> calendar;
 
     /**
      * Returns the user's ID.
@@ -110,7 +110,7 @@ public class BasicProfileUser {
      *
      * @return the list of user's vacations
      */
-    public List<VacationDay> getCalendar() {
+    public List<VacationDayDTO> getCalendar() {
         return this.calendar;
     }
 
@@ -119,7 +119,7 @@ public class BasicProfileUser {
      *
      * @param calendar the new list of vacations
      */
-    public void setCalendar(final List<VacationDay> calendar) {
+    public void setCalendar(final List<VacationDayDTO> calendar) {
         this.calendar = calendar;
     }
 }

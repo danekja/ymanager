@@ -4,7 +4,7 @@ import org.danekja.ymanager.business.UserManager;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.BasicProfileUser;
+import org.danekja.ymanager.dto.BasicProfileUserDTO;
 import org.danekja.ymanager.repository.SettingsRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;
@@ -60,13 +60,13 @@ public class DefaultUserManager implements UserManager {
 
     @Override
     @IsEmployer
-    public List<BasicProfileUser> getUsers(Status status) {
-        List<BasicProfileUser> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
+    public List<BasicProfileUserDTO> getUsers(Status status) {
+        List<BasicProfileUserDTO> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
 
         LocalDate today = LocalDate.now();
         LocalDate weekBefore = today.minusWeeks(1);
         LocalDate weekAfter = today.plusWeeks(1);
-        for (BasicProfileUser user : users) {
+        for (BasicProfileUserDTO user : users) {
             user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
         }
 

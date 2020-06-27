@@ -12,7 +12,7 @@ import java.time.LocalTime;
  * It stores information relevant to the vacation which helps an employer to accept or reject the user's vacation.
  * This class is used in a communication with a frontend.
  */
-public class VacationRequest {
+public class VacationRequestDTO {
     /**
      * The ID of this vacation request.
      */

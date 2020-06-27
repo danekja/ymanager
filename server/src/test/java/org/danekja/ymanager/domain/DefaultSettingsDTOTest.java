@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * This class tests methods of the {@code DefaultSettings} class.
  * @see DefaultSettings
  */
-class DefaultSettingsTest {
+class DefaultSettingsDTOTest {
 
     /**
      * The empty instance of the {@code DefaultSettings}.

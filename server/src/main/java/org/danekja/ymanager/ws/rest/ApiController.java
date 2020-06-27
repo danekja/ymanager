@@ -34,17 +34,17 @@ public class ApiController {
     // *********************** GET ****************************
 
     @GetMapping("/users/requests/vacation")
-    public List<VacationRequest> usersRequestsVacation(@RequestParam(value = "status", required = false) Status status) {
+    public List<VacationRequestDTO> usersRequestsVacation(@RequestParam(value = "status", required = false) Status status) {
         return manager.getVacationRequests(status);
     }
 
     @GetMapping("/users/requests/authorization")
-    public List<AuthorizationRequest> userRequestsAuthorization(@RequestParam(value = "status", required = false) Status status) {
+    public List<AuthorizationRequestDTO> userRequestsAuthorization(@RequestParam(value = "status", required = false) Status status) {
         return manager.getAuthorizationRequests(status);
     }
 
     @GetMapping("/user/{id}/calendar")
-    public List<VacationDay> userCalendar(@PathVariable("id") Long id, @RequestParam(value = "from") String from, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "status", required = false) Status status) {
+    public List<VacationDayDTO> userCalendar(@PathVariable("id") Long id, @RequestParam("from") String from, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "status", required = false) Status status) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate fromDate = LocalDate.parse(from, formatter);
         LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
@@ -52,24 +52,24 @@ public class ApiController {
     }
 
     @GetMapping("/settings")
-    public DefaultSettings settings() {
-        return new DefaultSettings(manager.getDefaultSettings());
+    public DefaultSettingsDTO settings() {
+        return new DefaultSettingsDTO(manager.getDefaultSettings());
     }
 
     // *********************** POST ****************************
 
     @PostMapping("/settings")
-    public ResponseEntity<Void> settings(@RequestBody DefaultSettings settings) {
+    public ResponseEntity<Void> settings(@RequestBody DefaultSettingsDTO settings) {
         manager.createSettings(settings.toEntity());
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/calendar/create")
-    public ResponseEntity<Void> userCalendarCreate(@RequestBody VacationDay vacationDay, Authentication auth) {
+    public ResponseEntity<Void> userCalendarCreate(@RequestBody VacationDayDTO vacationDayDTO, Authentication auth) {
         //TODO make api endpoint contain userId in path as part of #39, also drop the create part of path
         //TODO drop the auth parameter afterwards
-        manager.createVacation(((User) auth.getPrincipal()).getId(), vacationDay);
+        manager.createVacation(((User) auth.getPrincipal()).getId(), vacationDayDTO);
 
         return ResponseEntity.ok().build();
     }
@@ -78,7 +78,7 @@ public class ApiController {
 
 
     @PutMapping("/user/settings")
-    public ResponseEntity<Void> userSettings(@RequestBody UserSettings settings, Authentication auth) {
+    public ResponseEntity<Void> userSettings(@RequestBody UserSettingsDTO settings, Authentication auth) {
         //TODO make api endpoint contain userId in path as part of #39
         //TODO drop the auth parameter afterwards
         manager.changeSettings(((User) auth.getPrincipal()).getId(), settings);
@@ -87,16 +87,16 @@ public class ApiController {
     }
 
     @PutMapping("/user/calendar/edit")
-    public ResponseEntity<Void> userCalendarEdit(@RequestBody VacationDay vacationDay) {
+    public ResponseEntity<Void> userCalendarEdit(@RequestBody VacationDayDTO vacationDayDTO) {
         //TODO make api endpoint point to vacation endpoint as part of #39, also drop the edit part of path
         //TODO drop the auth parameter afterwards
-        manager.changeVacation(vacationDay);
+        manager.changeVacation(vacationDayDTO);
 
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/user/requests")
-    public ResponseEntity<Void> userRequests(@RequestParam("type") RequestType type, @RequestBody BasicRequest request) {
+    public ResponseEntity<Void> userRequests(@RequestParam("type") RequestType type, @RequestBody BasicRequestDTO request) {
         manager.changeRequest(type, request);
 
         return ResponseEntity.ok().build();

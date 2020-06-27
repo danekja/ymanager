@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * It stores information relevant to a user's authorization in the application.
  * This class is used to communication with a frontend.
  */
-public class AuthorizationRequest {
+public class AuthorizationRequestDTO {
     /**
      * The user's ID.
      */

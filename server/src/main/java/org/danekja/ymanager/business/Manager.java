@@ -11,23 +11,23 @@ import java.util.List;
 public interface Manager {
 
 
-    List<VacationRequest> getVacationRequests(Status status);
+    List<VacationRequestDTO> getVacationRequests(Status status);
 
-    List<AuthorizationRequest> getAuthorizationRequests(Status status);
+    List<AuthorizationRequestDTO> getAuthorizationRequests(Status status);
 
     DefaultSettings getDefaultSettings();
 
-    List<VacationDay> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status);
+    List<VacationDayDTO> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status);
 
     void createSettings(DefaultSettings settings);
 
-    void createVacation(long userId, VacationDay vacationDay);
+    void createVacation(long userId, VacationDayDTO vacationDayDTO);
 
-    void changeSettings(long userId, UserSettings settings);
+    void changeSettings(long userId, UserSettingsDTO settings);
 
-    void changeVacation(VacationDay vacationDay);
+    void changeVacation(VacationDayDTO vacationDayDTO);
 
-    void changeRequest(RequestType type, BasicRequest request);
+    void changeRequest(RequestType type, BasicRequestDTO request);
 
     void deleteVacation(long vacationId);
 }

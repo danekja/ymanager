@@ -1,8 +1,8 @@
 package org.danekja.ymanager.repository;
 
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.BasicProfileUser;
-import org.danekja.ymanager.dto.FullUserProfile;
+import org.danekja.ymanager.dto.BasicProfileUserDTO;
+import org.danekja.ymanager.dto.FullUserProfileDTO;
 import org.danekja.ymanager.repository.jdbc.mappers.UserDataRowMapper;
 import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class UserRepository {
     /**
      * The mapper maps a row from a result of a query to an BasicProfileUser.
      */
-    private class BasicProfileUserMapper implements RowMapper<BasicProfileUser> {
+    private class BasicProfileUserMapper implements RowMapper<BasicProfileUserDTO> {
 
         /**
          * Maps a row from a result of a query to an BasicProfileUser.
@@ -43,8 +43,8 @@ public class UserRepository {
          * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
          */
         @Override
-        public BasicProfileUser mapRow(ResultSet resultSet, int i) throws SQLException {
-            final BasicProfileUser user = new BasicProfileUser();
+        public BasicProfileUserDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+            final BasicProfileUserDTO user = new BasicProfileUserDTO();
             user.setId(resultSet.getLong("id"));
             user.setFirstName(resultSet.getString("first_name"));
             user.setLastName(resultSet.getString("last_name"));
@@ -120,7 +120,7 @@ public class UserRepository {
      *
      * @return A list of all basic profiles.
      */
-    public List<BasicProfileUser> getAllBasicUsers() {
+    public List<BasicProfileUserDTO> getAllBasicUsers() {
         UserRepository.log.trace("Selecting basic profiles of all users from a database.");
 
         return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user", new BasicProfileUserMapper());
@@ -135,7 +135,7 @@ public class UserRepository {
      * @param status The authentication status.
      * @return A list of all basic profiles with the given status.
      */
-    public List<BasicProfileUser> getAllBasicUsers(final Status status) {
+    public List<BasicProfileUserDTO> getAllBasicUsers(final Status status) {
         UserRepository.log.trace("Selecting basic profiles of all users with a required status from a database.");
         UserRepository.log.debug("Status: {}", status);
 
@@ -154,12 +154,12 @@ public class UserRepository {
      * @param id
      * @return
      */
-    public FullUserProfile getFullUser(final long id) {
+    public FullUserProfileDTO getFullUser(final long id) {
         UserRepository.log.debug("Selecting full profile of a user with the specified id from a database: {}", id);
 
         final Map<String, Object> resultMap = this.getUserColumns(id);
 
-        final FullUserProfile user = new FullUserProfile();
+        final FullUserProfileDTO user = new FullUserProfileDTO();
         user.setId(id);
         user.setFirstName((String) resultMap.get("out_first_name"));
         user.setLastName((String) resultMap.get("out_last_name"));

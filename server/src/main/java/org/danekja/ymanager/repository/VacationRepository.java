@@ -3,7 +3,7 @@ package org.danekja.ymanager.repository;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.Vacation;
 import org.danekja.ymanager.domain.VacationType;
-import org.danekja.ymanager.dto.VacationDay;
+import org.danekja.ymanager.dto.VacationDayDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class VacationRepository {
     /**
      * The mapper maps a row from a result of a query to an Vacation.
      */
-    private class VacationDayMapper implements RowMapper<VacationDay> {
+    private class VacationDayMapper implements RowMapper<VacationDayDTO> {
 
         /**
          * Maps a row from a result of a query to an Vacation.
@@ -35,8 +35,8 @@ public class VacationRepository {
          * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
          */
         @Override
-        public VacationDay mapRow(ResultSet resultSet, int i) throws SQLException {
-            final VacationDay item = new VacationDay();
+        public VacationDayDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+            final VacationDayDTO item = new VacationDayDTO();
             item.setId(resultSet.getLong("v.id"));
             item.setDate(resultSet.getDate("v.vacation_date").toLocalDate());
 
@@ -83,7 +83,7 @@ public class VacationRepository {
         this.jdbc = jdbc;
     }
 
-    public List<VacationDay> getVacationDays(final long userId, final LocalDate from) {
+    public List<VacationDayDTO> getVacationDays(final long userId, final LocalDate from) {
         return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
@@ -91,7 +91,7 @@ public class VacationRepository {
                 new Object[]{userId, from}, new VacationDayMapper());
     }
 
-    public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final Status status) {
+    public List<VacationDayDTO> getVacationDays(final long userId, final LocalDate from, final Status status) {
         return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
@@ -99,7 +99,7 @@ public class VacationRepository {
                 new Object[]{userId, from, status.name()}, new VacationDayMapper());
     }
 
-    public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final LocalDate to) {
+    public List<VacationDayDTO> getVacationDays(final long userId, final LocalDate from, final LocalDate to) {
         return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
@@ -108,7 +108,7 @@ public class VacationRepository {
 
     }
 
-    public List<VacationDay> getVacationDays(final long userId, final LocalDate from, final LocalDate to, final Status status) {
+    public List<VacationDayDTO> getVacationDays(final long userId, final LocalDate from, final LocalDate to, final Status status) {
         return jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.status, v.vacation_type " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +

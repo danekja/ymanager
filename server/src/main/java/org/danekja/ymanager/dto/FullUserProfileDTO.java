@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * The messenger class {@code FullUserProfile} holds all informations about a user which is logged to the application.
  * This class is used to communicate with a frontend.
  */
-public class FullUserProfile {
+public class FullUserProfileDTO {
     /**
      * The user's ID.
      */
@@ -66,14 +66,14 @@ public class FullUserProfile {
      */
     private String email;
 
-    public FullUserProfile() {
+    public FullUserProfileDTO() {
     }
 
-    public FullUserProfile(User user) {
+    public FullUserProfileDTO(User user) {
         this(user.getId(), user.getFirstName(), user.getLastName(), user.getPhoto(), user.getVacationCount(), user.getTotalSickDayCount(), user.getTakenSickDayCount(), user.getStatus(), user.getRole(), user.getNotification(), user.getEmail());
     }
 
-    public FullUserProfile(Long id, String firstName, String lastName, String photo, Float vacationCount, Integer sickDayCount, Integer takenSickDayCount, Status status, UserRole role, LocalDateTime notification, String email) {
+    public FullUserProfileDTO(Long id, String firstName, String lastName, String photo, Float vacationCount, Integer sickDayCount, Integer takenSickDayCount, Status status, UserRole role, LocalDateTime notification, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

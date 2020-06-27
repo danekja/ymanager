@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * The messenger class {@code UserSettings} is used to change user settings by an employer.
  * This class is used in communication with a frontend.
  */
-public class UserSettings {
+public class UserSettingsDTO {
     /**
      * The user's ID.
      */

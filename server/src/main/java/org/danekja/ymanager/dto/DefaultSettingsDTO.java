@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
  * Default settings are mainly used when the user is added to the application which means he/she can't have his/her own values.
  * This class is used to communicate with a frontend.
  */
-public class DefaultSettings {
+public class DefaultSettingsDTO {
     /**
      * The default number of available sick days.
      */
@@ -19,15 +19,15 @@ public class DefaultSettings {
      */
     private LocalDateTime notification;
 
-    public DefaultSettings() {
+    public DefaultSettingsDTO() {
     }
 
-    public DefaultSettings(Integer sickDayCount, LocalDateTime notification) {
+    public DefaultSettingsDTO(Integer sickDayCount, LocalDateTime notification) {
         this.sickDayCount = sickDayCount;
         this.notification = notification;
     }
 
-    public DefaultSettings(org.danekja.ymanager.domain.DefaultSettings src) {
+    public DefaultSettingsDTO(org.danekja.ymanager.domain.DefaultSettings src) {
         this.sickDayCount = src.getSickDayCount();
         this.notification = src.getNotification();
     }

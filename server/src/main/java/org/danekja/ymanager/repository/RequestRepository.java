@@ -27,7 +27,7 @@ public class RequestRepository {
     /**
      * The mapper maps a row from a result of a query to an AuthorizationRequest.
      */
-    private class AuthorizationRequestMapper implements RowMapper<AuthorizationRequest> {
+    private class AuthorizationRequestMapper implements RowMapper<AuthorizationRequestDTO> {
 
         /**
          * Maps a row from a result of a query to an AuthorizationRequest.
@@ -37,8 +37,8 @@ public class RequestRepository {
          * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
          */
         @Override
-        public AuthorizationRequest mapRow(ResultSet resultSet, int i) throws SQLException {
-            final AuthorizationRequest request = new AuthorizationRequest();
+        public AuthorizationRequestDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+            final AuthorizationRequestDTO request = new AuthorizationRequestDTO();
             request.setId(resultSet.getLong("id"));
             request.setFirstName(resultSet.getString("first_name"));
             request.setLastName(resultSet.getString("last_name"));
@@ -51,7 +51,7 @@ public class RequestRepository {
     /**
      * The mapper maps each row from a result of a query to a VacationRequest.
      */
-    private class VacationRequestMapper implements RowMapper<VacationRequest> {
+    private class VacationRequestMapper implements RowMapper<VacationRequestDTO> {
 
         /**
          * Maps a row from a result of a query to an VacationRequest.
@@ -61,8 +61,8 @@ public class RequestRepository {
          * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
          */
         @Override
-        public VacationRequest mapRow(ResultSet resultSet, int i) throws SQLException {
-            final VacationRequest request = new VacationRequest();
+        public VacationRequestDTO mapRow(ResultSet resultSet, int i) throws SQLException {
+            final VacationRequestDTO request = new VacationRequestDTO();
             request.setId(resultSet.getLong("v.id"));
             request.setFirstName(resultSet.getString("u.first_name"));
             request.setLastName(resultSet.getString("u.last_name"));
@@ -120,7 +120,7 @@ public class RequestRepository {
      *
      * @return the list of all authorization requests
      */
-    public List<AuthorizationRequest> getAllAuthorizations() {
+    public List<AuthorizationRequestDTO> getAllAuthorizations() {
         RequestRepository.log.trace("Selecting all authorization requests from a database.");
 
         return this.jdbc.query("SELECT id, first_name, last_name, creation_date, status FROM end_user", new AuthorizationRequestMapper());
@@ -135,7 +135,7 @@ public class RequestRepository {
      * @param status the approval status of the requests
      * @return the list of all authorization requests with the given status
      */
-    public List<AuthorizationRequest> getAllAuthorizations(final Status status) {
+    public List<AuthorizationRequestDTO> getAllAuthorizations(final Status status) {
         RequestRepository.log.trace("Selecting all authorization requests from a database with requested status.");
         RequestRepository.log.debug("Status: {}", status);
 
@@ -160,7 +160,7 @@ public class RequestRepository {
      *
      * @param request the BasicRequest object with new values of the vacation request
      */
-    public void updateAuthorization(final BasicRequest request) {
+    public void updateAuthorization(final BasicRequestDTO request) {
         this.updateAuthorization(request.getId(), request.getStatus());
     }
 
@@ -172,7 +172,7 @@ public class RequestRepository {
      *
      * @return the list of all vacation requests
      */
-    public List<VacationRequest> getAllVacationRequests() {
+    public List<VacationRequestDTO> getAllVacationRequests() {
         RequestRepository.log.trace("Selecting all vacation requests from a database.");
 
         return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, v.vacation_type, v.status, u.first_name, u.last_name " +
@@ -188,7 +188,7 @@ public class RequestRepository {
      * @param status the approval status of the requests
      * @return the list of all vacation requests with the given status
      */
-    public List<VacationRequest> getAllVacationRequests(final Status status) {
+    public List<VacationRequestDTO> getAllVacationRequests(final Status status) {
         RequestRepository.log.trace("Selecting all vacation requests from a database with requested status.");
         RequestRepository.log.debug("Status: {}", status);
 
@@ -217,7 +217,7 @@ public class RequestRepository {
      *
      * @param request the BasicRequest object with new values of the vacation request
      */
-    public void updateVacationRequest(final BasicRequest request) {
+    public void updateVacationRequest(final BasicRequestDTO request) {
         this.updateVacationRequest(request.getId(), request.getStatus());
     }
 }

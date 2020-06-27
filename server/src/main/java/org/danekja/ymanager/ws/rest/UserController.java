@@ -3,8 +3,8 @@ package org.danekja.ymanager.ws.rest;
 import org.danekja.ymanager.business.UserManager;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.dto.BasicProfileUser;
-import org.danekja.ymanager.dto.FullUserProfile;
+import org.danekja.ymanager.dto.BasicProfileUserDTO;
+import org.danekja.ymanager.dto.FullUserProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<BasicProfileUser> users(@RequestParam(value = "status", required = false) Status status) {
+    public List<BasicProfileUserDTO> users(@RequestParam(value = "status", required = false) Status status) {
         return userManager.getUsers(status);
     }
 
@@ -39,7 +39,7 @@ public class UserController {
      * @return user information object
      */
     @GetMapping("/current/profile")
-    public FullUserProfile getCurrentUser(Authentication auth) throws Exception {
+    public FullUserProfileDTO getCurrentUser(Authentication auth) throws Exception {
 
         if (auth instanceof AnonymousAuthenticationToken
                 || auth.getPrincipal() == null
@@ -51,9 +51,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/profile")
-    public FullUserProfile getUserProfile(@PathVariable("id") Long id) throws Exception {
+    public FullUserProfileDTO getUserProfile(@PathVariable("id") Long id) throws Exception {
         User u = userManager.getUser(id);
 
-        return new FullUserProfile(u);
+        return new FullUserProfileDTO(u);
     }
 }
