@@ -25,8 +25,7 @@ public class JdbcSettingsRepository implements SettingsRepository {
 
     @Override
     public DefaultSettings get() {
-        //TODO order by creation date
-        return this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY id DESC LIMIT 1", SETTINGS_ROW_MAPPER);
+        return this.jdbc.queryForObject("SELECT * FROM default_settings ORDER BY creation_date DESC, id DESC LIMIT 1", SETTINGS_ROW_MAPPER);
     }
 
 }

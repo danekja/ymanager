@@ -18,14 +18,17 @@ public class GoogleUser extends User implements OidcUser {
     private static final String HOSTED_DOMAIN = "hd";
 
     private final OidcIdToken idToken;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public GoogleUser(Long id, UserData userData, OidcIdToken idToken) {
         super(id, userData);
         this.idToken = idToken;
+        this.authorities = Collections.singleton(new SimpleGrantedAuthority(userData.getRole().name()));
     }
 
     public GoogleUser(OidcIdToken idToken) {
         this.idToken = idToken;
+        this.authorities = Collections.emptySet();
     }
 
     public String subjectId() {
@@ -73,8 +76,7 @@ public class GoogleUser extends User implements OidcUser {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //TODO do not create collection on each call
-        return Collections.singleton(new SimpleGrantedAuthority(userData.getRole().name()));
+        return authorities;
     }
 
     @Override

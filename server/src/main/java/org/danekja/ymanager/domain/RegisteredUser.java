@@ -45,7 +45,13 @@ public class RegisteredUser extends User implements UserDetails {
      */
     private LocalDateTime creationDate;
 
+    /**
+     * Granted authorities.
+     */
+    private final Collection<? extends GrantedAuthority> authorities;
+
     public RegisteredUser() {
+        this.authorities = Collections.emptySet();
     }
 
     public RegisteredUser(Long id, String firstName, String lastName, String email, String photo, LocalDateTime creationDate, UserData userData) {
@@ -56,6 +62,7 @@ public class RegisteredUser extends User implements UserDetails {
         this.email = email;
         this.photo = photo;
         this.creationDate = creationDate;
+        this.authorities = Collections.singleton(new SimpleGrantedAuthority(userData.getRole().name()));
     }
 
     /*
@@ -63,8 +70,7 @@ public class RegisteredUser extends User implements UserDetails {
  */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //TODO do not create collection on each call
-        return Collections.singleton(new SimpleGrantedAuthority(userData.getRole().name()));
+        return authorities;
     }
 
     @Override
