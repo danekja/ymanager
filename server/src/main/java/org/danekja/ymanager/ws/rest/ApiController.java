@@ -38,17 +38,17 @@ public class ApiController {
     @RequestMapping(value = "/users/requests/vacation", method=GET)
     public List<VacationRequest> usersRequestsVacation(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) String status)
+            @RequestParam(value = "status", required = false) Status status)
     {
-        return manager.getVacationRequests(Status.getStatus(status));
+        return manager.getVacationRequests(status);
     }
 
     @RequestMapping(value = "/users/requests/authorization", method=GET)
     public List<AuthorizationRequest> userRequestsAuthorization(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) String status)
+            @RequestParam(value = "status", required = false) Status status)
     {
-        return manager.getAuthorizationRequests(Status.getStatus(status));
+        return manager.getAuthorizationRequests(status);
     }
 
     @RequestMapping(value = "/user/{id}/calendar", method=GET)
@@ -57,12 +57,12 @@ public class ApiController {
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "from") String from,
             @RequestParam(value = "to", required = false) String to,
-            @RequestParam(value = "status", required = false) String status)
+            @RequestParam(value = "status", required = false) Status status)
     {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate fromDate = LocalDate.parse(from, formatter);
         LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
-        return manager.getUserCalendar(id, fromDate, toDate, Status.getStatus(status));
+        return manager.getUserCalendar(id, fromDate, toDate, status);
     }
 
     @RequestMapping(value = "/settings", method=GET)
@@ -128,10 +128,10 @@ public class ApiController {
     @RequestMapping(value = "/user/requests", method=PUT)
     public ResponseEntity<Void> userRequests(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "type", required = true) String type,
+            @RequestParam(value = "type") RequestType type,
             @RequestBody BasicRequest request)
     {
-        manager.changeRequest(RequestType.getType(type), request);
+        manager.changeRequest(type, request);
 
         return ResponseEntity.ok().build();
     }

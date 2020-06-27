@@ -43,7 +43,7 @@ public class RequestRepository {
             request.setFirstName(resultSet.getString("first_name"));
             request.setLastName(resultSet.getString("last_name"));
             request.setTimestamp(resultSet.getTimestamp("creation_date").toLocalDateTime());
-            request.setStatus(Status.getStatus(resultSet.getString("status")));
+            request.setStatus(Status.valueOf(resultSet.getString("status")));
             return request;
         }
     }
@@ -85,7 +85,7 @@ public class RequestRepository {
 
             request.setTimestamp(resultSet.getTimestamp("v.creation_date").toLocalDateTime());
             request.setType(VacationType.getVacationType(resultSet.getString("v.vacation_type")));
-            request.setStatus(Status.getStatus(resultSet.getString("v.status")));
+            request.setStatus(Status.valueOf(resultSet.getString("v.status")));
             return request;
         }
     }

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
-import static org.danekja.ymanager.domain.Status.getStatus;
 
 @Repository
 public class VacationRepository {
@@ -56,7 +55,7 @@ public class VacationRepository {
                 item.setTo(timeTo.toLocalTime());
             }
 
-            item.setStatus(getStatus(resultSet.getString("v.status")));
+            item.setStatus(Status.valueOf(resultSet.getString("v.status")));
             item.setType(VacationType.getVacationType(resultSet.getString("v.vacation_type")));
             return item;
         }
@@ -140,7 +139,7 @@ public class VacationRepository {
                     }
 
                     vacation.setCreationDate(rs.getTimestamp("creation_date").toLocalDateTime());
-                    vacation.setStatus(getStatus(rs.getString("status")));
+                    vacation.setStatus(Status.valueOf(rs.getString("status")));
                     vacation.setType(VacationType.getVacationType(rs.getString("vacation_type")));
                     vacation.setUserId(rs.getLong("user_id"));
                     return vacation;

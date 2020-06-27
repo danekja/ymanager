@@ -29,8 +29,8 @@ public class UserController {
     @GetMapping
     public List<BasicProfileUser> users(
             @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) String status) {
-        return userManager.getUsers(Status.getStatus(status));
+            @RequestParam(value = "status", required = false) Status status) {
+        return userManager.getUsers(status);
     }
 
 

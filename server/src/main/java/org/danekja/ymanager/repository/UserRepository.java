@@ -170,7 +170,7 @@ public class UserRepository {
         user.setEmail((String) resultMap.get("out_email"));
         user.setPhoto((String) resultMap.get("out_photo"));
         user.setRole(getUserRole((String) resultMap.get("out_role")));
-        user.setStatus(Status.getStatus((String) resultMap.get("out_status")));
+        user.setStatus(Status.valueOf((String) resultMap.get("out_status")));
         return user;
 
     }
