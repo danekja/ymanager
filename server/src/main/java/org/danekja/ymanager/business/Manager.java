@@ -4,7 +4,6 @@ import org.danekja.ymanager.domain.DefaultSettings;
 import org.danekja.ymanager.domain.RequestType;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.dto.*;
-import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,23 +11,23 @@ import java.util.List;
 public interface Manager {
 
 
-    List<VacationRequest> getVacationRequests(Status status) throws RESTFullException;
+    List<VacationRequest> getVacationRequests(Status status);
 
-    List<AuthorizationRequest> getAuthorizationRequests(Status status) throws RESTFullException;
+    List<AuthorizationRequest> getAuthorizationRequests(Status status);
 
-    DefaultSettings getDefaultSettings() throws RESTFullException;
+    DefaultSettings getDefaultSettings();
 
-    List<VacationDay> getUserCalendar(Long userId, LocalDate fromDate, LocalDate toDate, Status status) throws RESTFullException;
+    List<VacationDay> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status);
 
-    void createSettings(DefaultSettings settings) throws RESTFullException;
+    void createSettings(DefaultSettings settings);
 
-    void createVacation(Long userId, VacationDay vacationDay) throws RESTFullException;
+    void createVacation(long userId, VacationDay vacationDay);
 
-    void changeSettings(Long userId, UserSettings settings) throws RESTFullException;
+    void changeSettings(long userId, UserSettings settings);
 
-    void changeVacation(VacationDay vacationDay) throws RESTFullException;
+    void changeVacation(VacationDay vacationDay);
 
-    void changeRequest(RequestType type, BasicRequest request) throws RESTFullException;
+    void changeRequest(RequestType type, BasicRequest request);
 
-    void deleteVacation(Long vacationId) throws RESTFullException;
+    void deleteVacation(long vacationId);
 }

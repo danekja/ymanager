@@ -186,9 +186,7 @@ public class UserRepository {
      * @return found user object or null (if not found)
      */
     public RegisteredUser getUser(final String email) {
-        List<RegisteredUser> users = this.jdbc.query("SELECT * FROM end_user WHERE email = ?", USER_MAPPER, email);
-
-        return RepositoryUtils.singleResult(users);
+        return this.jdbc.queryForObject("SELECT * FROM end_user WHERE email = ?", USER_MAPPER, email);
     }
 
     /**
@@ -198,9 +196,7 @@ public class UserRepository {
      * @return found user object or null (if not found)
      */
     public RegisteredUser getUser(final long id) {
-        List<RegisteredUser> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_MAPPER, id);
-
-        return RepositoryUtils.singleResult(users);
+        return this.jdbc.queryForObject("SELECT * FROM end_user WHERE id = ?", USER_MAPPER, id);
     }
 
     /**
@@ -210,9 +206,7 @@ public class UserRepository {
      * @return
      */
     public UserData getUserData(final long id) {
-        List<UserData> users = this.jdbc.query("SELECT * FROM end_user WHERE id = ?", USER_DATA_MAPPER, id);
-
-        return RepositoryUtils.singleResult(users);
+        return this.jdbc.queryForObject("SELECT * FROM end_user WHERE id = ?", USER_DATA_MAPPER, id);
     }
 
     public void updateUser(final User user) {

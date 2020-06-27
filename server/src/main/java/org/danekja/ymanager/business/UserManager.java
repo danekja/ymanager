@@ -4,7 +4,6 @@ import org.danekja.ymanager.domain.GoogleUser;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
 import org.danekja.ymanager.dto.BasicProfileUser;
-import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 
 import java.util.List;
@@ -21,9 +20,8 @@ public interface UserManager {
      *
      * @param status status filter value
      * @return list of users or empty list if none found
-     * @throws RESTFullException
      */
-    List<BasicProfileUser> getUsers(Status status) throws RESTFullException;
+    List<BasicProfileUser> getUsers(Status status);
 
     /**
      * Gets user by id (PK)

@@ -8,11 +8,10 @@ import org.danekja.ymanager.dto.BasicProfileUser;
 import org.danekja.ymanager.repository.SettingsRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;
-import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.stereotype.Service;
@@ -51,30 +50,27 @@ public class DefaultUserManager implements UserManager {
     public GoogleUser getUser(OidcIdToken token) {
         //TODO replace with better user object creation after we update the data model - registered and oauth users should be
         //TODO in separate tables. We do this here because we need the ID value set
-        User user = userRepository.getUser(token.getEmail());
-
-        return user != null ? new GoogleUser(user.getId(), user.getUserData(), token) : null;
+        try {
+            User user = userRepository.getUser(token.getEmail());
+            return new GoogleUser(user.getId(), user.getUserData(), token);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
     }
 
     @Override
     @IsEmployer
-    public List<BasicProfileUser> getUsers(Status status) throws RESTFullException {
-        try {
-            List<BasicProfileUser> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
+    public List<BasicProfileUser> getUsers(Status status) {
+        List<BasicProfileUser> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
 
-            LocalDate today = LocalDate.now();
-            LocalDate weekBefore = today.minusWeeks(1);
-            LocalDate weekAfter = today.plusWeeks(1);
-            for (BasicProfileUser user : users) {
-                user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
-            }
-
-            return users;
-
-        } catch (DataAccessException e) {
-            LOG.error(e.getMessage());
-            throw new RESTFullException(e.getMessage(), "database.error");
+        LocalDate today = LocalDate.now();
+        LocalDate weekBefore = today.minusWeeks(1);
+        LocalDate weekAfter = today.plusWeeks(1);
+        for (BasicProfileUser user : users) {
+            user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
         }
+
+        return users;
     }
 
     @Override

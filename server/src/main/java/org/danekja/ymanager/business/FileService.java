@@ -1,11 +1,11 @@
 package org.danekja.ymanager.business;
 
-import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
+import java.io.IOException;
 
 public interface FileService {
 
-    FileImportResult parseXLSFile(String fileName, byte[] bytes) throws RESTFullException;
+    FileImportResult parseXLSFile(String fileName, byte[] bytes) throws IOException;
 
-    FileExportResult createPDFFile() throws RESTFullException;
+    FileExportResult createPDFFile() throws IOException;
 
 }

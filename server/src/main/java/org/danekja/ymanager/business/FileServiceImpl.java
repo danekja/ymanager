@@ -6,7 +6,6 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.danekja.ymanager.business.file.excel.*;
-import org.danekja.ymanager.ws.rest.exceptions.RESTFullException;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -23,16 +22,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public FileImportResult parseXLSFile(String fileName, byte[] bytes) throws RESTFullException {
+    public FileImportResult parseXLSFile(String fileName, byte[] bytes) throws IOException {
 
-        try {
-            Map<String, Content> contentMap = getContentInfo(ExcelParser.parseXLSX(new ByteArrayInputStream(bytes)));
+        Map<String, Content> contentMap = getContentInfo(ExcelParser.parseXLSX(new ByteArrayInputStream(bytes)));
 
-            return new FileImportResult(fileName, (long) contentMap.size());
-
-        } catch (IOException e) {
-            throw new RESTFullException("", "");
-        }
+        return new FileImportResult(fileName, (long) contentMap.size());
     }
 
     private Map<String, Content> getContentInfo(Map<String, SheetContent[]> sheetForName) {
@@ -60,32 +54,27 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public FileExportResult createPDFFile() throws RESTFullException {
+    public FileExportResult createPDFFile() throws IOException {
 
         PDDocument document = new PDDocument();
         PDPage page1 = new PDPage(PDRectangle.A4);
         document.addPage(page1);
 
-        try {
-            PDPageContentStream cos = new PDPageContentStream(document, page1);
+        PDPageContentStream cos = new PDPageContentStream(document, page1);
 
-            cos.beginText();
-            cos.setFont(PDType1Font.HELVETICA, 12);
-            cos.newLineAtOffset(100, 10);
-            cos.showText("Test");
-            cos.endText();
+        cos.beginText();
+        cos.setFont(PDType1Font.HELVETICA, 12);
+        cos.newLineAtOffset(100, 10);
+        cos.showText("Test");
+        cos.endText();
 
-            cos.close();
+        cos.close();
 
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-            document.save(output);
-            document.close();
+        document.save(output);
+        document.close();
 
-            return new FileExportResult("export.pdf", output.toByteArray());
-
-        } catch (IOException e) {
-            throw new RESTFullException("", "");
-        }
+        return new FileExportResult("export.pdf", output.toByteArray());
     }
 }
