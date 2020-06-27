@@ -70,10 +70,10 @@ public class UserData {
 
         if (vacationCount == null) {
             User.log.warn("The number of remaining overtime must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
+            throw new IllegalArgumentException("The number of overtime hours has to be filled in.");
         } else if (vacationCount < 0) {
             User.log.warn("The number of remaining overtime must not be negative");
-            throw new IllegalArgumentException("negative.vacation.error");
+            throw new IllegalArgumentException("The number of a remaining overtime mustn't be negative.");
         }
 
         this.vacationCount = vacationCount;
@@ -91,10 +91,10 @@ public class UserData {
 
         if (value == null) {
             User.log.warn("The given value must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
+            throw new IllegalArgumentException("The number of overtime hours has to be filled in.");
         } else if (this.vacationCount + value < 0) {
             User.log.warn("The number of remaining overtime must not be negative");
-            throw new IllegalArgumentException("negative.vacation.error");
+            throw new IllegalArgumentException("The number of a remaining overtime mustn't be negative.");
         }
 
         this.vacationCount += value;
@@ -115,10 +115,10 @@ public class UserData {
 
         if (from == null || to == null) {
             User.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
+            throw new IllegalArgumentException("A vacation has to have a starting and an ending time.");
         } else if (from.compareTo(to) >= 0) {
             User.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
-            throw new IllegalArgumentException("time.order.error");
+            throw new IllegalArgumentException("The overtime mustn't start after or at the same time it ends.");
         }
 
         final float difference = from.until(to, ChronoUnit.MINUTES) / 60f;
@@ -146,7 +146,7 @@ public class UserData {
 
         if (totalSickDayCount != null && totalSickDayCount < 0) {
             User.log.warn("The number of user's available sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
+            throw new IllegalArgumentException("The number of sick days mustn't be negative.");
         }
 
         this.totalSickDayCount = totalSickDayCount;
@@ -173,13 +173,13 @@ public class UserData {
 
         if (takenSickDayCount == null) {
             User.log.warn("The number number of user's taken sick days must not be null");
-            throw new IllegalArgumentException("sick.day.null.error");
+            throw new IllegalArgumentException("The number of sick days has to be filled in.");
         } else if (takenSickDayCount < 0) {
             User.log.warn("The number number of user's taken sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
+            throw new IllegalArgumentException("The number of sick days mustn't be negative.");
         } else if (takenSickDayCount > this.totalSickDayCount) {
             User.log.warn("The number number of user's taken sick days must not greater than his/her available sick days");
-            throw new IllegalArgumentException("taken.sick.day.count.error");
+            throw new IllegalArgumentException("Not enough available sick days.");
         }
 
         this.takenSickDayCount = takenSickDayCount;
@@ -197,13 +197,13 @@ public class UserData {
 
         if (value == null) {
             User.log.warn("The given value must not be null");
-            throw new IllegalArgumentException("vacation.null.error");
+            throw new IllegalArgumentException("The number of overtime hours has to be filled in.");
         } else if (this.takenSickDayCount + value < 0) {
             User.log.warn("The number number of user's taken sick days must not be negative");
-            throw new IllegalArgumentException("negative.sick.day.error");
+            throw new IllegalArgumentException("The number of sick days mustn't be negative.");
         } else if (this.takenSickDayCount + value > this.totalSickDayCount) {
             User.log.warn("The number number of user's taken sick days must not greater than his/her available sick days");
-            throw new IllegalArgumentException("taken.sick.day.count.error");
+            throw new IllegalArgumentException("Not enough available sick days.");
         }
 
         this.takenSickDayCount += value;
@@ -252,7 +252,7 @@ public class UserData {
 
         if (role == null) {
             User.log.warn("The given role must not be null");
-            throw new IllegalArgumentException("role.null.error");
+            throw new IllegalArgumentException("The role has to be filled in.");
         }
 
         this.role = role;
@@ -277,7 +277,7 @@ public class UserData {
 
         if (status == null) {
             User.log.warn("The given status must not be null");
-            throw new IllegalArgumentException("status.null.error");
+            throw new IllegalArgumentException("The status has to be filled in.");
         }
 
         this.status = status;

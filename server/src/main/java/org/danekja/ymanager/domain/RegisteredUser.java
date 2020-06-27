@@ -146,10 +146,10 @@ public class RegisteredUser extends User implements UserDetails {
 
         if (firstName == null) {
             User.log.warn("The given first name must not be null");
-            throw new IllegalArgumentException("first.name.null.error");
+            throw new IllegalArgumentException("The first name has to be filled in.");
         } else if (firstName.length() > NAME_LENGTH) {
             User.log.warn("The length of the given first name exceeded a limit");
-            throw new IllegalArgumentException("name.length.error");
+            throw new IllegalArgumentException("The length of a name mustn't exceed 45.");
         }
 
         this.firstName = firstName;
@@ -167,10 +167,10 @@ public class RegisteredUser extends User implements UserDetails {
 
         if (lastName == null) {
             User.log.warn("The given last name must not be null");
-            throw new IllegalArgumentException("last.name.null.error");
+            throw new IllegalArgumentException("The last name has to be filled in.");
         } else if (lastName.length() > NAME_LENGTH) {
             User.log.warn("The length of the given last name exceeded a limit");
-            throw new IllegalArgumentException("name.length.error");
+            throw new IllegalArgumentException("The length of a name mustn't exceed 45.");
         }
 
         this.lastName = lastName;
@@ -188,10 +188,10 @@ public class RegisteredUser extends User implements UserDetails {
 
         if (email == null) {
             User.log.warn("The given email must not be null");
-            throw new IllegalArgumentException("email.null.error");
+            throw new IllegalArgumentException("The email address has to be filled in.");
         } else if (email.length() > EMAIL_ADDRESS_LENGTH) {
             User.log.warn("The length of the email address exceeded a limit");
-            throw new IllegalArgumentException("email.length.error");
+            throw new IllegalArgumentException("The length of an email address mustn't exceed 100.");
         }
 
         this.email = email;

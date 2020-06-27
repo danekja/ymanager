@@ -149,7 +149,7 @@ public class ApiManager implements Manager {
         if (settings.getSickDayCount() != null) {
 
             if (user.getTakenSickDayCount() > settings.getSickDayCount()) {
-                throw new IllegalArgumentException("settings.sick.day.lt.taken.error");
+                throw new IllegalArgumentException("You cannot set a number of sick day lower than is taken at this moment.");
             }
 
             if (settings.getSickDayCount().equals(defaultSettings.getSickDayCount())) {

@@ -34,29 +34,17 @@ public class ApiController {
     // *********************** GET ****************************
 
     @GetMapping("/users/requests/vacation")
-    public List<VacationRequest> usersRequestsVacation(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) Status status)
-    {
+    public List<VacationRequest> usersRequestsVacation(@RequestParam(value = "status", required = false) Status status) {
         return manager.getVacationRequests(status);
     }
 
     @GetMapping("/users/requests/authorization")
-    public List<AuthorizationRequest> userRequestsAuthorization(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "status", required = false) Status status)
-    {
+    public List<AuthorizationRequest> userRequestsAuthorization(@RequestParam(value = "status", required = false) Status status) {
         return manager.getAuthorizationRequests(status);
     }
 
     @GetMapping("/user/{id}/calendar")
-    public List<VacationDay> userCalendar(
-            @PathVariable("id") Long id,
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "from") String from,
-            @RequestParam(value = "to", required = false) String to,
-            @RequestParam(value = "status", required = false) Status status)
-    {
+    public List<VacationDay> userCalendar(@PathVariable("id") Long id, @RequestParam(value = "from") String from, @RequestParam(value = "to", required = false) String to, @RequestParam(value = "status", required = false) Status status) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate fromDate = LocalDate.parse(from, formatter);
         LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
@@ -64,30 +52,21 @@ public class ApiController {
     }
 
     @GetMapping("/settings")
-    public DefaultSettings settings(
-            @RequestParam(value = "lang", required = false) String lang)
-    {
+    public DefaultSettings settings() {
         return new DefaultSettings(manager.getDefaultSettings());
     }
 
     // *********************** POST ****************************
 
     @PostMapping("/settings")
-    public ResponseEntity<Void> settings(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody DefaultSettings settings)
-    {
+    public ResponseEntity<Void> settings(@RequestBody DefaultSettings settings) {
         manager.createSettings(settings.toEntity());
 
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/calendar/create")
-    public ResponseEntity<Void> userCalendarCreate(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody VacationDay vacationDay,
-            Authentication auth)
-    {
+    public ResponseEntity<Void> userCalendarCreate(@RequestBody VacationDay vacationDay, Authentication auth) {
         //TODO make api endpoint contain userId in path as part of #39, also drop the create part of path
         //TODO drop the auth parameter afterwards
         manager.createVacation(((User) auth.getPrincipal()).getId(), vacationDay);
@@ -99,11 +78,7 @@ public class ApiController {
 
 
     @PutMapping("/user/settings")
-    public ResponseEntity<Void> userSettings(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody UserSettings settings,
-            Authentication auth)
-    {
+    public ResponseEntity<Void> userSettings(@RequestBody UserSettings settings, Authentication auth) {
         //TODO make api endpoint contain userId in path as part of #39
         //TODO drop the auth parameter afterwards
         manager.changeSettings(((User) auth.getPrincipal()).getId(), settings);
@@ -112,10 +87,7 @@ public class ApiController {
     }
 
     @PutMapping("/user/calendar/edit")
-    public ResponseEntity<Void> userCalendarEdit(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestBody VacationDay vacationDay)
-    {
+    public ResponseEntity<Void> userCalendarEdit(@RequestBody VacationDay vacationDay) {
         //TODO make api endpoint point to vacation endpoint as part of #39, also drop the edit part of path
         //TODO drop the auth parameter afterwards
         manager.changeVacation(vacationDay);
@@ -124,11 +96,7 @@ public class ApiController {
     }
 
     @PutMapping("/user/requests")
-    public ResponseEntity<Void> userRequests(
-            @RequestParam(value = "lang", required = false) String lang,
-            @RequestParam(value = "type") RequestType type,
-            @RequestBody BasicRequest request)
-    {
+    public ResponseEntity<Void> userRequests(@RequestParam("type") RequestType type, @RequestBody BasicRequest request) {
         manager.changeRequest(type, request);
 
         return ResponseEntity.ok().build();
@@ -137,10 +105,7 @@ public class ApiController {
     // *********************** DELETE ****************************
 
     @DeleteMapping("/calendar/{id}/delete")
-    public ResponseEntity<Void> calendarDelete(
-            @PathVariable("id") Long id,
-            @RequestParam(value = "lang", required = false) String lang)
-    {
+    public ResponseEntity<Void> calendarDelete(@PathVariable("id") Long id) {
         manager.deleteVacation(id);
 
         return ResponseEntity.ok().build();
@@ -149,14 +114,14 @@ public class ApiController {
     // *********************** FILE ****************************
 
     @PostMapping("/import/xls")
-    public ResponseEntity<Void> importXLSFile(@RequestParam(value = "lang", required = false) String lang, @RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<Void> importXLSFile(@RequestParam("file") MultipartFile file) throws Exception {
         fileService.parseXLSFile(file.getOriginalFilename(), file.getBytes());
 
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/export/pdf")
-    public ResponseEntity<byte[]> exportPDFFile(@RequestParam(value = "lang", required = false) String lang) throws Exception {
+    public ResponseEntity<byte[]> exportPDFFile() throws Exception {
         FileExportResult result = fileService.createPDFFile();
 
         return ResponseEntity.ok()

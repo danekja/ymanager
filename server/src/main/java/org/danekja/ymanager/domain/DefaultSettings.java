@@ -81,10 +81,10 @@ public class DefaultSettings {
 
         if (sickDayCount == null) {
             DefaultSettings.log.warn("The given number of available sick days must not be null");
-            throw new IllegalArgumentException("sick.day.null.error");
+            throw new IllegalArgumentException("The number of sick days has to be filled in.");
         } else if (sickDayCount < 0) {
             DefaultSettings.log.warn("The number of available sick days was negative");
-            throw new IllegalArgumentException("sick.day.count.error");
+            throw new IllegalArgumentException("The number of sick days has to be non-negative number.");
         }
 
         this.sickDayCount = sickDayCount;
@@ -111,7 +111,7 @@ public class DefaultSettings {
 
         if (notification == null) {
             DefaultSettings.log.warn("The notification must not be null");
-            throw new IllegalArgumentException("notification.null.error");
+            throw new IllegalArgumentException("The date of a notification has to be filled in.");
         }
 
         this.notification = notification;

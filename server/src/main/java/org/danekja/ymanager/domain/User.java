@@ -273,10 +273,10 @@ public abstract class User {
 
         if(from == null || to == null) {
             User.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
+            throw new IllegalArgumentException("A vacation has to have a starting and an ending time.");
         } else if (from.compareTo(to) >= 0) {
             User.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
-            throw new IllegalArgumentException("time.order.error");
+            throw new IllegalArgumentException("The overtime mustn't start after or at the same time it ends.");
         }
 
         final float difference = from.until(to, MINUTES) / 60f;
@@ -284,7 +284,7 @@ public abstract class User {
 
         if (tempVacationCount < 0) {
             User.log.warn("Cannot take a vacation, not enough available hours");
-            throw new IllegalArgumentException("available.vacation.error");
+            throw new IllegalArgumentException("You cannot take a vacation, not enough remaining hours.");
         }
 
         this.userData.setVacationCount(tempVacationCount);

@@ -95,7 +95,7 @@ public class Vacation {
 
         if (date == null) {
             Vacation.log.warn("The given date must not be null.");
-            throw new IllegalArgumentException("date.null.error");
+            throw new IllegalArgumentException("The date has to be filled in.");
         }
 
         this.date = date;
@@ -122,13 +122,13 @@ public class Vacation {
 
         if (from != null && this.type == VacationType.SICK_DAY) {
             Vacation.log.warn("A sick day must not have a starting or an ending time");
-            throw new IllegalArgumentException("time.sick.day.error");
+            throw new IllegalArgumentException("A sick day mustn't have a starting or an ending time.");
         } else if(from == null && this.type == VacationType.VACATION) {
             Vacation.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
+            throw new IllegalArgumentException("A vacation has to have a starting and an ending time.");
         } else if (from != null && this.to != null && from.compareTo(this.to) >= 0) {
             Vacation.log.warn("A vacation must not start after it ends. from={}, to={}", from, this.to);
-            throw new IllegalArgumentException("time.order.error");
+            throw new IllegalArgumentException("The overtime mustn't start after or at the same time it ends.");
         }
 
         this.from = from;
@@ -158,10 +158,10 @@ public class Vacation {
             throw new IllegalArgumentException("time.sick_day.error");
         } else if(to == null && this.type == VacationType.VACATION) {
             Vacation.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
+            throw new IllegalArgumentException("A vacation has to have a starting and an ending time.");
         } else if (to != null && this.from != null && to.compareTo(this.from) <= 0) {
             Vacation.log.warn("A vacation must not end after it starts. from={}, to={}", this.from, to);
-            throw new IllegalArgumentException("time.order.error");
+            throw new IllegalArgumentException("The overtime mustn't start after or at the same time it ends.");
         }
 
         this.to = to;
@@ -183,10 +183,10 @@ public class Vacation {
             throw new IllegalArgumentException("time.sick.day_error");
         } else if((from == null || to == null) && this.type == VacationType.VACATION) {
             Vacation.log.warn("A vacation has to have a starting and an ending time");
-            throw new IllegalArgumentException("time.vacation.error");
+            throw new IllegalArgumentException("A vacation has to have a starting and an ending time.");
         } else if (from != null && to != null && from.compareTo(to) >= 0) {
             Vacation.log.warn("A vacation must not start after it ends. from={}, to={}", from, to);
-            throw new IllegalArgumentException("time.order.error");
+            throw new IllegalArgumentException("The overtime mustn't start after or at the same time it ends.");
         }
 
         this.from = from;
@@ -234,7 +234,7 @@ public class Vacation {
 
         if (status == null) {
             Vacation.log.warn("The given status must not be null");
-            throw new IllegalArgumentException("status.null.error");
+            throw new IllegalArgumentException("The status has to be filled in.");
         }
 
         this.status = status;
@@ -265,7 +265,7 @@ public class Vacation {
             this.to = null;
         } else if (type == null) {
             Vacation.log.warn("The given type of a vacation must not be null");
-            throw new IllegalArgumentException("type.null.error");
+            throw new IllegalArgumentException("The type has to be filled in.");
         }
 
         this.type = type;
