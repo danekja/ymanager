@@ -18,8 +18,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 @RestController
 public class ApiController {
 
@@ -35,7 +33,7 @@ public class ApiController {
 
     // *********************** GET ****************************
 
-    @RequestMapping(value = "/users/requests/vacation", method=GET)
+    @GetMapping("/users/requests/vacation")
     public List<VacationRequest> usersRequestsVacation(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) Status status)
@@ -43,7 +41,7 @@ public class ApiController {
         return manager.getVacationRequests(status);
     }
 
-    @RequestMapping(value = "/users/requests/authorization", method=GET)
+    @GetMapping("/users/requests/authorization")
     public List<AuthorizationRequest> userRequestsAuthorization(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "status", required = false) Status status)
@@ -51,7 +49,7 @@ public class ApiController {
         return manager.getAuthorizationRequests(status);
     }
 
-    @RequestMapping(value = "/user/{id}/calendar", method=GET)
+    @GetMapping("/user/{id}/calendar")
     public List<VacationDay> userCalendar(
             @PathVariable("id") Long id,
             @RequestParam(value = "lang", required = false) String lang,
@@ -65,7 +63,7 @@ public class ApiController {
         return manager.getUserCalendar(id, fromDate, toDate, status);
     }
 
-    @RequestMapping(value = "/settings", method=GET)
+    @GetMapping("/settings")
     public DefaultSettings settings(
             @RequestParam(value = "lang", required = false) String lang)
     {
@@ -74,7 +72,7 @@ public class ApiController {
 
     // *********************** POST ****************************
 
-    @RequestMapping(value = "/settings", method=POST)
+    @PostMapping("/settings")
     public ResponseEntity<Void> settings(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody DefaultSettings settings)
@@ -84,7 +82,7 @@ public class ApiController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/user/calendar/create", method=POST)
+    @PostMapping("/user/calendar/create")
     public ResponseEntity<Void> userCalendarCreate(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody VacationDay vacationDay,
@@ -100,7 +98,7 @@ public class ApiController {
     // *********************** PUT ****************************
 
 
-    @RequestMapping(value = "/user/settings", method=PUT)
+    @PutMapping("/user/settings")
     public ResponseEntity<Void> userSettings(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody UserSettings settings,
@@ -113,7 +111,7 @@ public class ApiController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/user/calendar/edit", method=PUT)
+    @PutMapping("/user/calendar/edit")
     public ResponseEntity<Void> userCalendarEdit(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestBody VacationDay vacationDay)
@@ -125,7 +123,7 @@ public class ApiController {
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/user/requests", method=PUT)
+    @PutMapping("/user/requests")
     public ResponseEntity<Void> userRequests(
             @RequestParam(value = "lang", required = false) String lang,
             @RequestParam(value = "type") RequestType type,
@@ -138,7 +136,7 @@ public class ApiController {
 
     // *********************** DELETE ****************************
 
-    @RequestMapping(value = "/calendar/{id}/delete", method=DELETE)
+    @DeleteMapping("/calendar/{id}/delete")
     public ResponseEntity<Void> calendarDelete(
             @PathVariable("id") Long id,
             @RequestParam(value = "lang", required = false) String lang)
@@ -150,14 +148,14 @@ public class ApiController {
 
     // *********************** FILE ****************************
 
-    @RequestMapping(value = "/import/xls", method=POST)
+    @PostMapping("/import/xls")
     public ResponseEntity<Void> importXLSFile(@RequestParam(value = "lang", required = false) String lang, @RequestParam("file") MultipartFile file) throws Exception {
         fileService.parseXLSFile(file.getOriginalFilename(), file.getBytes());
 
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(value = "/export/pdf", method=GET)
+    @GetMapping("/export/pdf")
     public ResponseEntity<byte[]> exportPDFFile(@RequestParam(value = "lang", required = false) String lang) throws Exception {
         FileExportResult result = fileService.createPDFFile();
 
