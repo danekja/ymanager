@@ -3,9 +3,7 @@ package org.danekja.ymanager.ws.rest;
 import org.danekja.ymanager.business.FileExportResult;
 import org.danekja.ymanager.business.FileService;
 import org.danekja.ymanager.business.Manager;
-import org.danekja.ymanager.domain.RequestType;
-import org.danekja.ymanager.domain.Status;
-import org.danekja.ymanager.domain.User;
+import org.danekja.ymanager.domain.*;
 import org.danekja.ymanager.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ApiController {
@@ -35,12 +34,20 @@ public class ApiController {
 
     @GetMapping("/users/requests/vacation")
     public List<VacationRequestDTO> usersRequestsVacation(@RequestParam(value = "status", required = false) Status status) {
-        return manager.getVacationRequests(status);
+        List<VacationRequest> requests = manager.getVacationRequests(status);
+
+        return requests.stream()
+                .map(VacationRequestDTO::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/users/requests/authorization")
     public List<AuthorizationRequestDTO> userRequestsAuthorization(@RequestParam(value = "status", required = false) Status status) {
-        return manager.getAuthorizationRequests(status);
+        List<AuthorizationRequest> requests = manager.getAuthorizationRequests(status);
+
+        return requests.stream()
+                .map(AuthorizationRequestDTO::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/user/{id}/calendar")
@@ -48,7 +55,11 @@ public class ApiController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDate fromDate = LocalDate.parse(from, formatter);
         LocalDate toDate = to != null ? LocalDate.parse(to, formatter) : null;
-        return manager.getUserCalendar(id, fromDate, toDate, status);
+        List<Vacation> vacations = manager.getUserCalendar(id, fromDate, toDate, status);
+
+        return vacations.stream()
+                .map(VacationDayDTO::new)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/settings")

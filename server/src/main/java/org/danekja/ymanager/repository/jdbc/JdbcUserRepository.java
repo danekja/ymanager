@@ -1,33 +1,26 @@
 package org.danekja.ymanager.repository.jdbc;
 
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.BasicProfileUserDTO;
-import org.danekja.ymanager.dto.FullUserProfileDTO;
 import org.danekja.ymanager.repository.UserRepository;
-import org.danekja.ymanager.repository.jdbc.mappers.BasicProfileUserMapper;
 import org.danekja.ymanager.repository.jdbc.mappers.UserDataRowMapper;
 import org.danekja.ymanager.repository.jdbc.mappers.UserRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.CallableStatement;
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-import static org.danekja.ymanager.domain.UserRole.getUserRole;
 
 @Repository
 public class JdbcUserRepository implements UserRepository {
 
-    private static final RowMapper<BasicProfileUserDTO> BASIC_PROFILE_USER_MAPPER = new BasicProfileUserMapper();
     private static final RowMapper<UserData> USER_DATA_MAPPER = new UserDataRowMapper();
     private static final RowMapper<RegisteredUser> USER_MAPPER = new UserRowMapper(USER_DATA_MAPPER);
 
@@ -52,91 +45,10 @@ public class JdbcUserRepository implements UserRepository {
         this.jdbc = jdbc;
     }
 
-    private Map<String, Object> getUserColumns(final long id) {
-        final List<SqlParameter> paramList = new ArrayList<>();
-        paramList.add(new SqlParameter("in_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_id", Types.BIGINT));
-        paramList.add(new SqlOutParameter("out_first_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_last_name", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_no_vacations", Types.FLOAT));
-        paramList.add(new SqlOutParameter("out_no_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_taken_sick_days", Types.INTEGER));
-        paramList.add(new SqlOutParameter("out_alert", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_token", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_email", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_photo", Types.LONGVARCHAR));
-        paramList.add(new SqlOutParameter("out_creation_date", Types.TIMESTAMP));
-        paramList.add(new SqlOutParameter("out_role", Types.VARCHAR));
-        paramList.add(new SqlOutParameter("out_status", Types.VARCHAR));
-
-        return jdbc.call(con -> {
-            final CallableStatement callableStatement = con.prepareCall("{call GetUserId(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-            callableStatement.setLong(1, id);
-            callableStatement.registerOutParameter(2, Types.BIGINT);
-            callableStatement.registerOutParameter(3, Types.VARCHAR);
-            callableStatement.registerOutParameter(4, Types.VARCHAR);
-            callableStatement.registerOutParameter(5, Types.FLOAT);
-            callableStatement.registerOutParameter(6, Types.INTEGER);
-            callableStatement.registerOutParameter(7, Types.INTEGER);
-            callableStatement.registerOutParameter(8, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(9, Types.LONGVARCHAR);
-            callableStatement.registerOutParameter(10, Types.VARCHAR);
-            callableStatement.registerOutParameter(11, Types.LONGVARCHAR);
-            callableStatement.registerOutParameter(12, Types.TIMESTAMP);
-            callableStatement.registerOutParameter(13, Types.VARCHAR);
-            callableStatement.registerOutParameter(14, Types.VARCHAR);
-            return callableStatement;
-        }, paramList);
-    }
-
-    //---------------------------------- DTO -----------------------------------
-
     @Override
-    public List<BasicProfileUserDTO> getAllBasicUsers() {
-        JdbcUserRepository.log.trace("Selecting basic profiles of all users from a database.");
-
-        return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user", BASIC_PROFILE_USER_MAPPER);
+    public List<RegisteredUser> getUsers(final Status status) {
+        return this.jdbc.query("SELECT * FROM end_user WHERE status = ?", USER_MAPPER, status.name());
     }
-
-    @Override
-    public List<BasicProfileUserDTO> getAllBasicUsers(final Status status) {
-        JdbcUserRepository.log.trace("Selecting basic profiles of all users with a required status from a database.");
-        JdbcUserRepository.log.debug("Status: {}", status);
-
-        return this.jdbc.query("SELECT id, first_name, last_name, photo FROM end_user WHERE status = ?",
-                BASIC_PROFILE_USER_MAPPER, status.name());
-    }
-
-    @Override
-    public UserRole getPermission(Long id) {
-        return jdbc.queryForObject("SELECT user_role FROM end_user WHERE id = ?" ,new Object[]{id}, (rs, rowNum) ->
-            getUserRole(rs.getString("user_role"))
-        );
-    }
-
-    @Override
-    public FullUserProfileDTO getFullUser(final long id) {
-        JdbcUserRepository.log.debug("Selecting full profile of a user with the specified id from a database: {}", id);
-
-        final Map<String, Object> resultMap = this.getUserColumns(id);
-
-        final FullUserProfileDTO user = new FullUserProfileDTO();
-        user.setId(id);
-        user.setFirstName((String) resultMap.get("out_first_name"));
-        user.setLastName((String) resultMap.get("out_last_name"));
-        user.setVacationCount(((Double) resultMap.get("out_no_vacations")).floatValue());
-        user.setSickDayCount((Integer) resultMap.get("out_no_sick_days"));
-        user.setTakenSickDayCount((Integer) resultMap.get("out_taken_sick_days"));
-        user.setNotification(((Timestamp) resultMap.get("out_alert")).toLocalDateTime());
-        user.setEmail((String) resultMap.get("out_email"));
-        user.setPhoto((String) resultMap.get("out_photo"));
-        user.setRole(getUserRole((String) resultMap.get("out_role")));
-        user.setStatus(Status.valueOf((String) resultMap.get("out_status")));
-        return user;
-
-    }
-
-    //---------------------------------- DOMAIN -----------------------------------
 
     @Override
     public RegisteredUser getUser(final String email) {

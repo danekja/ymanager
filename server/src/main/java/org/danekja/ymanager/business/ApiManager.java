@@ -4,9 +4,10 @@ import org.danekja.ymanager.business.auth.anot.CanModifyVacation;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.business.auth.anot.IsSignedIn;
-import org.danekja.ymanager.domain.DefaultSettings;
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.dto.BasicRequestDTO;
+import org.danekja.ymanager.dto.UserSettingsDTO;
+import org.danekja.ymanager.dto.VacationDayDTO;
 import org.danekja.ymanager.repository.RequestRepository;
 import org.danekja.ymanager.repository.SettingsRepository;
 import org.danekja.ymanager.repository.UserRepository;
@@ -49,7 +50,7 @@ public class ApiManager implements Manager {
 
     @Override
     @IsEmployer
-    public List<VacationRequestDTO> getVacationRequests(Status status) {
+    public List<VacationRequest> getVacationRequests(Status status) {
         if (status == null) {
             return requestRepository.getAllVacationRequests();
         } else {
@@ -59,7 +60,7 @@ public class ApiManager implements Manager {
 
     @Override
     @IsEmployer
-    public List<AuthorizationRequestDTO> getAuthorizationRequests(Status status) {
+    public List<AuthorizationRequest> getAuthorizationRequests(Status status) {
         if (status == null) {
             return requestRepository.getAllAuthorizations();
         } else {
@@ -75,8 +76,8 @@ public class ApiManager implements Manager {
 
     @Override
     @IsOwner
-    public List<VacationDayDTO> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status) {
-        List<VacationDayDTO> vacations;
+    public List<Vacation> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status) {
+        List<Vacation> vacations;
         if (status == null && toDate == null) {
             vacations = vacationRepository.getVacationDays(userId, fromDate);
         } else if (status == null) {

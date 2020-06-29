@@ -2,6 +2,7 @@ package org.danekja.ymanager.dto;
 
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.VacationType;
+import org.danekja.ymanager.domain.VacationRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +58,21 @@ public class VacationRequestDTO {
      * The date and time of a creation of this vacation request.
      */
     private LocalDateTime timestamp;
+
+    public VacationRequestDTO() {
+    }
+
+    public VacationRequestDTO(VacationRequest vacation) {
+        this.id = vacation.getId();
+        this.firstName = vacation.getFirstName();
+        this.lastName = vacation.getLastName();
+        this.date = vacation.getDate();
+        this.from = vacation.getFrom();
+        this.to = vacation.getTo();
+        this.type = vacation.getType();
+        this.status = vacation.getStatus();
+        this.timestamp = vacation.getCreationDate();
+    }
 
     /**
      * Returns the ID of this vacation request.

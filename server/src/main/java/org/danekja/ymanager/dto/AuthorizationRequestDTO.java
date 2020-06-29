@@ -1,5 +1,6 @@
 package org.danekja.ymanager.dto;
 
+import org.danekja.ymanager.domain.AuthorizationRequest;
 import org.danekja.ymanager.domain.Status;
 
 import java.time.LocalDateTime;
@@ -34,6 +35,17 @@ public class AuthorizationRequestDTO {
      * The date and time of a creation of this request.
      */
     private LocalDateTime timestamp;
+
+    public AuthorizationRequestDTO() {
+    }
+
+    public AuthorizationRequestDTO(AuthorizationRequest authorizationRequest) {
+        this.id = authorizationRequest.getId();
+        this.firstName = authorizationRequest.getFirstName();
+        this.lastName = authorizationRequest.getLastName();
+        this.status = authorizationRequest.getStatus();
+        this.timestamp = authorizationRequest.getCreationDate();
+    }
 
     /**
      * Returns the user's ID.

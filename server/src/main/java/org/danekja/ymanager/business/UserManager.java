@@ -3,7 +3,6 @@ package org.danekja.ymanager.business;
 import org.danekja.ymanager.domain.GoogleUser;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.dto.BasicProfileUserDTO;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 
 import java.util.List;
@@ -15,13 +14,11 @@ public interface UserManager {
 
     /**
      * List all users with given status.
-     * <p>
-     * TODO: refactor to return domain class instead of DTO as part of #32
      *
      * @param status status filter value
      * @return list of users or empty list if none found
      */
-    List<BasicProfileUserDTO> getUsers(Status status);
+    List<? extends User> getUsers(Status status);
 
     /**
      * Gets user by id (PK)

@@ -1,9 +1,10 @@
 package org.danekja.ymanager.repository.jdbc;
 
+import org.danekja.ymanager.domain.AuthorizationRequest;
 import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.VacationRequest;
 import org.danekja.ymanager.dto.AuthorizationRequestDTO;
 import org.danekja.ymanager.dto.BasicRequestDTO;
-import org.danekja.ymanager.dto.VacationRequestDTO;
 import org.danekja.ymanager.repository.RequestRepository;
 import org.danekja.ymanager.repository.jdbc.mappers.AuthorizationRequestMapper;
 import org.danekja.ymanager.repository.jdbc.mappers.VacationRequestMapper;
@@ -23,7 +24,7 @@ public class JdbcRequestRepository implements RequestRepository {
      */
     private static final Logger log = LoggerFactory.getLogger(JdbcRequestRepository.class);
 
-    private static final VacationRequestMapper VACATION_REQUEST_MAPPER = new VacationRequestMapper();
+    private static final VacationRequestMapper VACATION_WITH_USER_MAPPER = new VacationRequestMapper();
     private static final AuthorizationRequestMapper AUTHORIZATION_REQUEST_MAPPER = new AuthorizationRequestMapper();
 
     /**
@@ -44,14 +45,14 @@ public class JdbcRequestRepository implements RequestRepository {
     }
 
     @Override
-    public List<AuthorizationRequestDTO> getAllAuthorizations() {
+    public List<AuthorizationRequest> getAllAuthorizations() {
         JdbcRequestRepository.log.trace("Selecting all authorization requests from a database.");
 
         return this.jdbc.query("SELECT id, first_name, last_name, creation_date, status FROM end_user", AUTHORIZATION_REQUEST_MAPPER);
     }
 
     @Override
-    public List<AuthorizationRequestDTO> getAllAuthorizations(final Status status) {
+    public List<AuthorizationRequest> getAllAuthorizations(final Status status) {
         JdbcRequestRepository.log.trace("Selecting all authorization requests from a database with requested status.");
         JdbcRequestRepository.log.debug("Status: {}", status);
 
@@ -72,23 +73,23 @@ public class JdbcRequestRepository implements RequestRepository {
     }
 
     @Override
-    public List<VacationRequestDTO> getAllVacationRequests() {
+    public List<VacationRequest> getAllVacationRequests() {
         JdbcRequestRepository.log.trace("Selecting all vacation requests from a database.");
 
         return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, v.vacation_type, v.status, u.first_name, u.last_name " +
                 "FROM vacation_day v " +
-                "INNER JOIN end_user u ON v.user_id = u.id", VACATION_REQUEST_MAPPER);
+                "INNER JOIN end_user u ON v.user_id = u.id", VACATION_WITH_USER_MAPPER);
     }
 
     @Override
-    public List<VacationRequestDTO> getAllVacationRequests(final Status status) {
+    public List<VacationRequest> getAllVacationRequests(final Status status) {
         JdbcRequestRepository.log.trace("Selecting all vacation requests from a database with requested status.");
         JdbcRequestRepository.log.debug("Status: {}", status);
 
         return this.jdbc.query("SELECT v.id, v.vacation_date, v.time_from, v.time_to, v.creation_date, v.vacation_type, v.status, u.first_name, u.last_name " +
                         "FROM vacation_day v " +
                         "INNER JOIN end_user u ON v.user_id = u.id " +
-                        "WHERE v.status=?", VACATION_REQUEST_MAPPER, status.name());
+                        "WHERE v.status=?", VACATION_WITH_USER_MAPPER, status.name());
     }
 
     @Override

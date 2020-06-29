@@ -1,6 +1,7 @@
 package org.danekja.ymanager.dto;
 
 import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.Vacation;
 import org.danekja.ymanager.domain.VacationType;
 
 import java.time.LocalDate;
@@ -40,6 +41,18 @@ public class VacationDayDTO {
      * The approval status of this vacation.
      */
     private Status status;
+
+    public VacationDayDTO() {
+    }
+
+    public VacationDayDTO(Vacation vacation) {
+        this.id = vacation.getId();
+        this.date = vacation.getDate();
+        this.from = vacation.getFrom();
+        this.to = vacation.getTo();
+        this.type = vacation.getType();
+        this.status = vacation.getStatus();
+    }
 
     /**
      * Returns the ID of this vacation.

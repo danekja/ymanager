@@ -1,9 +1,9 @@
 package org.danekja.ymanager.business;
 
-import org.danekja.ymanager.domain.DefaultSettings;
-import org.danekja.ymanager.domain.RequestType;
-import org.danekja.ymanager.domain.Status;
-import org.danekja.ymanager.dto.*;
+import org.danekja.ymanager.domain.*;
+import org.danekja.ymanager.dto.BasicRequestDTO;
+import org.danekja.ymanager.dto.UserSettingsDTO;
+import org.danekja.ymanager.dto.VacationDayDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.List;
 public interface Manager {
 
 
-    List<VacationRequestDTO> getVacationRequests(Status status);
+    List<VacationRequest> getVacationRequests(Status status);
 
-    List<AuthorizationRequestDTO> getAuthorizationRequests(Status status);
+    List<AuthorizationRequest> getAuthorizationRequests(Status status);
 
     DefaultSettings getDefaultSettings();
 
-    List<VacationDayDTO> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status);
+    List<Vacation> getUserCalendar(long userId, LocalDate fromDate, LocalDate toDate, Status status);
 
     void createSettings(DefaultSettings settings);
 

@@ -1,8 +1,6 @@
 package org.danekja.ymanager.repository;
 
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.BasicProfileUserDTO;
-import org.danekja.ymanager.dto.FullUserProfileDTO;
 
 import java.util.List;
 
@@ -11,33 +9,13 @@ import java.util.List;
  */
 public interface UserRepository {
     /**
-     * Gets basic profile of each user from a database. The basic profile contains default, the most important
-     * informations which helps identify a user like a name or photo. Every line of output is converted to a BasicProfileUser
-     * object filled with data from the database. If there aren't any users in the database, the method returns an empty list.
-     *
-     * @return A list of all basic profiles.
-     */
-    List<BasicProfileUserDTO> getAllBasicUsers();
-
-    /**
-     * Gets basic profile of each user with the given authorization status from a database. The basic profile contains
-     * default, the most important informations which helps identify a user like a name or a photo.
-     * Every line of output is converted to a BasicProfileUser object filled with data from the database.
-     * If there aren't any users with the given authorization status in the database, the method returns an empty list.
+     * Gets users with the given authorization status from a database. If there aren't any users with
+     * the given authorization status in the database, the method returns an empty list.
      *
      * @param status The authentication status.
-     * @return A list of all basic profiles with the given status.
+     * @return A list of all users with the given status.
      */
-    List<BasicProfileUserDTO> getAllBasicUsers(final Status status);
-
-    UserRole getPermission(Long id);
-
-    /**
-     *
-     * @param id
-     * @return
-     */
-    FullUserProfileDTO getFullUser(final long id);
+    List<RegisteredUser> getUsers(final Status status);
 
     /**
      * Gets user from database based on its email

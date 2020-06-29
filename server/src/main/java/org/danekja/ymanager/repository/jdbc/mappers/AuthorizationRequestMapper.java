@@ -1,5 +1,6 @@
 package org.danekja.ymanager.repository.jdbc.mappers;
 
+import org.danekja.ymanager.domain.AuthorizationRequest;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.dto.AuthorizationRequestDTO;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 /**
  * The mapper maps a row from a result of a query to an AuthorizationRequest.
  */
-public class AuthorizationRequestMapper implements RowMapper<AuthorizationRequestDTO> {
+public class AuthorizationRequestMapper implements RowMapper<AuthorizationRequest> {
 
     /**
      * Maps a row from a result of a query to an AuthorizationRequest.
@@ -20,12 +21,12 @@ public class AuthorizationRequestMapper implements RowMapper<AuthorizationReques
      * @throws SQLException if the columnLabel is not valid; if a database access error occurs or this method is called on a closed result set
      */
     @Override
-    public AuthorizationRequestDTO mapRow(ResultSet resultSet, int i) throws SQLException {
-        final AuthorizationRequestDTO request = new AuthorizationRequestDTO();
+    public AuthorizationRequest mapRow(ResultSet resultSet, int i) throws SQLException {
+        final AuthorizationRequest request = new AuthorizationRequest();
         request.setId(resultSet.getLong("id"));
         request.setFirstName(resultSet.getString("first_name"));
         request.setLastName(resultSet.getString("last_name"));
-        request.setTimestamp(resultSet.getTimestamp("creation_date").toLocalDateTime());
+        request.setCreationDate(resultSet.getTimestamp("creation_date").toLocalDateTime());
         request.setStatus(Status.valueOf(resultSet.getString("status")));
         return request;
     }

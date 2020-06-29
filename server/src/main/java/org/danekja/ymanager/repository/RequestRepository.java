@@ -1,9 +1,10 @@
 package org.danekja.ymanager.repository;
 
+import org.danekja.ymanager.domain.AuthorizationRequest;
 import org.danekja.ymanager.domain.Status;
+import org.danekja.ymanager.domain.VacationRequest;
 import org.danekja.ymanager.dto.AuthorizationRequestDTO;
 import org.danekja.ymanager.dto.BasicRequestDTO;
-import org.danekja.ymanager.dto.VacationRequestDTO;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface RequestRepository {
      *
      * @return the list of all authorization requests
      */
-    List<AuthorizationRequestDTO> getAllAuthorizations();
+    List<AuthorizationRequest> getAllAuthorizations();
 
     /**
      * Gets all authorization request with the given authorization status from a database.
@@ -35,7 +36,7 @@ public interface RequestRepository {
      * @param status the approval status of the requests
      * @return the list of all authorization requests with the given status
      */
-    List<AuthorizationRequestDTO> getAllAuthorizations(final Status status);
+    List<AuthorizationRequest> getAllAuthorizations(final Status status);
 
     /**
      * Updates the status of an authorization request with the given id.
@@ -60,7 +61,7 @@ public interface RequestRepository {
      *
      * @return the list of all vacation requests
      */
-    List<VacationRequestDTO> getAllVacationRequests();
+    List<VacationRequest> getAllVacationRequests();
 
     /**
      * Gets all vacation requests with the given approval status from a database.
@@ -70,7 +71,7 @@ public interface RequestRepository {
      * @param status the approval status of the requests
      * @return the list of all vacation requests with the given status
      */
-    List<VacationRequestDTO> getAllVacationRequests(final Status status);
+    List<VacationRequest> getAllVacationRequests(final Status status);
 
     /**
      * Updates a status of a vacation request with the given id.

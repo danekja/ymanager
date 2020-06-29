@@ -4,7 +4,6 @@ import org.danekja.ymanager.business.UserManager;
 import org.danekja.ymanager.business.auth.anot.IsEmployer;
 import org.danekja.ymanager.business.auth.anot.IsOwner;
 import org.danekja.ymanager.domain.*;
-import org.danekja.ymanager.dto.BasicProfileUserDTO;
 import org.danekja.ymanager.repository.SettingsRepository;
 import org.danekja.ymanager.repository.UserRepository;
 import org.danekja.ymanager.repository.VacationRepository;
@@ -16,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -60,17 +58,12 @@ public class DefaultUserManager implements UserManager {
 
     @Override
     @IsEmployer
-    public List<BasicProfileUserDTO> getUsers(Status status) {
-        List<BasicProfileUserDTO> users = userRepository.getAllBasicUsers(status == null ? Status.ACCEPTED : status);
-
-        LocalDate today = LocalDate.now();
-        LocalDate weekBefore = today.minusWeeks(1);
-        LocalDate weekAfter = today.plusWeeks(1);
-        for (BasicProfileUserDTO user : users) {
-            user.setCalendar(vacationRepository.getVacationDays(user.getId(), weekBefore, weekAfter));
+    public List<? extends User> getUsers(Status status) {
+        if (status == null) {
+            return userRepository.getUsers(Status.ACCEPTED);
+        } else {
+            return userRepository.getUsers(status);
         }
-
-        return users;
     }
 
     @Override

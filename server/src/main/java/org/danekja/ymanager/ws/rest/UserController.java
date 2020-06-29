@@ -3,7 +3,6 @@ package org.danekja.ymanager.ws.rest;
 import org.danekja.ymanager.business.UserManager;
 import org.danekja.ymanager.domain.Status;
 import org.danekja.ymanager.domain.User;
-import org.danekja.ymanager.dto.BasicProfileUserDTO;
 import org.danekja.ymanager.dto.FullUserProfileDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -11,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for Users collection of WS API.
@@ -27,8 +27,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<BasicProfileUserDTO> users(@RequestParam(value = "status", required = false) Status status) {
-        return userManager.getUsers(status);
+    public List<FullUserProfileDTO> getUsers(@RequestParam(value = "status", required = false) Status status) {
+        List<? extends User> users = userManager.getUsers(status);
+
+        return users.stream()
+                .map(FullUserProfileDTO::new)
+                .collect(Collectors.toList());
     }
 
 
