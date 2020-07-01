@@ -1,0 +1,581 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* ------------- Navbar --------------- */
+
+.top-nav {
+    width: 100vw;
+    height: 60px;
+    background-color: #393d3f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.img-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.top-nav h3 {
+    margin-left: 85px;
+}
+
+.top-nav h4 {
+    color: white;
+}
+
+.profile-comp {
+    display: flex;
+    align-items: center;
+    margin-right: 50px;
+}
+
+.top-nav ul {
+    display: flex;
+    list-style: none;
+}
+
+.navIcon {
+    color: white;
+    margin: 5px;
+    transition: 0.2s;    
+}
+.navIcon:hover {
+    color: rgb(57, 184, 177);
+}
+
+/* --------- MAIN CONTAINER ------------ */
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    background-color: rgb(129, 168, 162);
+    /* background: linear-gradient(#689c94, #0f546b); */
+    position: relative;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* --------- OFFS REQUEST ------------ */
+
+.offs-request {
+    height: auto;
+    width: 90%;
+    background-color: rgb(255, 255, 255);
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.offs-item {
+    align-items: center;
+}
+
+.offs-items table td {
+    width: auto;
+}
+
+.offs-item th {
+    text-align: left;
+    justify-content: space-between;
+}
+
+/* ------------ calendar ------------- */
+
+.calendar {
+    width: 90%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    /* margin: 10px 0 20px 0; */
+}
+
+.calendar-form {
+    width: 400px;
+    padding: 20px;
+}
+
+.date-input {
+    width: 300px;
+}
+
+/* -----------calendar POP UP------------*/
+
+.popup-content {
+    border-radius: 10px;
+    box-shadow: 1px 0px 15px rgb(102, 102, 102);
+}
+
+.calendar-form h2 {
+    padding-bottom: 10px;
+}
+
+.calendar-radio {
+    padding: 2px;
+}
+.calendar-form h4 {
+    padding: 5px 0 5px;
+}
+
+.calendar-form input {
+    margin-bottom: 5px;
+}
+
+.input-time {
+    width: 100px;
+    margin-left: 5px;
+}
+
+/* ------------ side content ------------- */
+
+.side-content {
+    /* position: fixed; */
+    width: 35vw;
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+
+}
+
+.side-board {
+    width: 95%;
+    height: 100%;
+    background-color: white;
+    border-radius: 10px;
+    align-items: stretch;
+}
+
+.box-heading {
+    padding: 20px;
+}
+
+.underline-1 {
+    height: 1.2px;
+    background-color: black;
+    margin: 10px 0;
+}
+
+.new-request {
+    padding-bottom: 10px;    
+}
+
+.new-request h4 {
+    margin-right: 60px;
+}
+
+.side-board {
+    padding: 20px;
+}
+
+.side-board-items {
+    justify-content: space-between;
+    height: 100%;
+}
+
+table {
+    width: 100%;
+    padding: 10px;
+}
+
+table td {
+    width: 50px;
+}
+  
+.side-content table td {
+    height: 50px;
+}
+.side-content .td-center {
+    text-align: center;
+    
+}
+.side-content .th-left {
+    text-align: left;
+}
+
+input {
+    width: 30px;
+}
+
+.offsInput {
+    width: 50px;
+}
+
+.btn-edit {
+    padding: 8px 8px 6px;
+    border: 0.5px solid rgb(92, 92, 92);
+    background-color: rgb(247, 247, 247);
+    border-radius: 50px;
+}
+
+.btn-edit:hover {
+    border: 0.7px solid rgb(78, 78, 78);
+    background-color: rgb(236, 236, 236);
+    cursor: pointer; 
+}
+
+/* -------------------Login------------------- */
+
+.login-container {
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    width: 480px;
+    height: 480px;
+    background-color: rgba(255, 255, 255, 0.075);
+    /* border: 2px solid white; */
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s;
+    cursor: pointer;   
+}
+
+.login-container:hover {
+    background-color: #ffffff25;   
+}
+.login-container h1 {
+    color: white;
+    font-size: 110px;
+}
+/* ------------- SETTING -------------------*/
+
+.setting-container {
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 70vh;
+    width: 70%;
+    background-color: #ffffff41;
+    border: 2px solid #ffffffd8;
+    border-radius: 10px;
+    color: #fff;    
+}
+
+.setting-container h2 {
+    font-size: 48px;
+    text-align: center;
+    padding: 50px 0 20px 0;
+}
+
+.underline-2 {
+    height: 1px;
+    background-color: #fff;
+    width: 70%;   
+}
+
+.setting-form {
+    padding: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.setting-form input {
+    width: 75%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 20px 20px;
+}
+
+.buttons {
+    padding: 20px
+}
+.btn {
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 2px;
+
+}
+.btn:hover {
+    background-color: rgba(19, 155, 132, 0.911);
+}
+.btn-submit {
+    background-color: rgb(0, 175, 15);
+    transition: all 0.2s;
+}
+.btn-submit:hover {
+    background-color: rgb(0, 165, 15)
+}
+.btn-cancel {
+    background-color: rgb(255, 79, 71);
+    transition: all 0.2s;
+}
+.btn-cancel:hover {
+    background-color: rgb(242, 79, 71);
+}
+
+
+/* -------------------LogOut------------------- */
+
+.logout h1 {
+    font-size: 48px;
+    text-align: center;
+    padding: 40px;
+}
+.logout h4 {
+    font-size: 18px;
+    text-align: center;
+    color: #ffffffc4;
+    transition: all 0.2s;
+}
+
+
+/* ------------ responsive --------- */
+
+@media only screen and (max-width: 768px) {
+    table {
+        font-size: 13px;
+    }
+}
+
+@media only screen and (max-width: 702px) {
+    .container {
+    height: 100vh;
+    flex-direction: column;
+    }
+
+    .main-content {
+        width: 100%;
+        justify-content: space-evenly;
+        
+    }
+
+    .offs-request {
+        width: 100%;
+        height: 100%;
+    }
+    .calendar {
+        width: 100%;
+        height: 100%;
+    }
+
+    .side-content {
+        height: 100%;
+        width: 100%;
+    }
+
+    .side-board {
+        width: 100%;
+    }
+
+    .top-nav h3 {
+        margin-left: 20px;
+    }
+
+    .login-container {
+        width: 400px;
+        height: 400px;
+    }
+    .login-container h1 {
+        color: white;
+        font-size: 90px;
+    }
+
+    .logout h1 {
+        font-size: 32px;
+        text-align: center;
+        padding: 30px;
+    }
+    .logout h4 {
+        font-size: 18px;
+    }
+    table td {
+        text-align: center;
+    }
+
+    .calendar-form {
+        padding: 15px;
+    }
+
+    .calendar-form h2 {
+        font-size: 20px;
+    }
+
+    .date-input {
+        width: 200px;
+    }
+
+    .fc-right {
+        display: flex;
+    }
+
+
+} 
+
+@media only screen and (max-width: 480px) {
+    .top-nav h3 {
+        margin-right: 30px;
+    }
+
+    .login-container {
+        width: 300px;
+        height: 300px;
+    }
+    .login-container h1 {
+        color: white;
+        font-size: 60px;
+    }
+
+    .logout h1 {
+        font-size: 22px;
+        text-align: center;
+        padding: 20px;
+    }
+    .logout h4 {
+        font-size: 14px;
+    }
+
+    .profile-comp {
+        margin-right: 20px;
+    }
+
+    .setting-container h2 {
+        font-size: 38px;
+        text-align: center;
+        padding: 50px 0 0 0;
+    }
+
+    .btn {
+        padding: 10px 16px;
+    }
+
+    .calendar-form {
+        padding: 10px;
+    }
+
+    .calendar-form h2 {
+        font-size: 18px;
+    }
+
+    .calendar-form h4 {
+        font-size: 16px;
+    }
+
+    .calendar-form {
+        font-size: 14px;
+    }
+
+    .date-input {
+        width: 140px;
+    }
+    
+    .side-content {
+        background-color: rgb(129, 168, 162);
+        padding-top: 0px;
+    }
+
+    /* .side-board {
+        box-shadow: 1px 0px 15px rgb(161, 161, 161);
+    } */
+}
+
+@media only screen and (max-width: 320px) {
+    .login-container {
+        width: 250px;
+        height: 250px;
+    }
+    .login-container h1 {
+        color: white;
+        font-size: 50px;
+    }
+
+    .logout h1 {
+        font-size: 22px;
+        text-align: center;
+        padding: 20px;
+    }
+    .logout h4 {
+        font-size: 12px;
+    }
+
+    .offs-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .offs-item th {
+        padding: 0 30px 0 5;
+    }
+
+    .setting-container h2 {
+        font-size: 32px;
+        text-align: center;
+        padding: 20px 0 0 0;
+    }
+
+    .setting-container h3 {
+        font-size: 16px;
+        text-align: center;
+        padding: 5px 0 0 0;
+    }
+
+    .setting-form {
+        padding: 15px;
+    }
+
+    .btn {
+        padding: 10px 10px;
+    }
+
+    .fc-button {
+        padding: 0;
+    }
+
+    .calendar-form {
+      padding: 5px;
+    }
+
+    .calendar-form h2 {
+        padding-top: 5px;
+        font-size: 16px;
+    }
+
+    .calendar-form h4 {
+        
+        font-size: 14px;
+    }
+
+    .calendar-form {
+        font-size: 12px;
+    }
+
+    .date-input {
+        width: 135px;
+    }
+}
+
+/* .todoDiv {
+    padding-left: 200px;
+} */
+
