@@ -7,100 +7,28 @@ import '@fullcalendar/daygrid/main.css'
 import interactionPlugin from '@fullcalendar/interaction';
 import Popup from "reactjs-popup";
 import moment from 'moment';
+import * as api_fetch from './api'
 
 
 function Calendar(props) {
   
   useEffect( () => {
     if (props.userName.id !== undefined) {
-      props.userName.role === 'EMPLOYER' ? getDataAdmin() : getData();
+      props.userName.role === 'EMPLOYER'
+        ?
+          api_fetch.getAdminCalendar().then(adminCalendar => {
+            props.setRequest(adminCalendar)
+          })
+        :
+          api_fetch.getUserCalendar(props.userName, todayTwo).then(userCalendar => {
+            props.setRequest(userCalendar)
+          });
     }
   }, [props.userName.id]);
 
   // LOAD DATA from server to calendar **** EMPLOYEE ****
-  const getData = async () => {
-    try {
-    const response = await fetch(
-      `http://devcz.yoso.fi:8090/ymanager/user/${props.userName.id}/calendar?from=${todayTwo}&status=ACCEPTED&status=REJECTED`, {
-        headers: {
-          'Accept': 'application/json',
-          Authorization: 6
-        },
-        method: 'GET',
-      }
-    );
-
-    if (response.ok) {
-    const data = await response.json();
-    
-    props.setRequest(data.filter(day => {
-      return day.status !== 'PENDING'
-    }).map(day => {
-
-      const newDate = day.date.split("/").join("-");
-
-      return ({
-      title: props.userName.name,
-      start: newDate,
-      backgroundColor: day.status === 'REJECTED' ? 'red' : 'green'
-      })
-    }))
-  } else {
-    if(response.status === 400) {
-      alert('error 400 LOADING DATA (CALENDAR, EMPLOYEE)')
-   }
-      else if (response.status === 500) {
-         alert ('error 500 LOADING DATA (CALENDAR, EMPLOYEE)')
-      }
-      else {
-         alert('error LOADING DATA (CALENDAR, EMPLOYEE)')
-      }
-  }
-  } catch (e) {
-    alert('error catch LOADING DATA (CALENDAR, EMPLOYEE)')
-  }
-  }
+  
   // LOAD DATA from server to calendar **** EMPLOYER ****
-  const getDataAdmin = async () => {
-    try {
-    const response = await fetch(
-      'http://devcz.yoso.fi:8090/ymanager/users/requests/vacation?status=ACCEPTED', {
-        headers: {
-          'Accept': 'application/json',
-          Authorization: 1
-        },
-        method: 'GET',
-      }
-    );
-
-    if (response.ok) {
-    const data = await response.json();
-    
-    props.setRequest(data.map(day => {
-
-      const newDate = day.date.split("/").join("-");
-
-      return ( {
-      title: day.firstName + ' ' + day.lastName,
-      start: newDate
-      })
-    }))
-  } else {
-    if(response.status === 400) {
-      alert('error 400 LOADING DATA (CALENDAR, EMPLOYER)')
-   }
-      else if (response.status === 500) {
-         alert ('error 500 LOADING DATA (CALENDAR, EMPLOYER))')
-      }
-      else {
-         alert('error LOADING DATA (CALENDAR, EMPLOYER)')
-      }
-  }
-  } catch (e) {
-    alert('error catch LOADING DATA (CALENDAR, EMPLOYER)')
-  }
-}
-
 
   //states
   const [isOpen, setOpen] = useState(false)
@@ -117,129 +45,64 @@ function Calendar(props) {
   today = today.toISOString().split('T')[0]
   const todayTwo = today.split("-").join("/")
 
-
 // ********************* ADD EVENT - EMPLOYEE **************************
-
-  const addEvent = async (e) => {
-    e.preventDefault();
-
-  // setting an object
-    const newDate = whatDate.split("-").join("/");
-      
-    try {
-  // send accepted request to server
-      const response = await fetch('http://devcz.yoso.fi:8090/ymanager/user/calendar/create', {
-        headers: {
-          Authorization: 6,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-  // object which is sent to server
-        body: JSON.stringify({
-          type: typeRadio === 'sickday' ? 'SICK_DAY' : 'VACATION',
-          date: newDate,
-          from: typeRadio === 'sickday' ? null : "00:00",
-          to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
-        }),
-      });
-      if (response.ok) {
-
-      const response = await fetch(
-        'http://devcz.yoso.fi:8090/ymanager/users/requests/vacation?status=PENDING', {
-          headers: {
-            Authorization: 1
-          },
-        }
-  
-       );
-      const data = await response.json();
-
-      props.setUser(data.map(request => {
-        const a = request.date;
-        const b = [a.slice(0, 4), "-", a.slice(5, 7), "-", a.slice(8, 10)].join('');
-  
-        return (
-          {
-            title: request.firstName + ' ' + request.lastName,
-            id: request.id,
-            type: request.type,
-            start: b,
-            end: null,
-            status: request.status
-        })
-      }))
-
-  } else {
-
-    if(response.status === 400) {
-    alert('error 400 ADD EVENT - EMPLOYEE')
- }
-    else if (response.status === 500) {
-       alert ('error 500 ADD EVENT - EMPLOYEE')
-    }
-    else {
-       alert('error ADD EVENT - EMPLOYEE')
-    }
-    
-  }
-    } catch (e) {
-      alert('error catch ADD EVENT - EMPLOYEE')
-    }
-
-    setOpen(false)}
 
   
 // ********************* ADD EVENT ADMIN - EMPLOYER **************************
 
-  const addEventAdmin = async (e) => {
-    e.preventDefault();
+const addEventAdmin = async (e) => {
+  e.preventDefault();
 
-  // setting an object
-    const newDate = whatDate.split("-").join("/");
-      
-    try {
-  // send accepted request to server
-      const response = await fetch('http://devcz.yoso.fi:8090/ymanager/user/calendar/create', {
-        headers: {
-          Authorization: 1,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-  // object which is sent to server
-        body: JSON.stringify({
-          type: typeRadio === 'sickday' ? 'SICK_DAY' : 'VACATION',
-          date: newDate,
-          from: typeRadio === 'sickday' ? null : "00:00",
-          to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
-        }),
-      });
-      if (response.ok) {
-    
+// setting an object
+  const newDate = whatDate.split("-").join("/");
 
-    const userProps = {
-      title: props.userName.name,
-      start: whatDate
+  const peps = {
+    type: typeRadio === 'sickday' ? 'SICK_DAY' : 'VACATION',
+    date: newDate,
+    from: typeRadio === 'sickday' ? null : "00:00",
+    to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
+  };
+
+  api_fetch.tvojefunkce(peps)
     
-  }
-  //concat new request to current ones
-      props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
-  } else {
-    if(response.status === 400) {
-      alert('error 400 ADD EVENT ADMIN - EMPLOYER')
-   }
-      else if (response.status === 500) {
-         alert ('error 500 ADD EVENT ADMIN - EMPLOYER')
-      }
-      else {
-         alert('error ADD EVENT ADMIN - EMPLOYER')
-      }
-  }
-    } catch (e) {
-      alert('error catch ADD EVENT ADMIN - EMPLOYER')
+  try {
+// send accepted request to server
+    const response = await fetch('http://devcz.yoso.fi:8090/ymanager/user/calendar/create', {
+      headers: {
+        Authorization: 1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+// object which is sent to server
+      body: JSON.stringify(peps),
+    });
+    if (response.ok) {
+  
+
+  const userProps = {
+    title: props.userName.name,
+    start: whatDate
+  
+}
+//concat new request to current ones
+    props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
+} else {
+  if(response.status === 400) {
+    alert('error 400 ADD EVENT ADMIN - EMPLOYER')
+ }
+    else if (response.status === 500) {
+       alert ('error 500 ADD EVENT ADMIN - EMPLOYER')
     }
+    else {
+       alert('error ADD EVENT ADMIN - EMPLOYER')
+    }
+}
+  } catch (e) {
+    alert('error catch ADD EVENT ADMIN - EMPLOYER')
+  }
 
 
-    setOpen(false)}
+  setOpen(false)}
     
 
   return (
@@ -267,7 +130,10 @@ function Calendar(props) {
     >
     <div className="calendar-form">
       {/* <form onSubmit={(e) => addEvent(e)}> */}
-      <form onSubmit={props.userName.role === 'EMPLOYER' ? (e) => addEventAdmin(e) : (e) => addEvent(e) }>
+      <form onSubmit={props.userName.role === 'EMPLOYER' 
+      ? (e) => addEventAdmin(e).then(eventAdmin => { props.setUser(eventAdmin)}) 
+      : (e) => api_fetch.addEvent(e).then(userEvent => { props.setUser(userEvent)})
+      }>
         <h2>Choose an option</h2>
         <div className="calendar-radio">
           <input checked={

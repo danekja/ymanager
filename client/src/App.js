@@ -12,48 +12,16 @@ import Login from './Login';
 // import Komponenta1 from './Komponenta1';
 // import Komponenta2 from './Komponenta2';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import * as api_fetch from './api'
 
 function App() {
 
-  useEffect( () => {
-    getData();
+  useEffect(() => {
+    api_fetch.getCurrentProfile().then(currentProfile => {
+    setUserName(currentProfile);
+    });
   }, []);
 
-  const getData = async () => {
-    try {
-    const response = await fetch(
-      'http://devcz.yoso.fi:8090/ymanager/users/current/profile', {
-        headers: {
-          Authorization: 1
-        }
-      }
-    );
-
-    if (response.ok) {
-    const data = await response.json();
-    setUserName({
-      name: data.firstName + ' ' + data.lastName,
-      role: data.role,
-      id: data.id,
-      holiday: data.vacationCount,
-      sickday: data.sickDayCount
-    })
-  } else {
-    if(response.status === 400) {
-      alert('error 400 GET DATA APP')
-   }
-      else if (response.status === 500) {
-         alert ('error 500 GET DATA APP')
-      }
-      else {
-         alert('error GET DATA APP')
-      }
-  }
-} catch (e) {
-  console.log(e)
-  alert('error catch GET DATA APP')
-  }
-}
 
   const [userName, setUserName] = useState([
     {
