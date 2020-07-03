@@ -9,8 +9,6 @@ import YourRequests from './YourRequests';
 import Setting from './Setting';
 import LogOut from './LogOut';
 import Login from './Login';
-// import Komponenta1 from './Komponenta1';
-// import Komponenta2 from './Komponenta2';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import * as api_fetch from './api'
 
@@ -19,6 +17,8 @@ function App() {
   useEffect(() => {
     api_fetch.getCurrentProfile().then(currentProfile => {
     setUserName(currentProfile);
+    }).catch(reason => {
+      alert(reason)
     });
   }, []);
 
@@ -36,7 +36,12 @@ function App() {
         <div className="container">
         <Switch>
           <Route path="/" exact component={() => <Home userName={userName}/>}/>
-          <Route path="/setting"><Setting/></Route>
+          
+          <Route path="/setting">{userName.role === 'EMPLOYER' ? <Setting/>:
+           <div className="permissionText column">
+             <p>You don't have permission to access on this server.</p>
+            </div>}</Route> 
+
           <Route path="/logout"><LogOut/></Route>
           <Route path="/login"><Login/></Route>
         </Switch>  
@@ -59,10 +64,7 @@ const Home = (props) => {
   function getDataUserRequest() {
     return ([]);
   }
-
-  // const [data, setData] = useState([])
-  // const [todo, setTodo] = useState([])
-
+  
   return (
   <div className="container">
     <div className="main-content">
@@ -76,8 +78,3 @@ const Home = (props) => {
 
 export default App;
 
-  /* <Komponenta1 todo={todo} setTodo={setTodo}/>
-  <Komponenta2 todo={todo} setTodo={setTodo}/> */
-
-
- 

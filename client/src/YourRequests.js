@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
+import * as api_fetch from './api'
 
 function YourRequests(props) {
 
@@ -9,17 +10,9 @@ function YourRequests(props) {
 
   // get requests from server
   const getData = async () => {
-    try {
-      const response = await fetch(
-        'http://devcz.yoso.fi:8090/ymanager/user/6/calendar?from=2020/06/24&status=PENDING', {
-          headers: {
-            Authorization: 6
-          },
-        }
-      );
 
-    if (response.ok) {
-      const data = await response.json();
+    api_fetch.loadYourRequests().then((data) => {
+
       props.setUser(data.map(request => {
         const a = request.date;
         const b = [a.slice(0, 4), "-", a.slice(5, 7), "-", a.slice(8, 10)].join('');
@@ -34,23 +27,11 @@ function YourRequests(props) {
         }
       )
     }))
-    } else {
-      if(response.status === 400) {
-        alert('error 400 GET DATA (YOUR REQUEST)')
-     }
-        else if (response.status === 500) {
-           alert ('error 500 GET DATA (YOUR REQUEST)')
-        }
-        else {
-           alert('error GET DATA (YOUR REQUEST)')
-        }
-    }
-  } catch (e) {
-    console.log(e)
-    alert('error catch GET DATA (YOUR REQUEST)')
-  }
+    }).catch(reason => {
+      alert(reason)
+    });
 }
-        
+  
 
   return (
     <div className="offs-request column">
@@ -67,7 +48,7 @@ function YourRequests(props) {
                 <th>Status</th>    
               </tr>
               {props.userRequest.map(user => (
-              <tr>
+              <tr key={user.id}>
                 <td>{user.title}</td>
                 <td>{user.type}</td>    
                 <td>{user.end ? user.start + " - " + user.end : user.start}</td>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
+import * as api_fetch from './api'
 
 
 function Setting() {
@@ -8,98 +9,45 @@ function Setting() {
   const [sickdays, setSickdays] = useState([]);
 
   useEffect( () => {
-    getData();
+    api_fetch.getSettingData().then(settingData => {
+      setSetting(settingData);
+    }).catch(reason => {
+      alert(reason)
+    })
   }, []);
-
-  const getData = async () =>  {
-    try {
-      const response = await fetch(
-        'http://devcz.yoso.fi:8090/ymanager/settings', {
-          headers: {
-            Authorization: 1
-          }
-        }
-        );
-
-        if (response.ok) {
-        const data = await response.json();
-        setSetting({
-          sickday: data.sickDayCount,
-        })
-      } else {
-        if(response.status === 400) {
-          alert('error 400')
-       }
-          else if (response.status === 500) {
-             alert ('error 500')
-          }
-          else {
-             alert('spatne neco jinyho')
-          }
-      }
-    } catch (e) {
-      console.log(e)
-      alert('spatne vsechno')
-      }
-  }
 
   const submitSetting = async (e) => {
     e.preventDefault();
-    try {
-    const response = await fetch('http://devcz.yoso.fi:8090/ymanager/settings', {
-      headers: {
-        'Authorization': 1,
-        'Content-Type': 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        "sickDayCount": Number(setting.sickday),
-        "notification": "2019/12/01 12:00:00"
-      }),
-    });
+    
+    const dataSettingObject = {
+      "sickDayCount": Number(setting.sickday),
+      "notification": "2019/12/01 12:00:00"  
+    }
 
-
-    if (response.ok) {
-  } else {
-    if(response.status === 400) {
-      alert('error 400')
-   }
-      else if (response.status === 500) {
-         alert ('error 500')
-      }
-      else {
-         alert('spatne neco jinyho')
-      }
+    api_fetch.saveDataSetting(dataSettingObject).catch(reason => {
+      alert(reason)
+    })
   }
-} catch (e) {
-  console.log(e)
-  alert('spatne vsechno')
-  }
-
-  }
-
-
-
+  // states
   const [setting, setSetting] = useState(
     {sickday: 5,
     holiday: 0
     }
   ) 
 
+  //functions
   function changeSickday(newValue) {
     setSetting(
        {sickday: newValue,
         holiday: setting.holiday
-      }
-    )
+    })
   }
 
   function changeHoliday(newValue) {
     setSetting(
       {sickday: setting.sickday,
        holiday: newValue
-      }
-    )
+    })
   }
 
   return (
