@@ -16,21 +16,21 @@ function Calendar(props) {
     if (props.userName.id !== undefined) {
       props.userName.role === 'EMPLOYER'
         ?
-          api_fetch.getAdminCalendar().then(adminCalendar => {
-            props.setRequest(adminCalendar)
+          api_fetch.getAdminCalendar().then(adminCalendar => { 
+            props.setRequest(adminCalendar);
+          }).catch(reason => {
+            alert(reason)
           })
         :
           api_fetch.getUserCalendar(props.userName, todayTwo).then(userCalendar => {
-            props.setRequest(userCalendar)
+            props.setRequest(userCalendar);
+          }).catch(reason => {
+            alert(reason)
           });
     }
   }, [props.userName.id]);
 
-  // LOAD DATA from server to calendar **** EMPLOYEE ****
-  
-  // LOAD DATA from server to calendar **** EMPLOYER ****
-
-  //states
+//states
   const [isOpen, setOpen] = useState(false)
 
   const [whatDate, setDate] = useState('')
@@ -41,13 +41,36 @@ function Calendar(props) {
 
   var today = new Date();
 
-  // setting date to right format
+// setting date to right format
   today = today.toISOString().split('T')[0]
   const todayTwo = today.split("-").join("/")
 
+// LOAD DATA from server to calendar **** EMPLOYEE ****
+  
+// LOAD DATA from server to calendar **** EMPLOYER ****
+
 // ********************* ADD EVENT - EMPLOYEE **************************
 
+const addEvent = async (e) => {
+  e.preventDefault();
   
+  // setting an object
+  const newDate = whatDate.split("-").join("/");
+
+  const dataAddEventEmployee = {
+    type: typeRadio === 'sickday' ? 'SICK_DAY' : 'VACATION',
+    date: newDate,
+    from: typeRadio === 'sickday' ? null : "00:00",
+    to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
+  }
+
+  api_fetch.addEventApi(dataAddEventEmployee).catch(reason => {
+    alert(reason)
+  });
+    
+    setOpen(false)
+  }
+ 
 // ********************* ADD EVENT ADMIN - EMPLOYER **************************
 
 const addEventAdmin = async (e) => {
@@ -56,53 +79,26 @@ const addEventAdmin = async (e) => {
 // setting an object
   const newDate = whatDate.split("-").join("/");
 
-  const peps = {
+  const dataAddEventAdmin = {
     type: typeRadio === 'sickday' ? 'SICK_DAY' : 'VACATION',
     date: newDate,
     from: typeRadio === 'sickday' ? null : "00:00",
     to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
   };
 
-  api_fetch.tvojefunkce(peps)
-    
-  try {
-// send accepted request to server
-    const response = await fetch('http://devcz.yoso.fi:8090/ymanager/user/calendar/create', {
-      headers: {
-        Authorization: 1,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-// object which is sent to server
-      body: JSON.stringify(peps),
-    });
-    if (response.ok) {
-  
-
-  const userProps = {
-    title: props.userName.name,
-    start: whatDate
-  
-}
-//concat new request to current ones
-    props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
-} else {
-  if(response.status === 400) {
-    alert('error 400 ADD EVENT ADMIN - EMPLOYER')
- }
-    else if (response.status === 500) {
-       alert ('error 500 ADD EVENT ADMIN - EMPLOYER')
-    }
-    else {
-       alert('error ADD EVENT ADMIN - EMPLOYER')
-    }
-}
-  } catch (e) {
-    alert('error catch ADD EVENT ADMIN - EMPLOYER')
+  api_fetch.addEventApiAdmin(dataAddEventAdmin).then(() => {
+    const userProps = {
+      title: props.userName.name, 
+      start: whatDate      
   }
+  //concat new request to current ones
+      props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
+  }).catch(reason => {
+    alert(reason)
+  });
 
-
-  setOpen(false)}
+  setOpen(false)
+}
     
 
   return (
@@ -131,8 +127,8 @@ const addEventAdmin = async (e) => {
     <div className="calendar-form">
       {/* <form onSubmit={(e) => addEvent(e)}> */}
       <form onSubmit={props.userName.role === 'EMPLOYER' 
-      ? (e) => addEventAdmin(e).then(eventAdmin => { props.setUser(eventAdmin)}) 
-      : (e) => api_fetch.addEvent(e).then(userEvent => { props.setUser(userEvent)})
+      ? (e) => addEventAdmin(e)
+      : (e) => addEvent(e)
       }>
         <h2>Choose an option</h2>
         <div className="calendar-radio">

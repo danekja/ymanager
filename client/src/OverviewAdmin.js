@@ -1,53 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import * as api_fetch from './api'
 
 
 const OverviewAdmin = () => {
 
-   useEffect( () => {
-      getData();
+   useEffect(() => {
+      api_fetch.getUsersOverview().then(usersOverview => {
+         setEmployees(usersOverview);
+         }).catch(reason => {
+         alert(reason)
+      });
    }, []);
 
-   const getData = async () => {
-      try {
-      const response = await fetch (
-         'http://devcz.yoso.fi:8090/ymanager/users', {
-          headers: {
-            Authorization: 1          }
-        }
-      );
-      
-   if (response.ok) {
-
-      const data = await response.json();
-      setEmployees(data.map(user => {
-
-         return (
-            {
-               name: user.firstName + ' ' + user.lastName,
-               id: user.id,
-               sickday: user.sickDayCount,
-               holiday: user.vacationCount,
-               role: user.role
-            })
-      }))
-   }  else {
-         if(response.status === 400) {
-            alert('error 400 GET DATA (OVERVIEW, EMPLOYER)')
-         }
-            else if (response.status === 500) {
-               alert ('error 500 GET DATA (OVERVIEW, EMPLOYER)')
-            }
-            else {
-               alert('error GET DATA (OVERVIEW, EMPLOYER)')
-            }
-   }
-} catch (e) {
-   console.log(e)
-   alert('spatne')
-   }
-}
-   
+   // states
    const [employees, setEmployees] = useState([
       {
          name: 'Sadam',
@@ -59,9 +25,10 @@ const OverviewAdmin = () => {
 
    const [isEdit, setEdit] = useState(false);
    const [editedUserId, setEditedUserId] = useState();
-   
    const [prevEdit, setPrevEdit] = useState();
+   
 
+   // functions
    function changeSickdays(newValue) {
       const newEmployees = employees.map(employee => {
          if (editedUserId === employee.id) {
@@ -91,48 +58,25 @@ const OverviewAdmin = () => {
    }
 
    const submitEdit = async (e) => {
-      try {
+      
       setEdit(isEdit === true ? false : true);
       setPrevEdit(employees);
       e.preventDefault();
 
       const found = employees.find(employee => editedUserId === employee.id);
       const foundPrevEdit = prevEdit.find(employee => editedUserId === employee.id);
-      console.log(found)
 
+      const dataOverviewObject = {
+         id: found.id,
+         vacationCount: Number(found.holiday) - foundPrevEdit.holiday,
+         sickDayCount: Number(found.sickday),
+         role: found.role
+      }
 
-   // send accepted request to server
-       const response = await fetch('http://devcz.yoso.fi:8090/ymanager/user/settings', {
-         headers: {
-           Authorization: 1,
-           'Content-Type': 'application/json',
-         },
-         method: 'PUT',
-
-   // object which is sent to server
-         body: JSON.stringify({
-           id: found.id,
-           vacationCount: Number(found.holiday) - foundPrevEdit.holiday,
-           sickDayCount: Number(found.sickday),
-           role: found.role
-         }),        
+      api_fetch.saveDataOverview(dataOverviewObject).catch(reason => {
+         alert(reason)
        });
-       console.log(response.status)
-      if (response.status === 400) {
-         alert('error 400 SAVE DATA (OVERVIEW, EMPLOYER)')
-      }
-         else if (response.status === 500) {
-            alert('error 500 SAVE DATA (OVERVIEW, EMPLOYER)')
-         }
-            else if (!response.ok) {
-               alert('error SAVE DATA (OVERVIEW, EMPLOYER)')
-            }
-                   
-      } catch (e) {
-         alert('error catch SAVE DATA (OVERVIEW, EMPLOYER')
-      }
    }
-
 
    const cancel = () => {
       setEmployees(prevEdit)
@@ -148,8 +92,6 @@ const OverviewAdmin = () => {
       
      e.preventDefault();
    }
-
-   console.log(isEdit, editedUserId)
    
       return (
    <div>
