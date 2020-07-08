@@ -15,6 +15,8 @@ import * as api_fetch from './api'
 function App() {
 
   useEffect(() => {
+    if (window.location.pathname === '/login') return;
+
     api_fetch.getCurrentProfile().then(currentProfile => {
       setUserName(currentProfile);
     }).catch(reason => {

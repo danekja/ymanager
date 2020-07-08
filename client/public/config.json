@@ -1,0 +1,4 @@
+{
+    "baseUrl": "https://ymanager-api-yosoinfra.apps.oc.yoso.fi/api",
+    "redirectUrl": "http://localhost:3000/"
+}

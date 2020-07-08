@@ -3,10 +3,13 @@ import './App.css';
 
 
 function Login() {
-
+console.log(window.config)
   return (
     <div className="login-container column">
-      <h1>log in</h1>
+     
+    <a href={window.config.baseUrl + '/login/google?target=' + window.config.redirectUrl}><h1>log in</h1></a>
+     
+
     </div>
   )
 }
