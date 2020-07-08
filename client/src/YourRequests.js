@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
+import moment from 'moment';
 import * as api_fetch from './api'
 
 function YourRequests(props) {
@@ -21,15 +22,32 @@ function YourRequests(props) {
         {
           title: props.userName.name,
           id: request.id,
-          start: b,
-          status: request.status,
-          type: request.type
+          start: moment(b).format("D.M.YYYY"),
+          status: request.status = request.status.toLowerCase(),
+          type: convertVacationType(request.type)
         }
       )
     }))
     }).catch(reason => {
       alert(reason)
     });
+}
+
+function convertVacationType(vacationType) {
+  // vacationType =  'SICK_DAY' ? 'sickday' : 'holiday'
+
+  // if (vacationType = 'SICK_DAY') {
+  // return: 'sickday',
+  // } else {
+  //   return: 'holiday'
+  // }
+
+  switch (vacationType) {
+    case 'SICK_DAY' :
+      return 'sickday';
+    case 'HOLIDAY':
+      return 'holiday';
+  }
 }
   
 
@@ -40,6 +58,8 @@ function YourRequests(props) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
+            {props.userRequest.length > 0 ?
+            
             <tbody>
               <tr>
                 <th>Name</th>
@@ -48,7 +68,7 @@ function YourRequests(props) {
                 <th>Status</th>    
               </tr>
               {props.userRequest.map(user => (
-              <tr key={user.id}>
+                <tr key={user.id}>
                 <td>{user.title}</td>
                 <td>{user.type}</td>    
                 <td>{user.end ? user.start + " - " + user.end : user.start}</td>
@@ -56,6 +76,10 @@ function YourRequests(props) {
               </tr>
               ))}
             </tbody>
+            :
+            <tbody>
+              <div>No requests</div>
+            </tbody>}
           </table>
         </div>
       </div>

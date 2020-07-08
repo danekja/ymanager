@@ -3,25 +3,25 @@ import './App.css';
 import * as api_fetch from './api'
 
 
-const OverviewAdmin = () => {
+const OverviewAdmin = (props) => {
 
    useEffect(() => {
       api_fetch.getUsersOverview().then(usersOverview => {
-         setEmployees(usersOverview);
+         props.setEmployees(usersOverview);
          }).catch(reason => {
          alert(reason)
       });
    }, []);
 
    // states
-   const [employees, setEmployees] = useState([
-      {
-         name: 'Sadam',
-         id: 0,
-         sickday: 10,
-         holiday: 10
-      }
-   ]);
+   // const [employees, setEmployees] = useState([
+   //    {
+   //       name: 'Sadam',
+   //       id: 0,
+   //       sickday: 10,
+   //       holiday: 10
+   //    }
+   // ]);
 
    const [isEdit, setEdit] = useState(false);
    const [editedUserId, setEditedUserId] = useState();
@@ -30,7 +30,7 @@ const OverviewAdmin = () => {
 
    // functions
    function changeSickdays(newValue) {
-      const newEmployees = employees.map(employee => {
+      const newEmployees = props.employees.map(employee => {
          if (editedUserId === employee.id) {
             return {
                ...employee,
@@ -40,11 +40,11 @@ const OverviewAdmin = () => {
             return employee
          }
       })
-      setEmployees(newEmployees);
+      props.setEmployees(newEmployees);
    }
 
    function changeHoliday(newValue) {
-      const newEmployees = employees.map(employee => {
+      const newEmployees = props.employees.map(employee => {
          if (editedUserId === employee.id) {
             return {
                ...employee,
@@ -54,16 +54,16 @@ const OverviewAdmin = () => {
             return employee
          }
       })
-      setEmployees(newEmployees);
+      props.setEmployees(newEmployees);
    }
 
    const submitEdit = async (e) => {
       
       setEdit(isEdit === true ? false : true);
-      setPrevEdit(employees);
+      setPrevEdit(props.employees);
       e.preventDefault();
 
-      const found = employees.find(employee => editedUserId === employee.id);
+      const found = props.employees.find(employee => editedUserId === employee.id);
       const foundPrevEdit = prevEdit.find(employee => editedUserId === employee.id);
 
       const dataOverviewObject = {
@@ -79,7 +79,7 @@ const OverviewAdmin = () => {
    }
 
    const cancel = () => {
-      setEmployees(prevEdit)
+      props.setEmployees(prevEdit)
       setEdit(false)
    }
 
@@ -88,7 +88,7 @@ const OverviewAdmin = () => {
    const editEmployee = (employeeId, e) => {
       setEdit(true)
       setEditedUserId(employeeId)
-      setPrevEdit(employees)
+      setPrevEdit(props.employees)
       
      e.preventDefault();
    }
@@ -112,15 +112,15 @@ const OverviewAdmin = () => {
                   <th>Holiday</th>
                   <th></th>
                </tr>
-                  {employees.map(employee => (
+                  {props.employees.map(employee => (
                <tr>
-                  <td>{employee.name} {editedUserId}</td>
+                  <td>{employee.name}</td>
                   {/* SickDays Input */}
                   <td className="td-center">
                      {isEdit === true && editedUserId === employee.id ? (
                         <input className="offsInput" type="number" min="0" value={employee.sickday} onChange={(e) => changeSickdays(e.target.value)}/>
                      ) : (
-                        employee.sickday
+                        employee.takenSickday + '/' + employee.sickday
                      )}
                   </td>
                   {/* Holiday Input */}
