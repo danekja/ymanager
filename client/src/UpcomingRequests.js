@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import moment from 'moment';
 import * as api_fetch from './api'
 
 function UpcomingRequests(props) {
@@ -21,10 +22,10 @@ function UpcomingRequests(props) {
           {
             title: request.firstName + ' ' + request.lastName,
             id: request.id,
-            type: request.type,
-            start: b,
+            type: convertVacationType(request.type),
+            start: moment(b).format("D.M.YYYY"),
             end: null,
-            status: request.status
+            status: request.status = request.status.toLowerCase()
         })
       }))
     }).catch(reason => {
@@ -32,49 +33,66 @@ function UpcomingRequests(props) {
     });
 }
 
+function convertVacationType(vacationType) {
+  switch (vacationType) {
+    case 'SICK_DAY' :
+      return 'sickday';
+    case 'HOLIDAY':
+      return 'holiday';
+  }
+}
+
 
 
   // send accepted request to server
   const acceptRequest = async (user) => {
+    try {
 
-    const acceptedRequests = {
-      id: user.id,
-      status: 'ACCEPTED',
-    }
-    
-    api_fetch.sendAcceptedRequest(acceptedRequests).then((data) => {
-      
-    const userProps = {
-          title: user.title,
-          id: 0,
-          type: user.type, 
-          start: user.start
+      const acceptedRequests = {
+        id: user.id,
+        status: 'ACCEPTED',
       }
-      //concat new request to current ones
+    
+      await api_fetch.sendAcceptedRequest(acceptedRequests).then(() => {
+        
+        const userProps = {
+              title: user.title,
+              id: 0,
+              type: user.type, 
+          type: user.type, 
+              type: user.type, 
+              start: user.start
+        }
+        //concat new request to current ones
           props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
-      //request accept button
+        //request accept button
           props.setUser((pendingRequest) => pendingRequest.filter((item) => item !== user));
-    }).catch(response => {
-      alert(response)
-    })
+      })
+    } catch (e) {
+      throw 'error catch GET DATA APP (getCurrentProfile)'
+    }
   }
 
- 
 
   //send rejected request to server
   const declineRequest = async (user) => {
+    try{
 
-    const rejectedRequest = {
-      id: user.id,
-      status: 'REJECTED',
-    }
+      const rejectedRequest = {
+        id: user.id,
+        status: 'REJECTED',
+      }
 
-    api_fetch.sendRejectedRequest(rejectedRequest).then((data) => {
-      //request cancel button
+      await api_fetch.sendRejectedRequest(rejectedRequest);
+      
       props.setUser((acceptedRequest) => acceptedRequest.filter((item) => item !== user))
-    }).catch(reason => {
-      alert(reason)
-    });
+
+      const usersOverview = await api_fetch.getUsersOverview();
+      props.setEmployees(usersOverview);
+
+  } catch (e) {
+    alert(e)
+    }
   }
 
   return (
@@ -84,6 +102,8 @@ function UpcomingRequests(props) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
+            {/* {props.userRequest.length > 0 
+            ? */}
             <tbody>
               <tr>
                 <th>Name</th>
@@ -102,6 +122,12 @@ function UpcomingRequests(props) {
               </tr>
               ))}
             </tbody>
+            {/* :
+            <tbody>
+              <p>There are no requests.</p>
+            </tbody>
+             } */}
+            
           </table>
         </div>
       </div>

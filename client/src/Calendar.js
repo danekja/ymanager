@@ -54,6 +54,7 @@ function Calendar(props) {
 const addEvent = async (e) => {
   e.preventDefault();
   
+  try {
   // setting an object
   const newDate = whatDate.split("-").join("/");
 
@@ -64,13 +65,24 @@ const addEvent = async (e) => {
     to: typeRadio === 'sickday' ? null : moment().startOf('day').add(whatTime, "hours").format("hh:mm"),
   }
 
-  api_fetch.addEventApi(dataAddEventEmployee).catch(reason => {
-    alert(reason)
-  });
+  await api_fetch.addEventApi(dataAddEventEmployee);
+    if (typeRadio === 'holiday') {
+      props.setUserName({
+        ...props.userName,
+        holiday: props.userName.holiday - whatTime
+      })
+    } else if (typeRadio === 'sickday') {
+      props.setUserName({
+        ...props.userName,
+        takenSickday: props.userName.takenSickday + 1
+      })
+    }
     
     setOpen(false)
+  } catch (e) {
+    alert(e)
   }
- 
+}
 // ********************* ADD EVENT ADMIN - EMPLOYER **************************
 
 const addEventAdmin = async (e) => {
@@ -94,13 +106,18 @@ const addEventAdmin = async (e) => {
   //concat new request to current ones
       props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
   }).catch(reason => {
-    alert(reason)
+      alert(reason)
   });
 
   setOpen(false)
+
+  api_fetch.getUsersOverview().then(usersOverview => {
+    props.setEmployees(usersOverview);
+    }).catch(reason => {
+    alert(reason)
+ });
 }
     
-
   return (
     <div className="calendar">
 

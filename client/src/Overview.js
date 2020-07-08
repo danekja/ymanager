@@ -22,7 +22,7 @@ const OffsAvailable = (props) => {
                      </tr>
                      <tr>
                         <td>{props.userName.name}</td>
-                        <td className="td-center">{props.userName.sickday}</td>
+                        <td className="td-center">{props.userName.takenSickday + '/' + props.userName.sickday}</td>
                         <td className="td-center">{props.userName.holiday}</td>
                      </tr>
                   </tbody>
