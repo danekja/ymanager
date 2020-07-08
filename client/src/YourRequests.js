@@ -34,18 +34,10 @@ function YourRequests(props) {
 }
 
 function convertVacationType(vacationType) {
-  // vacationType =  'SICK_DAY' ? 'sickday' : 'holiday'
-
-  // if (vacationType = 'SICK_DAY') {
-  // return: 'sickday',
-  // } else {
-  //   return: 'holiday'
-  // }
-
   switch (vacationType) {
     case 'SICK_DAY' :
       return 'sickday';
-    case 'HOLIDAY':
+    default:
       return 'holiday';
   }
 }

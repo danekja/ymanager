@@ -12,6 +12,7 @@ export const getCurrentProfile = async () => {
       `${http}/users/current/profile`, {
         headers: {
           Authorization: 1
+          
         }
       }
     );    
@@ -327,10 +328,11 @@ export const getSettingData = async () =>  {
   let response;
 
   try {
-    const response = await fetch(
+    response = await fetch(
       `${http}/settings`, {
         headers: {
           Authorization: 1
+
         }
       });
   } catch (e) {

@@ -104,7 +104,7 @@ const OverviewAdmin = (props) => {
             </div>
             <div className="underline-1"></div>
             <div className="side-board-items column">
-               <table border = "0">
+               <table className="side-board-table" border = "0">
                <tbody>
                <tr>
                   <th className="th-left">Name</th>
@@ -130,6 +130,7 @@ const OverviewAdmin = (props) => {
                      ) : (
                         employee.holiday
                      )}</td>
+                     <td>
                   {/* Edit Button */}
                   <button onClick={(e) => editEmployee(employee.id, e)} className="btn-edit">
                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -138,6 +139,7 @@ const OverviewAdmin = (props) => {
                      </svg>
                   </button>
                   {/* End of Edit Button */}
+                  </td>
                </tr>
                   ))}
                </tbody>

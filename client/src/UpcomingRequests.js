@@ -37,7 +37,7 @@ function convertVacationType(vacationType) {
   switch (vacationType) {
     case 'SICK_DAY' :
       return 'sickday';
-    case 'HOLIDAY':
+    default:
       return 'holiday';
   }
 }
