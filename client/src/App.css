@@ -56,6 +56,12 @@
     margin-left: 85px;
 }
 
+.link-nav {
+    text-decoration: none;
+    color: #fff; 
+    cursor: pointer;  
+}
+
 .top-nav h4 {
     color: white;
 }
@@ -291,6 +297,13 @@ input {
 .login-container h1 {
     color: white;
     font-size: 90px;
+}
+.login-container a {
+  
+    text-decoration: none;
+    color: #fff; 
+    cursor: pointer;  
+
 }
 /* ------------- SETTING -------------------*/
 

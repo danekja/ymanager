@@ -6,7 +6,7 @@ function Nav(props) {
 
   return (
     <nav className="top-nav">
-      <h3>YOSO</h3>
+      <a className="link-nav" href="http://localhost:3000/"><h3>YOSO</h3></a>
       <div className="profile-comp">
       <img src="https://cataas.com/cat/says/hello%20world!" className="img-avatar" alt="cat"></img>
         <h5>{props.userName.name}</h5>
