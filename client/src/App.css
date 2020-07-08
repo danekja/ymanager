@@ -74,7 +74,7 @@
 .navIcon {
     color: white;
     margin: 5px;
-    transition: 0.2s;    
+    transition: 0.2s;
 }
 .navIcon:hover {
     color: rgb(57, 184, 177);
@@ -96,6 +96,7 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background-color: rgb(129, 168, 162);
 }
 
 /* --------- OFFS REQUEST ------------ */
@@ -171,12 +172,12 @@
 /* ------------ side content ------------- */
 
 .side-content {
-    /* position: fixed; */
     width: 35vw;
     height: 90vh;
     display: flex;
     justify-content: center;
     padding: 20px;
+    background-color: rgb(129, 168, 162);
 
 }
 
@@ -199,7 +200,7 @@
 }
 
 .new-request {
-    padding-bottom: 10px;    
+    padding-bottom: 10px;
 }
 
 .new-request h4 {
@@ -220,16 +221,16 @@ table {
     padding: 10px;
 }
 
-table td {
+/* table td {
     width: 50px;
-}
-  
+} */
+
 .side-content table td {
     height: 50px;
 }
 .side-content .td-center {
     text-align: center;
-    
+
 }
 .side-content .th-left {
     text-align: left;
@@ -243,17 +244,27 @@ input {
     width: 50px;
 }
 
+.offs-btn {
+    justify-content: flex-end;
+    margin-right: 20px;
+}
+
+.offs-btn .btn {
+    margin:2 5px ;
+}
+
 .btn-edit {
     padding: 8px 8px 6px;
     border: 0.5px solid rgb(92, 92, 92);
     background-color: rgb(247, 247, 247);
     border-radius: 50px;
+    transition: all 0.2s;
 }
 
 .btn-edit:hover {
     border: 0.7px solid rgb(78, 78, 78);
     background-color: rgb(236, 236, 236);
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 /* -------------------Login------------------- */
@@ -271,11 +282,11 @@ input {
     left: 50%;
     transform: translate(-50%, -50%);
     transition: all 0.3s;
-    cursor: pointer;   
+    cursor: pointer;
 }
 
 .login-container:hover {
-    background-color: #ffffff25;   
+    background-color: #ffffff25;
 }
 .login-container h1 {
     color: white;
@@ -294,7 +305,7 @@ input {
     background-color: #ffffff41;
     border: 2px solid #ffffffd8;
     border-radius: 10px;
-    color: #fff;    
+    color: #fff;
 }
 
 .setting-container h2 {
@@ -306,7 +317,7 @@ input {
 .underline-2 {
     height: 1px;
     background-color: #fff;
-    width: 70%;   
+    width: 70%;
 }
 
 .setting-form {
@@ -323,6 +334,8 @@ input {
     box-sizing: border-box;
     margin: 20px 20px;
 }
+
+/*----------------------Buttons----------------------*/
 
 .buttons {
     padding: 20px
@@ -372,13 +385,33 @@ input {
 
 /* ------------ responsive --------- */
 
-@media only screen and (max-width: 768px) {
-    table {
+@media only screen and (max-width: 990px) {
+    .side-content {
+        font-size: 13px;        
+    }
+    .side-content h3 {
+        font-size: 18px;
+    }
+    .btn-edit {
+        padding: 6px 6px 4px;
+    }
+    .offs-item {
         font-size: 13px;
     }
 }
 
-@media only screen and (max-width: 702px) {
+@media only screen and (max-width: 870px) {
+    table {
+        font-size: 12px;
+        padding: 0;
+    }
+    .offsInput {
+        width: 30px;
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 792px) {
     .container {
     height: 100vh;
     flex-direction: column;
@@ -387,7 +420,7 @@ input {
     .main-content {
         width: 100%;
         justify-content: space-evenly;
-        
+
     }
 
     .offs-request {
@@ -402,6 +435,7 @@ input {
     .side-content {
         height: 100%;
         width: 100%;
+        padding-top: 0;
     }
 
     .side-board {
@@ -449,8 +483,15 @@ input {
         display: flex;
     }
 
+    .main-content .btn {
+        margin-left: 10px;
+    }
+    .offs-item td {
+        text-align: left;
+    }
 
-} 
+
+}
 
 @media only screen and (max-width: 480px) {
     .top-nav h3 {
@@ -508,10 +549,27 @@ input {
     .date-input {
         width: 140px;
     }
-    
+
     .side-content {
         background-color: rgb(129, 168, 162);
         padding-top: 0px;
+    }
+    .side-content th,
+    .side-content td,
+    .side-content .td-center {
+        text-align: left;
+    }
+    .side-content h3 {
+        text-align: left;
+    }
+
+    .offs-btn {
+        margin-right: 0;
+    }
+    .offs-btn .btn {
+        padding: 4px 6px;
+        font-size: 12px;
+        margin: 2px 0px 2px 5px;
     }
 
     /* .side-board {
@@ -581,7 +639,7 @@ input {
     }
 
     .calendar-form h4 {
-        
+
         font-size: 14px;
     }
 
@@ -591,6 +649,18 @@ input {
 
     .date-input {
         width: 135px;
+    }
+    .offs-request table {
+        font-size: 10px;
+
+    }
+    .offs-request td {
+        padding: 5px 0;
+    }
+    .offs-btn .btn {
+        padding: 4px;
+        font-size: 11px;
+        margin: 5px 0px 2px 5px;
     }
 }
 
