@@ -1,0 +1,483 @@
+#%RAML 1.0
+title: YManager
+mediaType: application/json
+securedBy: [oauth_2_0]
+
+securitySchemes:
+  oauth_2_0:
+    description: Accessible with OAuth2 authentication token.
+    type: OAuth 2.0
+
+types:
+  UserDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the user's id
+      firstName:
+        type: string
+        description:  the user's first name
+      lastName:
+        type: string
+        description: the user's last name
+      photo:
+        type: string
+        description: the URL of a photo
+      calendar:
+        type: VacationDayDTO[]
+        description: the list of selected vacation in +-7 days
+  CreateVacationDayDTO:
+    type: object
+    properties:
+      date:
+        type: string
+        description: the date of the vacation/sick day in yyyy/mm/dd format
+      from:
+        type: string | nil
+        description: the start of the vacation, null for sick days
+      to:
+        type: string | nil
+        description: the end of the vacation, null for sick days
+      type:
+        type: string
+        enum: [VACATION, SICK_DAY]
+  VacationDayDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the id of the vacation/sick day
+      date:
+        type: string
+        description: the date of the vacation/sick day in yyyy/mm/dd format
+      from:
+        type: string | nil
+        description: the start of the vacation, null for sick days
+      to:
+        type: string | nil
+        description: the end of the vacation, null for sick days
+      type:
+        type: string
+        enum: [VACATION, SICK_DAY]
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+  BasicRequestDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the id of the vacation/sick day
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+  UserVacationRequestDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the user's id
+      firstName:
+        type: string
+        description:  the user's first name
+      lastName:
+        type: string
+        description: the user's last name
+      date:
+        type: string
+        description: the date of the vacation/sick day in yyyy/mm/dd format
+      from:
+        type: string | nil
+        description: the start of the vacation, null for sick days
+      to:
+        type: string | nil
+        description: the end of the vacation, null for sick days
+      type:
+        type: string
+        enum: [VACATION, SICK_DAY]
+        description: the approval status of the request
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+      timestamp:
+        type: string
+        description: the creation of the request in yyyy/mm/dd hh:mm:ss format
+  UserAuthorizationRequestDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the user's id
+      firstName:
+        type: string
+        description:  the user's first name
+      lastName:
+        type: string
+        description: the user's last name
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+        description: the status of the authorisation
+      timestamp:
+        type: string
+        description: the creation of the request in yyyy/mm/dd hh:mm:ss format
+  FullUserDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the user's id
+      firstName:
+        type: string
+        description:  the user's first name
+      lastName:
+        type: string
+        description: the user's last name
+      photo:
+        type: string
+        description: the URL of a photo
+      vacationCount:
+        type: number
+        description: the number of available vacations
+      sickDayCount:
+        type: integer
+        description: the number of assigned sick days
+      takenSickDayCount:
+        type: integer
+        description: the number of taken sick days
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+        description: the authorisation status
+      role:
+        type: string
+        enum: [EMPLOYEE, EMPLOYER]
+        description: the user role
+      notification:
+        type: string
+        description:  the notification of an incoming reset of remaining vacations and sick days in yyyy/mm/dd hh:mm:ss format
+      email:
+        type: string
+        description: the user's email address
+    example: |
+      {
+        "id": 4,
+        "firstName": "Pavel",
+        "lastName": "Fidransky",
+        "photo": "https://st2.depositphotos.com/9223672/12056/v/950/depositphotos_120568236-stock-illustration-male-face-avatar-logo-template.jpg",
+        "vacationCount": 0.0,
+        "sickDayCount": 5,
+        "takenSickDayCount": 0,
+        "status": "ACCEPTED",
+        "role": "EMPLOYEE",
+        "notification": "2019/12/01 12:00:00",
+        "email": "pavel.fidransky@yoso.fi"
+      }
+  SettingsDTO:
+    type: object
+    properties:
+      sickDayCount:
+        type: integer
+        description: the number of assigned sick days
+      notification:
+        type: string
+        description: the notification of an incoming reset of remaining vacations and sick days in yyyy/mm/dd hh:mm:ss format
+    example: |
+      {
+        "sickDayCount": 5,
+        "notification": "2019/12/01 12:00:00"
+      }
+  UserSettingsDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the user's ID
+      vacationCount:
+        type: number
+        description: the remaining vacations
+      sickDayCount:
+        type: integer
+        description: the number of assigned sick days
+      role:
+        type: string
+        enum: [EMPLOYEE, EMPLOYER]
+        description: the user role
+      notification:
+        type: string
+        description: the date and time of sending an email warning about an incoming reset of remaining overtimes and sick days
+    example: |
+      {
+        "id": 4,
+        "vacationCount": 0.0,
+        "sickDayCount": 5,
+        "role": "EMPLOYEE",
+        "notification": "2019/12/01 12:00:00"
+      }
+  CalendarDTO:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: the id of the vacation/sick day
+      date:
+        type: string
+        description: the date of the vacation/sick day in yyyy/mm/dd format
+      from:
+        type: string | nil
+        description: the start of the vacation, null for sick days
+      to:
+        type: string | nil
+        description: the end of the vacation, null for sick days
+
+/users:
+  get:
+    description: Employer only.
+    queryParameters:
+      status:
+        type: string
+        enum: [ACCEPTED, PENDING, REJECTED]
+        required: false
+    responses:
+      200:
+        description: OK.
+        body: UserDTO
+      400:
+        description: Bad request. Check query parameters.
+      401:
+        description: Not authenticated.
+      403:
+        description: Not authorized.
+      500:
+        description: Internal server error.
+  /requests:
+    /vacation:
+      get:
+        description: Employer only.
+        queryParameters:
+          status:
+            type: string
+            enum: [ACCEPTED, PENDING, REJECTED]
+            required: false
+        responses:
+          200:
+            description: OK.
+            body: UserVacationRequestDTO[]
+          400:
+            description: Bad request. Check query parameters.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          500:
+            description: Internal server error.
+    /authorization:
+      get:
+        description: Employer only.
+        queryParameters:
+          status:
+            type: string
+            enum: [ACCEPTED, PENDING, REJECTED]
+            required: false
+        responses:
+          200:
+            description: OK.
+            body: UserAuthorizationRequestDTO[]
+          400:
+            description: Bad request. Check query parameters.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          500:
+            description: Internal server error.
+  /current:
+    /profile:
+      get:
+        responses:
+          200:
+            description: OK.
+            body: FullUserDTO
+          401:
+            description: Not authenticated.
+          500:
+            description: Internal server error.
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: the user's id
+    /profile:
+      get:
+        responses:
+          200:
+            description: OK.
+            body: FullUserDTO
+          400:
+            description: Bad request. Check URI parameters.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          404:
+            description: User with given ID doesn't exist.
+          500:
+            description: Internal server error.
+/user:
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: the user's id
+    /calendar:
+      get:
+        description: Employer or calendar owner only.
+        queryParameters:
+          from:
+            type: string
+            description: yyyy/mm/dd
+            required: true
+          to:
+            type: string
+            description: yyyy/mm/dd
+            required: false
+          status:
+            type: string
+            enum: [ACCEPTED, PENDING, REJECTED]
+            required: false
+        responses:
+          200:
+            description: OK.
+            body: VacationDayDTO[]
+          400:
+            description: Bad request. Check query parameters.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          404:
+            description: User with given ID doesn't exist.
+          500:
+            description: Internal server error.
+
+  /calendar:
+    /create:
+      post:
+        description: Employer or calendar owner only.
+        body: CreateVacationDayDTO
+        responses:
+          200:
+            description: OK.
+          400:
+            description: Bad request. Check request body.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          500:
+            description: Internal server error.
+    /edit:
+      put:
+        description: Denied to all.
+        body: CalendarDTO
+        responses:
+          403:
+            description: Not authorized.
+  /settings:
+    put:
+      description: Employer or calendar owner only.
+      body: UserSettingsDTO
+      responses:
+        200:
+          description: OK.
+        400:
+          description: Bad request. Check request body.
+        401:
+          description: Not authenticated.
+        403:
+          description: Not authorized.
+        500:
+          description: Internal server error.
+  /requests:
+    put:
+      description: Employer only.
+      queryParameters:
+        type:
+          type: string
+          enum: [VACATION, AUTHORIZATION]
+          required: true
+      body: BasicRequestDTO
+      responses:
+        200:
+          description: OK.
+        400:
+          description: Bad request. Check query parameters and request body.
+        401:
+          description: Not authenticated.
+        403:
+          description: Not authorized.
+        404:
+          description: Neither vacation nor authorization request with given ID exists.
+        500:
+          description: Internal server error.
+
+/settings:
+  get:
+    responses:
+      200:
+        description: OK.
+        body: SettingsDTO
+      500:
+        description: Internal server error.
+  post:
+    description: Employer only.
+    body: SettingsDTO
+    responses:
+      200:
+        description: OK.
+      401:
+        description: Not authenticated.
+      403:
+        description: Not authorized.
+      500:
+        description: Internal server error.
+
+/calendar:
+  /{id}:
+    uriParameters:
+      id:
+        type: integer
+        description: the calendar's id
+    /delete:
+      delete:
+        description: Employer or vacation owner only.
+        responses:
+          200:
+            description: OK.
+          400:
+            description: Bad request. Check URI parameters and request body.
+          401:
+            description: Not authenticated.
+          403:
+            description: Not authorized.
+          404:
+            description: Vacation with given ID doesn't exist.
+          500:
+            description: Internal server error.
+
+/import:
+  /xls:
+    post:
+      body:
+        type: file
+      responses:
+        200:
+          description: OK.
+
+/export:
+  /pdf:
+    get:
+      responses:
+        200:
+          description: OK.
