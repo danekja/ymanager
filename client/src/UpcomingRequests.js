@@ -64,7 +64,7 @@ function convertVacationType(vacationType) {
               start: user.start
         }
         //concat new request to current ones
-          props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
+          props.setAcceptedRequest((acceptedRequest) => acceptedRequest.concat(userProps))
         //request accept button
           props.setUser((pendingRequest) => pendingRequest.filter((item) => item !== user));
       })
@@ -102,7 +102,7 @@ function convertVacationType(vacationType) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
-            {/* {props.userRequest.length > 0 
+            {/* {props.user.length > 0 
             ? */}
             <tbody>
               <tr>
@@ -110,7 +110,7 @@ function convertVacationType(vacationType) {
                 <th>Type</th>
                 <th>Date</th>    
               </tr>
-              {props.userRequest.map(user => (
+              {props.user.map(user => (
               <tr>
                 <td>{user.title}</td>
                 <td>{user.type}</td>    

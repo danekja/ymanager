@@ -17,13 +17,13 @@ function Calendar(props) {
       props.userName.role === 'EMPLOYER'
         ?
           api_fetch.getAdminCalendar().then(adminCalendar => { 
-            props.setRequest(adminCalendar);
+            props.setAcceptedRequest(adminCalendar);
           }).catch(reason => {
             alert(reason)
           })
         :
           api_fetch.getUserCalendar(props.userName, todayTwo).then(userCalendar => {
-            props.setRequest(userCalendar);
+            props.setAcceptedRequest(userCalendar);
           }).catch(reason => {
             alert(reason)
           });
@@ -104,7 +104,7 @@ const addEventAdmin = async (e) => {
       start: whatDate      
   }
   //concat new request to current ones
-      props.setRequest((acceptedRequest) => acceptedRequest.concat(userProps))
+      props.setAcceptedRequest((acceptedRequest) => acceptedRequest.concat(userProps))
   }).catch(reason => {
       alert(reason)
   });
