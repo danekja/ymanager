@@ -50,7 +50,7 @@ function convertVacationType(vacationType) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
-            {props.userRequest.length > 0 ?
+            {props.user.length > 0 ?
             
             <tbody>
               <tr>
@@ -59,7 +59,7 @@ function convertVacationType(vacationType) {
                 <th>Date</th>    
                 <th>Status</th>    
               </tr>
-              {props.userRequest.map(user => (
+              {props.user.map(user => (
                 <tr key={user.id}>
                 <td>{user.title}</td>
                 <td>{user.type}</td>    

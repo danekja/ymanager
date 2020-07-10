@@ -57,13 +57,13 @@ function App() {
 }
 
 const Home = (props) => {
-  const [userRequest, setUser] = useState([]);
+  const [user, setUser] = useState([]);
 
-  const [acceptedRequest, setRequest] = useState([]);
+  const [acceptedRequest, setAcceptedRequest] = useState([]);
 
   useEffect(() => {
-    const dataUserRequest = getDataUserRequest();
-    setUser(dataUserRequest);
+    const datauser = getDatauser();
+    setUser(datauser);
   }, []);
 
   // OverviewAdmin state 
@@ -77,7 +77,7 @@ const Home = (props) => {
     }
  ]);
 
-  function getDataUserRequest() {
+  function getDatauser() {
     return ([]);
   }
   
@@ -86,11 +86,11 @@ const Home = (props) => {
       <div className="main-content">
         {props.userName.role === 'EMPLOYER'
         ? 
-          <UpcomingRequests userRequest={userRequest} setUser={setUser} acceptedRequest={acceptedRequest} setRequest={setRequest} setEmployees={setEmployees}/>
+          <UpcomingRequests user={user} setUser={setUser} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} setEmployees={setEmployees}/>
         : 
-          <YourRequests userRequest={userRequest} setUser={setUser} acceptedRequest={acceptedRequest} setRequest={setRequest} userName={props.userName}/>
+          <YourRequests user={user} setUser={setUser} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} userName={props.userName}/>
         }
-        <Calendar setUser={setUser} userRequest={userRequest} acceptedRequest={acceptedRequest} setRequest={setRequest} userName={props.userName} setEmployees={setEmployees} setUserName={props.setUserName}/> 
+        <Calendar setUser={setUser} user={user} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} userName={props.userName} setEmployees={setEmployees} setUserName={props.setUserName}/> 
       </div>
       {props.userName.role === 'EMPLOYER'
       ?
