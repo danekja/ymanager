@@ -25,7 +25,7 @@ function UpcomingRequests(props) {
             type: convertVacationType(request.type),
             start: moment(convertedStartDate).format("D.M.YYYY"),
             end: null,
-            status: request.status = request.status.toLowerCase()
+            status: request.status.toLowerCase()
         })
       }))
     }).catch(reason => {
