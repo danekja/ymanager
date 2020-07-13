@@ -52,7 +52,7 @@
     object-fit: cover;
 }
 
-.top-nav h3 {
+.top-nav h1 {
     margin-left: 85px;
 }
 
@@ -294,7 +294,7 @@ input {
 .login-container:hover {
     background-color: #ffffff25;
 }
-.login-container h1 {
+.login-container p {
     color: white;
     font-size: 90px;
 }
@@ -383,18 +383,13 @@ input {
 
 /* -------------------LogOut------------------- */
 
-.logout h1 {
+.logout p {
     font-size: 48px;
     text-align: center;
     padding: 40px;
-}
-.logout h4 {
-    font-size: 18px;
-    text-align: center;
-    color: #ffffffc4;
+    color: #ffffff;
     transition: all 0.2s;
 }
-
 
 /* ------------ responsive --------- */
 
@@ -585,9 +580,23 @@ input {
         margin: 2px 0px 2px 5px;
     }
 
-    /* .side-board {
-        box-shadow: 1px 0px 15px rgb(161, 161, 161);
-    } */
+    .calendarInputs {
+        display: flex;
+        flex-direction: column;
+    }
+    .input-time {
+        margin: 0;
+    }
+    .main-content .btn {
+        margin-left: 0px;
+    }
+    .calendar-form h2 {
+        font-size: 15px;
+    }
+    .calendar-form h4 {
+        font-size: 13px;
+    }
+
 }
 
 @media only screen and (max-width: 320px) {
@@ -661,7 +670,7 @@ input {
     }
 
     .date-input {
-        width: 135px;
+        width: 130px;
     }
     .offs-request table {
         font-size: 10px;
@@ -675,9 +684,10 @@ input {
         font-size: 11px;
         margin: 5px 0px 2px 5px;
     }
+    .calendar-form h2 {
+        font-size: 14px;
+    }
+    .calendar-form h4 {
+        font-size: 12px;
+    }
 }
-
-/* .todoDiv {
-    padding-left: 200px;
-} */
-

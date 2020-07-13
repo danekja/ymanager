@@ -18,27 +18,24 @@ function App() {
     if (window.location.pathname === '/login') return;
 
     api_fetch.getCurrentProfile().then(currentProfile => {
-      setUserName(currentProfile);
+      setCurrentUser(currentProfile);
     }).catch(reason => {
         alert(reason)
     });
   }, []);
 
-  const [userName, setUserName] = useState([
-    { name: 'Golstoj Hyhrenciv' }
-  ]);
-
+  const [currentUser, setCurrentUser] = useState();
 
 
   return (
     <BrowserRouter>
       <div className="App">
-        <Nav userName={userName} />
+        <Nav currentUser={currentUser} />
         <div className="container">
         <Switch>
-          <Route path="/" exact component={() => <Home userName={userName} setUserName={setUserName}/>}/>
+          <Route path="/" exact component={() => <Home currentUser={currentUser} setCurrentUser={setCurrentUser}/>}/>
           <Route path="/setting">
-            {userName.role === 'EMPLOYER'
+            {currentUser !== undefined && currentUser.role === 'EMPLOYER'
             ?
               <Setting/> 
             :
@@ -61,42 +58,25 @@ const Home = (props) => {
 
   const [acceptedRequest, setAcceptedRequest] = useState([]);
 
-  useEffect(() => {
-    const datauser = getDatauser();
-    setUser(datauser);
-  }, []);
-
   // OverviewAdmin state 
-  const [employees, setEmployees] = useState([
-    {
-       name: 'Sadam',
-       id: 0,
-       sickday: 10,
-       holiday: 10,
-       takenSickday: 2
-    }
- ]);
+  const [employees, setEmployees] = useState([]);
 
-  function getDatauser() {
-    return ([]);
-  }
-  
   return (
     <div className="container">
       <div className="main-content">
-        {props.userName.role === 'EMPLOYER'
+        {props.currentUser !== undefined && props.currentUser.role === 'EMPLOYER'
         ? 
           <UpcomingRequests user={user} setUser={setUser} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} setEmployees={setEmployees}/>
         : 
-          <YourRequests user={user} setUser={setUser} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} userName={props.userName}/>
+          <YourRequests user={user} setUser={setUser} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} currentUser={props.currentUser}/>
         }
-        <Calendar setUser={setUser} user={user} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} userName={props.userName} setEmployees={setEmployees} setUserName={props.setUserName}/> 
+        <Calendar setUser={setUser} user={user} acceptedRequest={acceptedRequest} setAcceptedRequest={setAcceptedRequest} currentUser={props.currentUser} setEmployees={setEmployees} setCurrentUser={props.setCurrentUser}/> 
       </div>
-      {props.userName.role === 'EMPLOYER'
+      {props.currentUser !== undefined && props.currentUser.role === 'EMPLOYER'
       ?
         <OverviewAdmin employees={employees} setEmployees={setEmployees} />
       :
-        <Overview userName={props.userName} employees={employees}  />
+        <Overview currentUser={props.currentUser} employees={employees}  />
       }
     </div>
   )

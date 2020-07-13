@@ -6,7 +6,7 @@ import * as api_fetch from './api'
 
 function Setting() {
 
-  const [sickdays, setSickdays] = useState([]);
+  const [sickdays, setSickdays] = useState();
 
   useEffect( () => {
     api_fetch.getSettingData().then(settingData => {
@@ -39,30 +39,21 @@ function Setting() {
   function changeSickday(newValue) {
     setSetting(
        {sickday: newValue,
-        holiday: setting.holiday
-    })
-  }
-
-  function changeHoliday(newValue) {
-    setSetting(
-      {sickday: setting.sickday,
-       holiday: newValue
+        holiday: 0
     })
   }
 
   return (
     <div className="container">
       <div className="setting-container column">
-        <h2>Nastavení</h2>
+        <h2>Setting</h2>
         <div className="underline-2"></div>
         <form onSubmit={(e) => submitSetting(e)} className="setting-form column">
           <label><h3>Sick days</h3></label>
           <input onChange={(e) => changeSickday(e.target.value)} value={setting.sickday} type="number" min="0" />
-          <label><h3>Holiday</h3></label>
-          <input onChange={(e) => changeHoliday(e.target.value)} value={setting.holiday} type="number" min="0" />
           <div className="buttons row">
             <Link to="/"><button className="btn btn-cancel" type="submit" value="Cancel">Cancel</button></Link>
-            <button className="btn btn-submit" type="submit" value="Submit">Submit</button>
+            <button className="btn btn-submit" type="submit" value="Submit">Save</button>
           </div>
         </form>
       </div>

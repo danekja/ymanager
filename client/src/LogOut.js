@@ -5,8 +5,7 @@ function LogOut() {
 
   return (
     <div className="login-container logout column">
-      <h1>You have been successfully logged out!</h1>
-      <h4>Click to log in</h4>
+      <p>You have been successfully logged out!</p>
     </div>
   )
 }
