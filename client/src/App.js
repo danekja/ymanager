@@ -15,7 +15,7 @@ import * as api_fetch from './api'
 function App() {
 
   useEffect(() => {
-    if (window.location.pathname === '/login') return;
+    if (window.location.pathname === '/login' || window.location.pathname === '/logout') return;
 
     api_fetch.getCurrentProfile().then(currentProfile => {
       setCurrentUser(currentProfile);
