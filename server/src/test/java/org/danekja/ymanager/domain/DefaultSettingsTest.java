@@ -9,10 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * This class tests methods of the {@code DefaultSettings} class.
- * @see DefaultSettings
+ * This class tests methods of the {@link DefaultSettings} class.
  */
-class DefaultSettingsDTOTest {
+class DefaultSettingsTest {
 
     /**
      * The empty instance of the {@code DefaultSettings}.
