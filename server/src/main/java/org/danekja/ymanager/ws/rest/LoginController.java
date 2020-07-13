@@ -2,6 +2,10 @@ package org.danekja.ymanager.ws.rest;
 
 import org.danekja.ymanager.business.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.stereotype.Controller;
@@ -18,7 +22,8 @@ public class LoginController {
     @Autowired
     private AuthorizationService authorizationService;
 
-    private RequestCache requestCache = new HttpSessionRequestCache();
+    private final RequestCache requestCache = new HttpSessionRequestCache();
+    private final LogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     /**
      * Hackity way of providing connecting apps with means to say where to redirect after login.
@@ -49,6 +54,14 @@ public class LoginController {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
 
+        }
+    }
+
+    @GetMapping("logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            logoutHandler.logout(request, response, auth);
         }
     }
 }

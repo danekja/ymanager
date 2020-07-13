@@ -37,14 +37,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
-                .csrf().disable()
-                .authorizeRequests()
+            .csrf().disable()
+            .logout().disable()
+            .authorizeRequests()
                 .mvcMatchers("/login/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
+            .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
-                .oauth2Login()
+            .oauth2Login()
                 .userInfoEndpoint().oidcUserService(googleOauthUserService);
     }
 
