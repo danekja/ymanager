@@ -13,8 +13,8 @@ import * as api_fetch from './api'
 function Calendar(props) {
   
   useEffect( () => {
-    if (props.userName.id !== undefined) {
-      props.userName.role === 'EMPLOYER'
+    if (props.currentUser !== undefined) {
+      props.currentUser.role === 'EMPLOYER'
         ?
           api_fetch.getAdminCalendar().then(adminCalendar => { 
             props.setAcceptedRequest(adminCalendar);
@@ -22,13 +22,13 @@ function Calendar(props) {
             alert(reason)
           })
         :
-          api_fetch.getUserCalendar(props.userName, todayTwo).then(userCalendar => {
+          api_fetch.getUserCalendar(props.currentUser, convertedDate).then(userCalendar => {
             props.setAcceptedRequest(userCalendar);
           }).catch(reason => {
             alert(reason)
           });
     }
-  }, [props.userName.id]);
+  }, [props.currentUser]);
 
 //states
   const [isOpen, setOpen] = useState(false)
@@ -43,11 +43,7 @@ function Calendar(props) {
 
 // setting date to right format
   today = today.toISOString().split('T')[0]
-  const todayTwo = today.split("-").join("/")
-
-// LOAD DATA from server to calendar **** EMPLOYEE ****
-  
-// LOAD DATA from server to calendar **** EMPLOYER ****
+  const convertedDate = today.split("-").join("/")
 
 // ********************* ADD EVENT - EMPLOYEE **************************
 
@@ -67,14 +63,14 @@ const addEvent = async (e) => {
 
   await api_fetch.addEventApi(dataAddEventEmployee);
     if (typeRadio === 'holiday') {
-      props.setUserName({
-        ...props.userName,
-        holiday: props.userName.holiday - whatTime
+      props.setCurrentUser({
+        ...props.currentUser,
+        holiday: props.currentUser.holiday - whatTime
       })
     } else if (typeRadio === 'sickday') {
-      props.setUserName({
-        ...props.userName,
-        takenSickday: props.userName.takenSickday + 1
+      props.setCurrentUser({
+        ...props.currentUser,
+        takenSickday: props.currentUser.takenSickday + 1
       })
     }
     
@@ -100,7 +96,7 @@ const addEventAdmin = async (e) => {
 
   api_fetch.addEventApiAdmin(dataAddEventAdmin).then(() => {
     const userProps = {
-      title: props.userName.name, 
+      title: props.currentUser.name, 
       start: whatDate      
   }
   //concat new request to current ones
@@ -117,6 +113,9 @@ const addEventAdmin = async (e) => {
     alert(reason)
  });
 }
+
+  const DEFAULT_MANDAY_HOURS = 7.5;
+  
     
   return (
     <div className="calendar">
@@ -124,10 +123,9 @@ const addEventAdmin = async (e) => {
     <FullCalendar defaultView="dayGridMonth" plugins={[ dayGridPlugin, interactionPlugin ]}
 
     dateClick={function(info) {
-      //setOpen(true === info.dateStr > today ? true : false )
       setOpen(info.dateStr > today)
       setDate(info.dateStr)
-      setWhatTime(7.5)
+      setWhatTime(DEFAULT_MANDAY_HOURS)
     }}
     events={[
       ...props.acceptedRequest
@@ -142,12 +140,11 @@ const addEventAdmin = async (e) => {
     onClose={() => setOpen(false)}
     >
     <div className="calendar-form">
-      {/* <form onSubmit={(e) => addEvent(e)}> */}
-      <form onSubmit={props.userName.role === 'EMPLOYER' 
+      <form onSubmit={props.currentUser !== undefined && props.currentUser.role === 'EMPLOYER' 
       ? (e) => addEventAdmin(e)
       : (e) => addEvent(e)
       }>
-        <h2>Choose an option</h2>
+        <h2>Choose vacation type</h2>
         <div className="calendar-radio">
           <input checked={
             typeRadio === 'sickday' ? 'checked' : null}
@@ -165,8 +162,8 @@ const addEventAdmin = async (e) => {
           <label for="holiday">Extra Holiday</label>
         </div>
         <div>
-          <h4>Date & Hours</h4>
-          <div className="row">
+          {typeRadio === 'holiday' ? <h4>Date & Hours</h4> : <h4>Date</h4>}
+          <div className="row calendarInputs">
             <input 
               className="date-input" 
               type='date' onChange={(e) => setDate(e.target.value)} 
@@ -185,7 +182,7 @@ const addEventAdmin = async (e) => {
           /> : null}
              </div> 
           </div>
-        <button className="btn btn-submit" type="submit">Submit</button>
+        <button className="btn btn-submit" type="submit">Request vacation</button>
       </form>
     </div>
     </Popup>

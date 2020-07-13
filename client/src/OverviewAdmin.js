@@ -13,16 +13,6 @@ const OverviewAdmin = (props) => {
       });
    }, []);
 
-   // states
-   // const [employees, setEmployees] = useState([
-   //    {
-   //       name: 'Sadam',
-   //       id: 0,
-   //       sickday: 10,
-   //       holiday: 10
-   //    }
-   // ]);
-
    const [isEdit, setEdit] = useState(false);
    const [editedUserId, setEditedUserId] = useState();
    const [prevEdit, setPrevEdit] = useState();
@@ -98,7 +88,6 @@ const OverviewAdmin = (props) => {
       <div className="side-content">
          <div className="side-board column">
             <form className="column side-board-items" onSubmit={(e) => submitEdit(e)}>
-            {/* <form className="column side-board-items" onSubmit={(e) => submitEdit(e)}> */}
             <div className="side-board-heading row">
                <h3>Overview</h3>
             </div>

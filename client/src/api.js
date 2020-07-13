@@ -7,10 +7,7 @@ export const getCurrentProfile = async () => {
   try {
     response = await fetch(
       `${window.config.baseUrl}/users/current/profile`, {
-        headers: {
-          Authorization: 1
-
-        },
+        headers: {},
         credentials: 'include'
       }
     );    
@@ -27,15 +24,16 @@ export const getCurrentProfile = async () => {
       id: data.id,
       holiday: data.vacationCount,
       sickday: data.sickDayCount,
+      photo: data.photo,
       takenSickday: data.takenSickDayCount
     }
   } else {
       switch (response.status) {
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
           break;
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
           break;
         case 500:
           throw new Error('Internal server error.')
@@ -46,16 +44,15 @@ export const getCurrentProfile = async () => {
 }
 
 // ******************** LOAD DATA to CALENDAR - EMPLOYEE ********************
-export const getUserCalendar = async (userName, fromDate ) => {
+export const getUserCalendar = async (currentUser, fromDate ) => {
 
   let response;
 
   try {
     response = await fetch(
-      `${window.config.baseUrl}/user/${userName.id}/calendar?from=${fromDate}&status=ACCEPTED&status=REJECTED`, {
+      `${window.config.baseUrl}/user/${currentUser.id}/calendar?from=${fromDate}&status=ACCEPTED&status=REJECTED`, {
         headers: {
           'Accept': 'application/json',
-          Authorization: 6
         },
         credentials: 'include',
         method: 'GET',
@@ -75,7 +72,7 @@ export const getUserCalendar = async (userName, fromDate ) => {
     const newDate = day.date.split("/").join("-");
 
     return ({
-      title: userName.name,
+      title: currentUser.name,
       start: newDate,
       backgroundColor: day.status === 'REJECTED' ? 'red' : 'green'
     })
@@ -85,9 +82,9 @@ export const getUserCalendar = async (userName, fromDate ) => {
         case 400:
           throw new Error('Bad request. Check query parameters.')
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 404:
           throw new Error('User with given ID does not exist.')
         case 500:
@@ -109,7 +106,6 @@ export const getAdminCalendar = async () => {
       `${window.config.baseUrl}/users/requests/vacation?status=ACCEPTED`, {
         headers: {
           'Accept': 'application/json',
-          Authorization: 6
         },
         credentials: 'include',
         method: 'GET',
@@ -136,9 +132,9 @@ export const getAdminCalendar = async () => {
         case 400:
           throw new Error('Bad request. Check query parameters.')
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 500:
           throw new Error('Internal server error.')
         default:
@@ -149,14 +145,13 @@ export const getAdminCalendar = async () => {
 
 // ******************** ADD EVENT to CALENDAR - EMPLOYEE ********************
 
-export async function addEventApi(userName, dataAddEventEmployee) {
+export async function addEventApi(dataAddEventEmployee) {
   let response;
 
   try {
   // send accepted request to server
     response = await fetch(`${window.config.baseUrl}/user/calendar/create`, {
       headers: {
-        Authorization: 6,
         'Content-Type': 'application/json',
       },
       credentials: 'include',
@@ -168,40 +163,14 @@ export async function addEventApi(userName, dataAddEventEmployee) {
     throw 'Server is not available'
   }
 
-  if (response.ok) {
-      
-    response = await fetch(
-    `${window.config.baseUrl}/users/requests/vacation?status=PENDING`, {
-      headers: {
-        Authorization: 1
-      },
-      credentials: 'include',
-    });
-    const data = await response.json();
-      
-    return data.map(request => {
-      const a = request.date;
-      const b = [a.slice(0, 4), "-", a.slice(5, 7), "-", a.slice(8, 10)].join('');
-
-      return (
-        {
-          title: request.firstName + ' ' + request.lastName,
-          id: request.id,
-          type: request.type,
-          start: b,
-          end: null,
-          status: request.status
-        })
-    })
-
-  } else {
+  if (!response.ok) {
       switch (response.status) {
         case 400:
           throw new Error('Bad request. Check request body.')
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 500:
           throw new Error('Internal server error.')
         default:
@@ -219,7 +188,6 @@ export async function addEventApiAdmin(dataAddEventAdmin) {
   // send accepted request to server
     response = await fetch(`${window.config.baseUrl}/user/calendar/create`, {
       headers: {
-        Authorization: 1,
         'Content-Type': 'application/json',
     },
     credentials: 'include',
@@ -236,9 +204,9 @@ export async function addEventApiAdmin(dataAddEventAdmin) {
       case 400:
         throw new Error('Bad request. Check request body.')
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 500:
         throw new Error('Internal server error.')
       default:
@@ -255,9 +223,6 @@ export const getUsersOverview = async () => {
   try {
   response = await fetch (
     `${window.config.baseUrl}/users`, {
-      headers: {
-        Authorization: 1          
-      },
       credentials: 'include',
     }
   );
@@ -284,9 +249,9 @@ export const getUsersOverview = async () => {
       case 400:
         throw new Error('Bad request. Check query parameters.')
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 500:
         throw new Error('Internal server error.')
       default:
@@ -304,7 +269,6 @@ export async function saveDataOverview(dataOverviewObject) {
     // send accepted request to server
         response = await fetch(`${window.config.baseUrl}/user/settings`, {
           headers: {
-            Authorization: 1,
             'Content-Type': 'application/json',
           },
           credentials: 'include',
@@ -322,9 +286,9 @@ export async function saveDataOverview(dataOverviewObject) {
       case 400:
         throw new Error('Bad request. Check query parameters.')
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 500:
         throw new Error('Internal server error.')
       default:
@@ -340,9 +304,6 @@ export const getSettingData = async () =>  {
   try {
     response = await fetch(
       `${window.config.baseUrl}/settings`, {
-        headers: {
-          Authorization: 1
-        },
         credentials: 'include',
       }
     );
@@ -374,7 +335,6 @@ export async function saveDataSetting(dataSettingObject) {
   try {
     response = await fetch(`${window.config.baseUrl}/settings`, {
       headers: {
-        'Authorization': 1,
         'Content-Type': 'application/json'
       },
       credentials: 'include',
@@ -388,9 +348,9 @@ export async function saveDataSetting(dataSettingObject) {
   if (!response.ok) {
     switch (response.status) {
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 500:
         throw new Error('Internal server error.')
       default:
@@ -401,15 +361,12 @@ export async function saveDataSetting(dataSettingObject) {
 
 // ****************** LOAD DATA to YOUR REQUESTS - EMPLOYEE ******************
 
-export async function loadYourRequests(userName) {
+export async function loadYourRequests(currentUser) {
   let response;
   
   try {
     response = await fetch(
-      `${window.config.baseUrl}/user/${userName.id}/calendar?from=2020/06/24&status=PENDING`, {
-        headers: {
-          Authorization: 6
-        },
+      `${window.config.baseUrl}/user/${currentUser.id}/calendar?from=2020/06/24&status=PENDING`, {
         credentials: 'include',
       }
     );
@@ -425,9 +382,9 @@ export async function loadYourRequests(userName) {
         case 400:
           throw new Error('Bad request. Check query parameters.')
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 500:
           throw new Error('Internal server error.')
         default:
@@ -443,9 +400,6 @@ export async function loadAdminRequests() {
   try {
     response = await fetch(
       `${window.config.baseUrl}/users/requests/vacation?status=PENDING`, {
-        headers: {
-          Authorization: 1
-        },
         credentials: 'include',
       },
     );
@@ -461,9 +415,9 @@ export async function loadAdminRequests() {
         case 400:
           throw new Error('Bad request. Check query parameters.')
         case 401:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 403:
-          window.location.replace("http://localhost:3000/login")
+          window.location.replace(`/login`)
         case 500:
           throw new Error('Internal server error.')
         default:
@@ -480,7 +434,6 @@ export async function sendAcceptedRequest(acceptedRequests) {
   try {
     response = await fetch(`${window.config.baseUrl}/user/requests?type=VACATION`, {
       headers: {
-        Authorization: 1,
         'Content-Type': 'application/json',
       },
       credentials: 'include',
@@ -496,9 +449,9 @@ export async function sendAcceptedRequest(acceptedRequests) {
       case 400:
         throw new Error('Bad request. Check query parameters and request body.')
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 404:
         throw new Error('Neither vacation nor authorization request with given ID exists.')
       case 500:
@@ -517,7 +470,6 @@ export async function sendRejectedRequest(rejectedRequest) {
   try {
     response = await fetch(`${window.config.baseUrl}/user/requests?type=VACATION`, {
       headers: {
-        Authorization: 1,
         'Content-Type': 'application/json',
       },
       credentials: 'include',
@@ -533,9 +485,9 @@ export async function sendRejectedRequest(rejectedRequest) {
       case 400:
         throw new Error('Bad request. Check query parameters and request body.')
       case 401:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 403:
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace(`/login`)
       case 404:
         throw new Error('Neither vacation nor authorization request with given ID exists.')
       case 500:

@@ -4,7 +4,7 @@ import './App.css';
 
 const OffsAvailable = (props) => {
 
-   return (
+   return props.currentUser === undefined ? null : (
       <div>
          <div className="side-content">
             <div className="side-board column">
@@ -19,17 +19,17 @@ const OffsAvailable = (props) => {
                         <th className="th-left">Name</th>
                         <th>Sick Days</th>
                         <th>Holiday</th>
-                     </tr>
+                     </tr>                     
                      <tr>
-                        <td>{props.userName.name}</td>
-                        <td className="td-center">{props.userName.takenSickday + '/' + props.userName.sickday}</td>
-                        <td className="td-center">{props.userName.holiday}</td>
+                        <td>{props.currentUser.name}</td>
+                        <td className="td-center">{props.currentUser.takenSickday + '/' + props.currentUser.sickday}</td>
+                        <td className="td-center">{props.currentUser.holiday}</td>
                      </tr>
                   </tbody>
                </table>
+            </div>
          </div>
       </div>
-   </div>
    </div>
    );
 }

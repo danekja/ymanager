@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import moment from 'moment';
 import * as api_fetch from './api'
+import convertVacationType from './convertVacationType'
 
 function UpcomingRequests(props) {
 
@@ -14,16 +15,15 @@ function UpcomingRequests(props) {
    
     api_fetch.loadAdminRequests().then((data) => {
       props.setUser(data.map(request => {
-      
-        const a = request.date;
-        const b = [a.slice(0, 4), "-", a.slice(5, 7), "-", a.slice(8, 10)].join('');
+
+        const convertedStartDate = request.date.split("/").join("-");
   
         return (
           {
             title: request.firstName + ' ' + request.lastName,
             id: request.id,
             type: convertVacationType(request.type),
-            start: moment(b).format("D.M.YYYY"),
+            start: moment(convertedStartDate).format("D.M.YYYY"),
             end: null,
             status: request.status = request.status.toLowerCase()
         })
@@ -32,16 +32,6 @@ function UpcomingRequests(props) {
       alert(reason)
     });
 }
-
-function convertVacationType(vacationType) {
-  switch (vacationType) {
-    case 'SICK_DAY' :
-      return 'sickday';
-    default:
-      return 'holiday';
-  }
-}
-
 
 
   // send accepted request to server
@@ -57,9 +47,6 @@ function convertVacationType(vacationType) {
         
         const userProps = {
               title: user.title,
-              id: 0,
-              type: user.type, 
-          type: user.type, 
               type: user.type, 
               start: user.start
         }
@@ -69,7 +56,7 @@ function convertVacationType(vacationType) {
           props.setUser((pendingRequest) => pendingRequest.filter((item) => item !== user));
       })
     } catch (e) {
-      throw 'error catch GET DATA APP (getCurrentProfile)'
+      alert(e)
     }
   }
 
@@ -102,8 +89,6 @@ function convertVacationType(vacationType) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
-            {/* {props.user.length > 0 
-            ? */}
             <tbody>
               <tr>
                 <th>Name</th>
@@ -122,13 +107,12 @@ function convertVacationType(vacationType) {
               </tr>
               ))}
             </tbody>
-            {/* :
+            :
             <tbody>
               <p>There are no requests.</p>
             </tbody>
-             } */}
-            
-          </table>
+              
+            </table>
         </div>
       </div>
     </div>
@@ -136,21 +120,3 @@ function convertVacationType(vacationType) {
   }
 
 export default UpcomingRequests;
-
-     
-
-
-        // return (shouldRemoveThisItem === true) ? false : true;
-        //})
-      //)
-      // props.setUser((pendingRequest) => pendingRequest.filter(
-        
-      //   function(item) {
-      //   const shouldRemoveThisItem = item === user;
-        
-      //   if (shouldRemoveThisItem === true) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }})
-      // )

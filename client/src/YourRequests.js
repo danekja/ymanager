@@ -2,27 +2,29 @@ import React, { useEffect } from 'react';
 import './App.css';
 import moment from 'moment';
 import * as api_fetch from './api'
+import convertVacationType from './convertVacationType'
 
 function YourRequests(props) {
 
   useEffect( () => {
+    if (props.currentUser !== undefined) {
       getData();
-    }, []);
+    }
+  }, [props.currentUser]);
 
   // get requests from server
   const getData = async () => {
 
-    api_fetch.loadYourRequests().then((data) => {
+    api_fetch.loadYourRequests(props.currentUser).then((data) => {
 
       props.setUser(data.map(request => {
-        const a = request.date;
-        const b = [a.slice(0, 4), "-", a.slice(5, 7), "-", a.slice(8, 10)].join('');
+        const convertedDate = request.date.split("/").join("-");
 
       return (
         {
-          title: props.userName.name,
+          title: props.currentUser.name,
           id: request.id,
-          start: moment(b).format("D.M.YYYY"),
+          start: moment(convertedDate).format("D.M.YYYY"),
           status: request.status = request.status.toLowerCase(),
           type: convertVacationType(request.type)
         }
@@ -32,16 +34,6 @@ function YourRequests(props) {
       alert(reason)
     });
 }
-
-function convertVacationType(vacationType) {
-  switch (vacationType) {
-    case 'SICK_DAY' :
-      return 'sickday';
-    default:
-      return 'holiday';
-  }
-}
-  
 
   return (
     <div className="offs-request column">
