@@ -15,6 +15,12 @@
 
 /* --------------APP------------------*/
 
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
 .permissionText {
     text-align: center;
     justify-content: center;
@@ -35,13 +41,13 @@
 /* ------------- Navbar --------------- */
 
 .top-nav {
-    width: 100vw;
     height: 60px;
     background-color: #393d3f;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: white;
+    padding: 10px 0;
 }
 
 .img-avatar {
@@ -86,12 +92,27 @@
     color: rgb(57, 184, 177);
 }
 
+.btn-logout {
+    background-color: none;
+    background: none;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+.btn-logout:focus {
+    outline: none;
+}
+
+.profile-comp svg:focus {
+    outline: none;
+}
+
 /* --------- MAIN CONTAINER ------------ */
 
 .container {
     width: 100%;
-    min-height: 100vh;
     display: flex;
+    flex-grow: 1;
     background-color: rgb(129, 168, 162);
     /* background: linear-gradient(#689c94, #0f546b); */
     position: relative;
@@ -227,10 +248,6 @@ table {
     padding: 10px;
 }
 
-/* table td {
-    width: 50px;
-} */
-
 .side-content table td {
     height: 50px;
 }
@@ -279,8 +296,8 @@ input {
     position: absolute;
     justify-content: center;
     align-items: center;
-    width: 480px;
-    height: 480px;
+    width: 430px;
+    height: 430px;
     background-color: rgba(255, 255, 255, 0.075);
     /* border: 2px solid white; */
     border-radius: 50%;
@@ -384,7 +401,7 @@ input {
 /* -------------------LogOut------------------- */
 
 .logout p {
-    font-size: 48px;
+    font-size: 38px;
     text-align: center;
     padding: 40px;
     color: #ffffff;
@@ -421,7 +438,6 @@ input {
 
 @media only screen and (max-width: 792px) {
     .container {
-    height: 100vh;
     flex-direction: column;
     }
 
@@ -502,26 +518,24 @@ input {
 }
 
 @media only screen and (max-width: 480px) {
-    .top-nav h3 {
-        margin-right: 30px;
+    .top-nav h1 {
+        margin-right: 20px;
+        margin-left: 30px;
     }
 
     .login-container {
         width: 300px;
         height: 300px;
     }
-    .login-container h1 {
+    .login-container p {
         color: white;
         font-size: 60px;
     }
 
-    .logout h1 {
-        font-size: 22px;
+    .logout p {
+        font-size: 24px;
         text-align: center;
         padding: 20px;
-    }
-    .logout h4 {
-        font-size: 14px;
     }
 
     .profile-comp {
@@ -604,18 +618,15 @@ input {
         width: 250px;
         height: 250px;
     }
-    .login-container h1 {
+    .login-container p {
         color: white;
         font-size: 50px;
     }
 
-    .logout h1 {
+    .logout p {
         font-size: 22px;
         text-align: center;
         padding: 20px;
-    }
-    .logout h4 {
-        font-size: 12px;
     }
 
     .offs-item {

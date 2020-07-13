@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
+import * as api_fetch from './api'
 
 function Nav(props) {
 
@@ -8,7 +9,7 @@ function Nav(props) {
     props.currentUser === undefined
   ?
       <nav className="top-nav">
-        <Link className="link-nav" to="/"><h1>YOSO</h1></Link>
+        <Link className="link-nav" to="/login"><h1>YOSO</h1></Link>
       </nav>
   :
       <nav className="top-nav">
@@ -28,12 +29,12 @@ function Nav(props) {
               </li>
               :  null }
               <li>
-                <Link to="/logout">
+                <button className="btn-logout" onClick={() => api_fetch.logOut()}>
                   <svg className="bi bi-power navIcon" width="20px" height="20px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" d="M5.578 4.437a5 5 0 1 0 4.922.044l.5-.866a6 6 0 1 1-5.908-.053l.486.875z"/>
                     <path fillRule="evenodd" d="M7.5 8V1h1v7h-1z"/>
                   </svg>
-                </Link>
+                </button>
               </li>
           </ul>
         </div>

@@ -1,5 +1,31 @@
 // ******************** GET DATA APP getCurrentProfile ********************
 
+export const logOut = async () => {
+
+  let response;
+
+  try {
+    response = await fetch(
+      `${window.config.baseUrl}/logout`, {
+        credentials: 'include'
+      }
+    );    
+  } catch (e) {
+    throw 'Server is not available'
+    }
+
+  if (response.ok) {
+        window.location.replace(`/logout`)
+  } else {
+      switch (response.status) {
+        case 500:
+          throw new Error('Internal server error.')
+        default:
+          throw new Error(response.statusText)
+      }
+    }
+}
+
 export const getCurrentProfile = async () => {
 
   let response;
@@ -7,7 +33,7 @@ export const getCurrentProfile = async () => {
   try {
     response = await fetch(
       `${window.config.baseUrl}/users/current/profile`, {
-        headers: {},
+
         credentials: 'include'
       }
     );    
