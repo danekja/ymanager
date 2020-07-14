@@ -89,6 +89,7 @@ function UpcomingRequests(props) {
       <div className="offs-items column">
         <div className="offs-item row">
           <table>
+          {props.user.length > 0 ?
             <tbody>
               <tr>
                 <th>Name</th>
@@ -110,8 +111,7 @@ function UpcomingRequests(props) {
             :
             <tbody>
               <p>There are no requests.</p>
-            </tbody>
-              
+            </tbody>}   
             </table>
         </div>
       </div>
