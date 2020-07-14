@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import * as api_fetch from './api'
 
 function Nav(props) {
-
+  console.log(props.currentUser)
   return (
     props.currentUser === undefined
   ?

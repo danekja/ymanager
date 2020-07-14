@@ -1,4 +1,4 @@
-// ******************** GET DATA APP getCurrentProfile ********************
+// ******************** Log Out ********************
 
 export const logOut = async () => {
 
@@ -25,6 +25,8 @@ export const logOut = async () => {
       }
     }
 }
+
+// ******************** GET DATA APP getCurrentProfile ********************
 
 export const getCurrentProfile = async () => {
 
