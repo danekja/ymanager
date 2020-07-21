@@ -1,46 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link } from 'react-router-dom';
-import * as api_fetch from './api'
+import * as api from './api';
 
 
-function Setting() {
+export default function Setting() {
 
-  const [sickdays, setSickdays] = useState();
-
-  useEffect( () => {
-    api_fetch.getSettingData().then(settingData => {
+  useEffect(() => {
+    api.getSettingData().then(settingData => {
       setSetting(settingData);
     }).catch(reason => {
-      alert(reason)
-    })
+      alert(reason);
+    });
   }, []);
 
-  const submitSetting = async (e) => {
+  async function submitSetting(e) {
     e.preventDefault();
-    
-    const dataSettingObject = {
-      "sickDayCount": Number(setting.sickday),
-      "notification": "2019/12/01 12:00:00"  
-    }
 
-    api_fetch.saveDataSetting(dataSettingObject).catch(reason => {
-      alert(reason)
-    })
+    const dataSettingObject = {
+      'sickDayCount': Number(setting.sickday),
+      'notification': '2019/12/01 12:00:00',
+    };
+
+    api.saveDataSetting(dataSettingObject).catch(reason => {
+      alert(reason);
+    });
   }
+
   // states
-  const [setting, setSetting] = useState(
-    {sickday: 5,
-    holiday: 0
-    }
-  ) 
+  const [setting, setSetting] = useState({
+    sickday: 5,
+    holiday: 0,
+  });
 
   //functions
   function changeSickday(newValue) {
-    setSetting(
-       {sickday: newValue,
-        holiday: 0
-    })
+    setSetting({
+      sickday: newValue,
+      holiday: 0,
+    });
   }
 
   return (
@@ -60,5 +58,3 @@ function Setting() {
     </div>
   );
 }
-
-export default Setting;

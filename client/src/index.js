@@ -3,22 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { render } from '@testing-library/react';
 
-fetch(
-  "config.json").then((response) => response.json()).then(config => {
+fetch('config.json')
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Couldn\'t fetch config.json!');
+    }
+  })
+  .then(config => {
     window.config = config;
+
     ReactDOM.render(
       <React.StrictMode>
         <App />
       </React.StrictMode>,
-      document.getElementById('root')
+      document.getElementById('root'),
     );
-    
+  })
+  .catch(reason => {
+    console.error(reason);
   });
-
-
-
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
