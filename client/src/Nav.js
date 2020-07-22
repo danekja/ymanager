@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import * as api_fetch from './api'
 
 function Nav(props) {
-  console.log(props.currentUser)
   return (
     props.currentUser === undefined
   ?
@@ -16,7 +15,7 @@ function Nav(props) {
          <Link className="link-nav" to="/"><h1>YOSO</h1></Link>
         <div className="profile-comp">
         <img src={props.currentUser.photo} className="img-avatar" alt="profile_photo"></img>
-          <h5>{props.currentUser.name}</h5>
+          <h2>{props.currentUser.name}</h2>
             <ul>
               {props.currentUser.role === 'EMPLOYER' ? 
               <li>
