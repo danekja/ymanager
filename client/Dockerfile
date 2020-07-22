@@ -1,4 +1,3 @@
-#src: https://mherman.org/blog/dockerizing-an-angular-app/
 #############
 ### build ###
 #############
@@ -6,47 +5,50 @@
 # base image
 FROM node:12.2.0 as build
 
-# install chrome for protractor tests
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-RUN apt-get update && apt-get install -yq google-chrome-stable
-
 # set working directory
 WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
 
+# copy package.json and package-lock.json to container
+COPY package.json package-lock.json ./
+
 # install and cache app dependencies
-COPY package.json /app/package.json
 RUN npm install
-RUN npm install -g @angular/cli@8.3.8
 
 # add app
 COPY . /app
 
 # run tests - COMMENTED, later
-#RUN ng test --watch=false
-#RUN ng e2e --port 4202
+#RUN npm run test
 
 # generate build
-RUN ng build --output-path=dist
+RUN npm run build
 
 ############
 ### prod ###
 ############
 
+# inspired by https://torstenwalter.de/openshift/nginx/2017/08/04/nginx-on-openshift.html
+
 # base image
 FROM nginx:1.16.0-alpine
+
+# support running as arbitrary user which belogs to the root group
+RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
+
+# expose port 8081
+EXPOSE 8081
+
+# comment user directive as master process is run as user in OpenShift anyhow
+RUN sed -i.bak 's/^user/#user/' /etc/nginx/nginx.conf
 
 # copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # copy artifact build from the 'build environment'
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# expose port 80
-EXPOSE 80
+COPY --from=build /app/build /usr/share/nginx/html
 
 # run nginx
 CMD ["nginx", "-g", "daemon off;"]
