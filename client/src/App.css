@@ -68,8 +68,9 @@
     cursor: pointer;  
 }
 
-.top-nav h5 {
+.top-nav h2 {
     color: white;
+    font-size: 13px;
 }
 
 .profile-comp {
@@ -319,7 +320,8 @@ input {
   
     text-decoration: none;
     color: #fff; 
-    cursor: pointer;  
+    cursor: pointer;
+    display: block;  
 
 }
 /* ------------- SETTING -------------------*/
